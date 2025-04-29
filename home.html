@@ -8,43 +8,62 @@
   <script src="home.js"></script>
 
 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
+<!-- Bootstrap CSS -->
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+
+<!-- Bootstrap JS (no final da página) -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+
 </head>
-<body>
-  <nav>
+<body >
+   <nav >
     <div class="nav-container">
-      <h1>Youth Experiences in Catholic Movements</h1>
+      <h1>Conectados pela Fé</h1>
       <p class="subtitle">
-        Share your experiences of how you’ve encountered God through participation in Catholic movements.
+        Compartilhe suas experiências de como você encontrou Deus por meio da participação em movimentos católicos.
       </p>
     </div>
   </nav>
+  
+<section class="hero" >
 
-<section class="hero">
+    <div class="title">
+      <h1>O EJC MUDOU MEU VIVER</h1>
+    </div>
 
-    <div class="container">
-      <div>
-        <h1 style="font-size: 2.5rem; font-family: serif; color: rgb(96, 96, 100); margin-bottom: 2rem;">Minha trajetoria Ao Lado de pessoas Incriveis</h1>
-      </div>
-      <div class="image-container" style="gap: 1rem;">
+    </div><div class="container d-flex justify-content-center align-items-center" style="min-height: 60vh; margin-top: 2rem; margin-bottom: 4rem;">
+      <div class="d-flex" style="width: 90%; max-width: 900px; border-radius: 10px; overflow: hidden;">
         
-          <div class="image-item">
-              <img src="/img/bde0b9ac-ee47-466d-b881-9743b3d8cd46.jpeg" alt="Imagem 1" style="height: 51vh; border-radius: 0.5rem;">
-          </div>
-          <div class="image-item">
-              <img src="/img/testemunho12.jpeg" alt="Imagem 2" style="border-radius: 0.5rem;">
-          </div>
-          <div class="image-item">
-              <img src="/img/testemunho19.jpeg" alt="Imagem 3" style="border-radius: 0.5rem;">
-          </div>
-          <div class="image-item">
-            <img src="/img/testemunho10.jpeg" alt="Imagem 3" style="border-radius: 0.5rem; height: 51vh;">
+        <!-- Imagem -->
+        <div class="image-container" style="flex: 1; margin-right: 20px;">
+          <img src="/img/bde0b9ac-ee47-466d-b881-9743b3d8cd46.jpeg" class="d-block w-100" style="height: 440px; object-fit: cover; border-radius: 10px;" alt="Imagem 1">
+        </div>
+        
+        <!-- Texto (Depoimento) -->
+        <div class="text-container" style="flex: 1; padding: 20px; text-align: left;">
+          <h2 style="font-size: 1.4rem; color: #333; font-family: 'Open Sans', sans-serif;">Olá Pessoal, me Chamo <span style="color: blue; font-size: 1.5rem;"> João Paulo </span> irei contar um pouco sobre minha experiência </h2>
+          <p style="font-size: 1.05rem; color: #555; line-height: 1.6;">
+            Entrei no EJC em 2023 e, de lá para cá, tive muitos ensinamentos. O que achei mais fascinante foi o de amar ao próximo. Diversas vezes passei por ocasiões difíceis, tanto espiritualmente quanto fisicamente, e, a cada situação, eu me surpreendia mais com o acolhimento e a ajuda que recebi. Acho que nunca tinha sido tão bem tratado desde que meu irmão faleceu em 2022. Cheguei a pensar que nunca conseguiria me recuperar. Mas logo em seguida veio o EJC e curou todas as minhas feridas, mostrando-me que vale a pena ser feliz, independentemente de qualquer situação, e que sempre devemos confiar nos planos de Deus.
+          </p>
         </div>
       </div>
-  </div>
+    </div>
+    
+    <div class="about-idea">
+      <h2>Como Surgiu a Ideia</h2>
+      <p>
+        A ideia deste site não foi minha; foi Deus quem me enviou essa inspiração. Ela ficou martelando na minha cabeça por duas semanas, era algo que me incomodava de verdade e algo que precisava ser feito. Fui utilizado como um instrumento de fé para alcançar outros jovens. Tudo que vocês estão vendo aqui foi planejado por Ele, que me deu todas as informações necessárias para que o site fosse criado. Deus foi muito específico ao me orientar de que seria um espaço para jovens relatarem suas experiências e testemunhos vividos com Ele. 
+        Muitas histórias de superação, fé e amor precisam ser contadas, para inspirar outras pessoas que também buscam um reencontro espiritual. 
+        Aqui, cada depoimento é uma prova viva de que Deus age nos detalhes e que, juntos, somos mais fortes na caminhada da fé.
+      </p>
+      
+    </div>
+  
 
+ 
   <div class="container2">
-    <div class="text1">
+    <div class="text1" >
         <h1>Depoimentos de Alguns Jovens</h1>
     </div>
       
@@ -77,7 +96,7 @@
           </div>
        
           <div class="submit">
-            <p>Have an experience to share?</p>
+            <p>Tem Alguma Experiência para Compartilhar?</p>
             <button id="openModalBtn" type="button">Enviar</button>
           </div>          
           
@@ -93,39 +112,39 @@
         <div id="myModal" class="modal">
           <div class="modal-content">
             <span class="close">&times;</span>
-            <h2>Share Your Experience</h2>
+            <h2>Compartilhe sua experiência</h2>
             <form id="experienceForm" class="form-modal">
               <div class="form-group">
-                <label for="userName">Your Name:</label>
+                <label for="userName">Primeiro Nome:</label>
                 <input type="text" id="userName" name="userName" required>
               </div>
         
               <div class="form-group">
-                <label for="userAge">Your Age:</label>
+                <label for="userAge">Idade:</label>
                 <input type="number" id="userAge" name="userAge" required>
               </div>
         
               <div class="form-group">
-                <label for="userMovement">Movement (ex: Life Teen, EJC...):</label>
+                <label for="userMovement"> Nome do Movimento (ex:Pascom, EJC,SEGME...):</label>
                 <input type="text" id="userMovement" name="userMovement" required>
               </div>
         
               <!-- Alerta de upload de imagem -->
             <div id="uploadAlert" class="hidden">
               <div class="alert-box">
-                <p>Imagem carregada com sucesso!Lembre do sigilo caso a mensagem que escolheu comprometa algo do movimento, peço que escolhe outra pois sua publicação não será postada</p>
+                <p>Imagem carregada com sucesso!Lembre do sigilo caso a imagem que escolheu comprometa algo de algum movimento, peço que escolha outra pois sua publicação não será postada</p>
                 <button id="continueButton">Continuar</button>
               </div>
             </div>
 
             <!-- Formulário de upload -->
             <div class="form-group">
-              <label for="experienceImage">Upload your image:</label>
+              <label for="experienceImage">Escolha sua Imagem:</label>
               <input type="file" id="experienceImage" name="experienceImage" accept="image/*" required>
             </div>
 
               <div class="form-group">
-                <label for="experienceText">Your Experience:</label>
+                <label for="experienceText">Detalhe sua Experiência:</label>
                 <textarea id="experienceText" name="experienceText" rows="3" required></textarea>
               </div>
         
@@ -141,6 +160,8 @@
            
         </div>
 </section>
+  
+
 <script>
         document.addEventListener('DOMContentLoaded', function() {
           const modal = document.getElementById("myModal");
@@ -264,6 +285,29 @@
         
           loadExperiences(); // Chama ao carregar a página
         });
+
+
+        const track = document.querySelector('.carousel-track');
+        const prevButton = document.querySelector('.carousel-button.prev');
+        const nextButton = document.querySelector('.carousel-button.next');
+        const items = document.querySelectorAll('.carousel-item');
+        const totalItems = items.length;
+        let currentIndex = 0;
+
+        function updateCarousel() {
+          track.style.transform = `translateX(-${currentIndex * 100}%)`;
+        }
+
+        prevButton.addEventListener('click', () => {
+          currentIndex = (currentIndex - 1 + totalItems) % totalItems;
+          updateCarousel();
+        });
+
+        nextButton.addEventListener('click', () => {
+          currentIndex = (currentIndex + 1) % totalItems;
+          updateCarousel();
+        });
+
 </script>     
   
           
