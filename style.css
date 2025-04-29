@@ -197,7 +197,62 @@
     background-color: #fbbf24;
   }
   
+  main {
+    padding: 2rem;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 1.5rem;
+  }
 
+  .museu {
+    background-color: #0b82f1;
+    padding: 2rem;
+    text-align: center;
+    border-radius: 1rem;
+  }
+  .museu h1 {
+    font-family: 'Playfair Display', serif;
+    font-size: 2.5rem;
+    color: #e0e0e0;
+    margin: 0;
+  }
+  .museu p{
+    font-family: 'Playfair Display', serif;
+    font-size: 1.5rem;
+    color: #e0e0e0;
+    margin: 0;
+  }
+  .card3 {
+    background: #fff;
+    border-radius: 16px;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    border: 3px solid #096fe4;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    transition: transform 0.2s ease-in-out;
+  }
+  .card3:hover {
+    transform: scale(1.02);
+  }
+  .card img {
+    width: 100%;
+    height: 180px;
+    object-fit: cover;
+  }
+  .card-content {
+    padding: 1rem;
+  }
+  .quote {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.1rem;
+    margin: 0 0 1rem;
+  }
+  .author {
+    text-align: right;
+    font-style: italic;
+    color: #666;
+  }
 .card {
     background: white;
     border-radius: 20px 20px 0 0;
@@ -428,4 +483,45 @@
 
   .alert-box button:hover {
     background-color: #218838;
+  }
+  .responsive-section {
+    display: flex;
+    flex-direction: row;
+    width: 90%;
+    max-width: 900px;
+    border-radius: 10px;
+    overflow: hidden;
+    gap: 20px;
+  }
+
+  .image-container {
+    flex: 1;
+  }
+
+  .image-container img {
+    width: 100%;
+    height: 440px;
+    object-fit: cover;
+    border-radius: 10px;
+  }
+
+  .text-container {
+    flex: 1;
+    padding: 20px;
+    text-align: left;
+  }
+
+  @media (max-width: 768px) {
+    .responsive-section {
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .image-container img {
+      height: auto;
+    }
+
+    .text-container {
+      padding: 10px;
+    }
   }
