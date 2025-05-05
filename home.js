@@ -121,24 +121,15 @@ document.addEventListener('DOMContentLoaded', function() {
     loadExperiences(); // Chama ao carregar a página
   });
 
-
-  const track = document.querySelector('.carousel-track');
-  const prevButton = document.querySelector('.carousel-button.prev');
-  const nextButton = document.querySelector('.carousel-button.next');
-  const items = document.querySelectorAll('.carousel-item');
-  const totalItems = items.length;
-  let currentIndex = 0;
-
-  function updateCarousel() {
-    track.style.transform = `translateX(-${currentIndex * 100}%)`;
+  function abrirImagem(img) {
+    const modal = document.getElementById("imgViewerModal");
+    const modalImg = document.getElementById("imgModalContent");
+    
+    modal.style.display = "flex";
+    modalImg.src = img.src;
   }
-
-  prevButton.addEventListener('click', () => {
-    currentIndex = (currentIndex - 1 + totalItems) % totalItems;
-    updateCarousel();
-  });
-
-  nextButton.addEventListener('click', () => {
-    currentIndex = (currentIndex + 1) % totalItems;
-    updateCarousel();
-  });
+  
+  function fecharImagem() {
+    document.getElementById("imgViewerModal").style.display = "none";
+  }
+  

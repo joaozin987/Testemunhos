@@ -124,27 +124,29 @@
         <main class="main-container">
 
           <div class="card4">
-            <img class="img2" src="/img/WhatsApp Image 2025-05-02 at 21.35.45.jpeg" alt="Imagem de fé">
+            <img class="img2" src="/img/WhatsApp Image 2025-05-02 at 21.35.45.jpeg"  alt="Imagem de fé" onclick="abrirImagem(this)">
           
           </div>
         
           <div class="card4">
-            <img class="img2" src="/img/DSC03260.jpg" alt="Imagem de oração">
+            <img class="img2" src="/img/DSC03260.jpg" alt="Imagem de oração" onclick="abrirImagem(this)">
            
           </div>
 
           <div class="card4">
-            <img class="img2" src="/img/DSC03322.jpg" alt="Imagem de luz" >
+            <img class="img2" src="/img/DSC03322.jpg" alt="Imagem de luz" onclick="abrirImagem(this)" >
            
           </div>
          
           <div class="card4">
-            <img class="img2" src="/img/WhatsApp Image 2025-05-02 at 21.33.39.jpeg" alt="Imagem de fé" >
+            <img class="img2" src="/img/WhatsApp Image 2025-05-02 at 21.33.39.jpeg" alt="Imagem de fé" onclick="abrirImagem(this)">
            
           </div>
-        
           
-
+          <div id="imgViewerModal" class="img-modal" onclick="fecharImagem()">
+            <span class="img-close">&times;</span>
+            <img class="img-modal-content" id="imgModalContent">
+          </div>
       
         </main>
     
