@@ -1,33 +1,36 @@
-const http = require('http');
-const path = require('path');
-const fs = require('fs');
+import http from 'http';
+import path from 'path';
+import fs from 'fs';
+import { fileURLToPath } from 'url';
+import mime from 'mime';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 const PORT = 3000;
 const ROOT_DIR = path.join(__dirname, '..', 'frontend');
 
 const server = http.createServer((req, res) => {
-  // Cabeçalhos CORS
   res.setHeader('Access-Control-Allow-Origin', '*');
   res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
   res.setHeader('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept');
 
-  // Requisições OPTIONS
   if (req.method === 'OPTIONS') {
     res.writeHead(200);
     res.end();
     return;
   }
 
-  // Roteamento simples
   const filePath = req.url === '/' ? '/home.html' : req.url;
   const fullPath = path.join(ROOT_DIR, filePath);
 
   fs.readFile(fullPath, (err, data) => {
     if (err) {
-      res.writeHead(404);
+      res.writeHead(404, { 'Content-Type': 'text/plain' });
       res.end('404 - Arquivo não encontrado');
     } else {
-      res.writeHead(200);
+      const contentType = mime.getType(path.extname(fullPath));
+      res.writeHead(200, { 'Content-Type': contentType });
       res.end(data);
     }
   });
