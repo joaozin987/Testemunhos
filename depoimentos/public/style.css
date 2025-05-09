@@ -613,3 +613,13 @@
           z-index: 10000;
         }
         
+        .verse-of-day {
+          background-color: #647ba8;
+          color: #030303;
+          padding: 1rem;
+          border-radius: 1rem;
+          margin: 1rem 0;
+          border-left: 4px solid #4b5563;
+          font-style: italic;
+        }
+        
