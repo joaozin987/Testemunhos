@@ -64,3 +64,20 @@ app.get('/depoimentos', async (req, res) => {
 app.listen(3000, () => {
   console.log('Servidor rodando em http://localhost:3000');
 });
+
+app.delete('/depoimentos/:id', async (req, res) => {
+  const { id } = req.params;
+
+  try {
+    const result = await pool.query('DELETE FROM depoimentos WHERE id = $1 RETURNING *', [id]);
+
+    if (result.rowCount === 0) {
+      return res.status(404).json({ success: false, message: 'Experiência não encontrada' });
+    }
+
+    res.status(200).json({ success: true, message: 'Experiência excluída com sucesso' });
+  } catch (err) {
+    console.error('Erro ao excluir a experiência:', err);
+    res.status(500).json({ success: false, message: 'Erro ao excluir a experiência' });
+  }
+});
