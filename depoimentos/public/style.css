@@ -622,4 +622,30 @@
           border-left: 4px solid #4b5563;
           font-style: italic;
         }
-        
+
+        /* Estilo geral para o botão de remover */
+          .delete-btn {
+            background-color: #f44336; /* Vermelho claro */
+            color: white;              /* Texto branco */
+            border: none;              /* Sem borda */
+            border-radius: 5px;        /* Bordas arredondadas */
+            padding: 8px 16px;   
+            margin-top: 1rem;      /* Um pouco de espaço interno */
+            font-size: 14px;           /* Tamanho da fonte */
+            cursor: pointer;          /* Apontador de mão ao passar o mouse */
+            transition: background-color 0.3s, transform 0.2s ease; /* Efeitos suaves */
+          }
+
+          /* Efeito de hover (quando o mouse passa por cima) */
+          .delete-btn:hover {
+            background-color: #d32f2f; /* Vermelho mais escuro */
+            transform: scale(1.05);     /* Leve aumento do tamanho */
+          }
+
+          /* Efeito de foco (quando o botão está ativo, com o clique) */
+          .delete-btn:focus {
+            outline: none;             /* Remove o contorno padrão do foco */
+            box-shadow: 0 0 0 2px rgba(243, 67, 54, 0.5); /* Sombra ao redor do botão */
+          }
+
+                  
