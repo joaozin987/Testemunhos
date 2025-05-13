@@ -61,12 +61,17 @@ app.get('/depoimentos', async (req, res) => {
   }
 });
 
-app.listen(3000, () => {
-  console.log('Servidor rodando em http://localhost:3000');
+app.listen(3000, '0.0.0.0', () => {
+  console.log('Servidor rodando em http://0.0.0.0:3000');
 });
 
+
 app.delete('/depoimentos/:id', async (req, res) => {
-  const { id } = req.params;
+  const { id } = req.params;  // Certifique-se de que o 'id' seja passado corretamente
+
+  if (!id || isNaN(id)) {
+    return res.status(400).json({ success: false, message: 'ID inválido' });
+  }
 
   try {
     const result = await pool.query('DELETE FROM depoimentos WHERE id = $1 RETURNING *', [id]);
