@@ -82,54 +82,55 @@ document.addEventListener('DOMContentLoaded', function () {
       .finally(() => disableForm(false)); // Reabilita o formulário após o envio
   });
 
-  // Função para adicionar a experiência à página
-  function addExperienceToPage(experience) {
-    const item = document.createElement('div');
-    item.className = 'card';
-    item.id = experience.id; // ESSENCIAL para identificar qual item deletar
+  /// Função para adicionar a experiência à página
+function addExperienceToPage(experience) {
+  const item = document.createElement('div');
+  item.className = 'card';
+  item.id = `experience-${experience.id}`;  // Define um ID único para cada item
 
-  
-    item.innerHTML = `
-      <img src="${experience.image}" alt="Imagem" class="card-image">
-      <div class="card-content">
-        <h3>${experience.name}, ${experience.age}</h3>
-        <h4>${experience.movement}</h4>
-        <p class="text">${experience.text}</p>
-        <button class="delete-btn" data-id="${experience.id}">Deletar Publicação</button>
-      </div>
-    `;
-  
-    // Adiciona listener de deletar
-    item.querySelector('.delete-btn').addEventListener('click', function () {
-      const id = this.getAttribute('data-id');
-      removeExperience(id);
-    });
-  
-    experienceList.appendChild(item);
-  }
-  
-  function removeExperience(id) {
-    fetch(`http://localhost:3000/depoimentos/${id}`, {
-      method: 'DELETE'
-    })
-    .then(res => res.json())
-    .then(data => {
-      if (data.success) {
-        const experienceItem = document.getElementById(id);
-        if (experienceItem) {
-          experienceItem.remove();
-        }
-      } else {
-        alert('Erro ao remover a experiência.');
+  item.innerHTML = `
+    <img src="${experience.image}" alt="Imagem" class="card-image">
+    <div class="card-content">
+      <h3>${experience.name}, ${experience.age}</h3>
+      <h4>${experience.movement}</h4>
+      <p class="text">${experience.text}</p>
+      <button class="delete-btn" data-id="${experience.id}">Deletar Publicação</button>
+    </div>
+  `;
+
+  // Adiciona listener de deletar
+  item.querySelector('.delete-btn').addEventListener('click', function () {
+    const id = this.getAttribute('data-id');
+    removeExperience(id);  // Chama a função de remoção com o id
+  });
+
+  // Adiciona o item à div infinita
+  const experienceList = document.getElementById('experienceList');
+  experienceList.appendChild(item);
+}
+
+// Função para remover a experiência
+function removeExperience(id) {
+  fetch(`http://localhost:3000/depoimentos/${id}`, {
+    method: 'DELETE'
+  })
+  .then(res => res.json())
+  .then(data => {
+    if (data.success) {
+      const experienceItem = document.getElementById(`experience-${id}`);  // Usa o id completo para buscar o item
+      if (experienceItem) {
+        experienceItem.remove();  // Remove o item da página
       }
-    })
-    .catch(err => {
-      console.error('Erro na exclusão:', err);
-      alert('Ocorreu um erro ao tentar excluir.');
-      
+    } else {
+      alert('Erro ao remover a experiência.');
+    }
+  })
+  .catch(err => {
+    console.error('Erro na exclusão:', err);
+    alert('Ocorreu um erro ao tentar excluir.');
+  });
+}
 
-    });
-  }
   
  
 
@@ -191,3 +192,22 @@ document.addEventListener('DOMContentLoaded', function () {
           });
   });
 });
+
+// Função para abrir a imagem em visualização maior
+function abrirImagem(element) {
+  var modal = document.getElementById("imgViewerModal");
+  var modalImg = document.getElementById("imgModalContent");
+
+  // Exibe o modal
+  modal.style.display = "flex";
+
+  // Atualiza a imagem no modal
+  modalImg.src = element.src;
+  modalImg.alt = element.alt;
+}
+
+// Função para fechar o modal
+function fecharImagem() {
+  var modal = document.getElementById("imgViewerModal");
+  modal.style.display = "none"; // Fecha o modal
+}
