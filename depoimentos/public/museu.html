@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Youth Experiences</title>
-  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="museu.css">
   
   <script src="https://cdn.tailwindcss.com"></script>
 
@@ -38,7 +38,7 @@
         <a class="text-xl p-2"
            style="text-decoration: none; color: #6e6a6a; border-radius: 0.3rem; font-weight: bold; padding: 10px; font-family: sans-serif;"
            href="">
-          Redes Sociais
+          sobre
         </a>
       </li>
     </ul>
@@ -127,7 +127,8 @@
   
     </main>
 
-    <div class="bg-[#0b82f1] p-8 text-center rounded-2xl">
+    
+    <div class=" p-8 text-center rounded-2xl" style="background-color:rgb(248, 202, 141) ;">
       <h1 class=" text-[2.5rem] text-[#e0e0e0] m-0" style="font-family: black;">Riqueza Eterna</h1>
       <p class=" text-[1.5rem] text-[#e0e0e0] m-0 mt-2 " style="font-family: black;">Pão da eternidade, Excelso Rei</p>
     </div>
@@ -168,17 +169,69 @@
       </div>
     </main>
     
-    <!-- Modal de Imagem -->
+    
     <div id="imgViewerModal" class="img-modal" onclick="fecharImagem()">
       <span class="img-close">&times;</span>
       <img class="img-modal-content" id="imgModalContent">
     </div>
           
-          
-
+    <section class="bg-white py-12 px-6">
+      <div class="max-w-5xl mx-auto text-center">
+        <h2 class="text-3xl font-bold text-gray-800 mb-2">Aparições de Nossa Senhora</h2>
+        <p class="text-gray-600 mb-10">Mensagens do Céu que continuam tocando os corações dos fiéis.</p>
+      </div>
+    
+      <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8 max-w-6xl mx-auto">
+        <!-- Fátima -->
+        <div class="bg-gray-50 p-6 rounded-2xl shadow hover:shadow-lg transition">
+          <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/4/4d/Virgen_de_F%C3%A1tima.JPG/800px-Virgen_de_F%C3%A1tima.JPG " alt="Nossa Senhora de Fátima" class="w-full h-64 object-cover rounded-xl mb-4">
+          <h3 class="text-xl font-semibold text-gray-800 mb-2">Nossa Senhora de Fátima</h3>
+          <p class="text-sm text-gray-600"><strong>Local:</strong> Fátima, Portugal – 1917</p>
+          <p class="text-sm text-gray-600"><strong>Mensagem:</strong> Rosário diário, conversão e paz.</p>
+          <blockquote class="italic text-indigo-600 mt-3">“Rezem o terço todos os dias...”</blockquote>
+        </div>
+    
+        <!-- Lourdes -->
+        <div class="bg-gray-50 p-6 rounded-2xl shadow hover:shadow-lg transition">
+          <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/d/d9/France-002009_-_Our_Lady_of_Lourdes_%2815774765182%29.jpg/800px-France-002009_-_Our_Lady_of_Lourdes_%2815774765182%29.jpg" alt="Nossa Senhora de Lourdes" class="w-full h-64 object-cover rounded-xl mb-4">
+          <h3 class="text-xl font-semibold text-gray-800 mb-2">Nossa Senhora de Lourdes</h3>
+          <p class="text-sm text-gray-600"><strong>Local:</strong> Lourdes, França – 1858</p>
+          <p class="text-sm text-gray-600"><strong>Mensagem:</strong> Conversão e cura espiritual.</p>
+          <blockquote class="italic text-indigo-600 mt-3">“Eu sou a Imaculada Conceição.”</blockquote>
+        </div>
+    
+        <!-- Medalha Milagrosa -->
+        <div class="bg-gray-50 p-6 rounded-2xl shadow hover:shadow-lg transition">
+          <img src="https://upload.wikimedia.org/wikipedia/commons/9/96/Onuva_-_La_Virgen_de_las_Gracias_de_Onuva_-_La_Puebla_del_R%C3%ADo_%28Sevilla%29.jpg" alt="Nossa Senhora das Graças" class="w-full h-64 object-cover rounded-xl mb-4">
+          <h3 class="text-xl font-semibold text-gray-800 mb-2">Nossa Senhora das Graças</h3>
+          <p class="text-sm text-gray-600"><strong>Local:</strong> Paris, França – 1830</p>
+          <p class="text-sm text-gray-600"><strong>Mensagem:</strong> Graças e proteção pela fé.</p>
+          <blockquote class="italic text-indigo-600 mt-3">“Ó Maria concebida sem pecado...”</blockquote>
+        </div>
+    
+        <!-- Guadalupe -->
+        <div class="bg-gray-50 p-6 rounded-2xl shadow hover:shadow-lg transition">
+          <img src="https://blog.cancaonova.com/felipeaquino/files/2019/12/07.jpg" alt="Nossa Senhora de Guadalupe" class="w-full h-64 object-cover rounded-xl mb-4">
+          <h3 class="text-xl font-semibold text-gray-800 mb-2">Nossa Senhora de Guadalupe</h3>
+          <p class="text-sm text-gray-600"><strong>Local:</strong> México – 1531</p>
+          <p class="text-sm text-gray-600"><strong>Mensagem:</strong> Amor maternal e dignidade dos humildes.</p>
+          <blockquote class="italic text-indigo-600 mt-3">“Não estou eu aqui, que sou tua Mãe?”</blockquote>
+        </div>
+    
+        <!-- La Salette -->
+        <div class="bg-gray-50 p-6 rounded-2xl shadow hover:shadow-lg transition">
+          <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSJ8UFqbSZTYUCbEif-Kzx1o2tHn4bUN8Nsbeg4Gry9VrmqFVU3RdfKIdDB4ifXfiEWnU8&usqp=CAU" alt="Nossa Senhora de La Salette" class="w-full h-64 object-cover rounded-xl mb-4">
+          <h3 class="text-xl font-semibold text-gray-800 mb-2">Nossa Senhora de La Salette</h3>
+          <p class="text-sm text-gray-600"><strong>Local:</strong> La Salette, França – 1846</p>
+          <p class="text-sm text-gray-600"><strong>Mensagem:</strong> Conversão e fidelidade a Deus.</p>
+          <blockquote class="italic text-indigo-600 mt-3">“Faço um apelo a todo o meu povo.”</blockquote>
+        </div>
+      </div>
+    </section>
+    
           
 </section>
   
-<script src="home.js"></script>
+<script src="museu.js"></script>
 </body>
 </html>

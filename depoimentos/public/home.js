@@ -11,8 +11,18 @@ document.addEventListener('DOMContentLoaded', function () {
   const continueButton = document.getElementById('continueButton');
   const experienceImageInput = document.getElementById('experienceImage');
   
+  const startBtn = document.getElementById('startBtn');      // Botão "Começar"
+  const askWordBtn = document.getElementById('askWordBtn');  // Botão "Pedir a Palavra"
+  const getVerseBtn = document.getElementById('getVerseBtn'); // Botão "Buscar a Palavra"
+  const verseContainer = document.getElementById('verseOfDay');
+  const emotionInput = document.getElementById('emotionInput');
+  const goalSection = document.getElementById('goalSection');
+  const wordSection = document.getElementById('wordSection');
+  const progressBar = document.getElementById('progressBar');
+
   const formElements = document.querySelectorAll('#experienceForm input, #experienceForm textarea, #experienceForm button');
   const SERVER_URL = 'http://localhost:3000/upload';
+
 
   // Função para desabilitar/ativar o formulário
   function disableForm(disabled) {
@@ -155,44 +165,7 @@ function removeExperience(id) {
       })
       .catch(err => console.error('Erro ao carregar os depoimentos:', err));
 
-  // Função para obter versículo do dia
-  const verseButton = document.getElementById('getVerseBtn');
-  const verseContainer = document.getElementById('verseOfDay');
-  const emotionInput = document.getElementById('emotionInput');
-
-  verseButton.addEventListener('click', () => {
-      const emotion = emotionInput.value.trim().toLowerCase();
-
-      if (!emotion) {
-          verseContainer.innerHTML = `<p class="text-red-300 mt-2">Por favor, diga como está se sentindo.</p>`;
-          return;
-      }
-
-      verseContainer.innerHTML = "<p class='text-white mt-2'>Buscando versículo...</p>";
-
-      fetch('verses.json')
-          .then(res => res.json())
-          .then(data => {
-              const verses = data[emotion];
-              if (!verses || verses.length === 0) {
-                  verseContainer.innerHTML = `<p class="text-yellow-200 mt-2">Não encontramos um versículo para essa palavra, seja mais especifíco.</p>`;
-                  return;
-              }
-
-              const verse = verses[Math.floor(Math.random() * verses.length)];
-
-              verseContainer.innerHTML = `
-                  <p class="text-white italic mt-4 text-center">"${verse.text}"</p>
-                  <p class="text-sm text-gray-200 text-center">(${verse.reference})</p>
-              `;
-          })
-          .catch(err => {
-              console.error("Erro ao carregar versículos:", err);
-              verseContainer.innerHTML = `<p class="text-red-300 mt-2">Erro ao buscar a palavra do dia.</p>`;
-          });
-  });
-});
-
+ 
 // Função para abrir a imagem em visualização maior
 function abrirImagem(element) {
   var modal = document.getElementById("imgViewerModal");
@@ -211,3 +184,70 @@ function fecharImagem() {
   var modal = document.getElementById("imgViewerModal");
   modal.style.display = "none"; // Fecha o modal
 }
+
+startBtn.addEventListener('click', () => {
+  goalSection.classList.remove('hidden');
+});
+
+// Mostrar a seção de palavra ao clicar em "Pedir a Palavra"
+askWordBtn.addEventListener('click', () => {
+  wordSection.classList.remove('hidden');
+});
+
+askWordBtn.addEventListener('click', () => {
+  wordSection.classList.remove('hidden'); // <-- mostra a div Palavra do Dia
+});
+
+
+// Buscar versículo
+getVerseBtn.addEventListener('click', () => {
+  const emotion = emotionInput.value.trim().toLowerCase();
+
+  if (!emotion) {
+    verseContainer.innerHTML = `<p class="text-red-300 mt-2">Por favor, diga como está se sentindo.</p>`;
+    return;
+  }
+
+  verseContainer.innerHTML = "<p class='text-white mt-2'>Buscando versículo...</p>";
+
+  fetch('verses.json')
+    .then(res => res.json())
+    .then(data => {
+      const verses = data[emotion];
+      if (!verses || verses.length === 0) {
+        verseContainer.innerHTML = `<p class="text-yellow-200 mt-2">Não encontramos um versículo para essa palavra.</p>`;
+        return;
+      }
+
+      const verse = verses[Math.floor(Math.random() * verses.length)];
+      verseContainer.innerHTML = `
+        <p class="text-white italic mt-4 text-center">"${verse.text}"</p>
+        <p class="text-sm text-gray-200 text-center">(${verse.reference})</p>
+      `;
+
+      fillProgressBar(() => {
+        alert("Parabéns! Meta alcançada!");
+      });
+    })
+    .catch(err => {
+      console.error("Erro ao buscar versículos:", err);
+      verseContainer.innerHTML = `<p class="text-red-300 mt-2">Erro ao buscar a palavra do dia.</p>`;
+    });
+});
+
+// Função para preencher a barra
+function fillProgressBar(callback) {
+  let width = 0;
+  progressBar.style.width = '0%';
+
+  const interval = setInterval(() => {
+    if (width >= 100) {
+      clearInterval(interval);
+      if (callback) callback();
+    } else {
+      width += 1;
+      progressBar.style.width = `${width}%`;
+    }
+  }, 100);
+}
+});
