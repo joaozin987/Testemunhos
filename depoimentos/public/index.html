@@ -1,198 +1,231 @@
 <!DOCTYPE html>
-<html lang="pt_br">
+<html lang="pt-BR">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  
   <title>Youth Experiences</title>
-  <link rel="stylesheet" href="style.css" >
   
   <script src="https://cdn.tailwindcss.com"></script>
-
-<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Merriweather&display=swap" rel="stylesheet" />
 
 </head>
-<body >
-   <nav >
-    <div class="nav-container">
-      <h1>Conectados pela Fé</h1>
-      <p class="subtitle">
-        Compartilhe suas experiências de como você encontrou Deus por meio da participação em movimentos católicos.
-      </p>
-    </div>
-    <ul style="display: flex; justify-content: center; gap: 30px;">
-      <li class="p-2 rounded-lg">
-        <a class="text-xl p-2"
-           style="text-decoration: none; color: #6e6a6a; border-radius: 0.3rem; font-weight: bold; padding: 10px; font-family: sans-serif;"
-           href="./museu.html">
-          Museu
-        </a>
-      </li>
-      <li class="p-2 rounded-lg">
-        <a class="text-xl p-2"
-           style="text-decoration: none; color: #6e6a6a; border-radius: 0.3rem; font-weight: bold; padding: 10px; font-family: sans-serif;"
-           href="./index.html">
-          Inicio
-        </a>
-      </li>
-      <li class="p-2  rounded-lg">
-        <a class="text-xl p-2"
-           style="text-decoration: none; color: #6e6a6a; border-radius: 0.3rem; font-weight: bold; padding: 10px; font-family: sans-serif;"
-           href="sobre.html">
-          sobre
-        </a>
-      </li>
+<body class="bg-accent200">
+  <nav class="bg-accent200 shadow p-4 flex items-center justify-between">
+    <h1 class="text-3xl font-slab text-primary100">Conectados pela Fé</h1>
+  
+    <!-- Botão hambúrguer: visível apenas no mobile -->
+    <button id="openMenu" class="md:hidden text-3xl text-bg100">&#9776;</button>
+  
+    <!-- Menu horizontal: visível apenas no desktop -->
+    <ul class="hidden md:flex gap-6">
+      <li><a class="text-lg font-semibold text-bg100" href="./museu.html">Museu</a></li>
+      <li><a class="text-lg font-semibold text-bg100" href="./index.html">Início</a></li>
+      <li><a class="text-lg font-semibold text-bg100" href="sobre.html">Sobre</a></li>
     </ul>
-    
   </nav>
   
-<section class="hero" >
-  <!-- ✅ Seção Antes do Museu das Palavras: EJC Mudou Meu Viver -->
-  <section class=" text-white text-center py-6 rounded-lg mb-4" style="background-color: rgb(245, 41, 41);">
-    <h1 class="text-4xl font-bold">DEUS MUDOU MEU VIVER</h1>
-    <p class="mt-4 text-xl">Compartilhe sua fé, inspire vidas e veja como Ele transforma.</p>
-    <button id="startBtn" class="text-white px-6 py-2 rounded hover:bg-green-700 transition" style="background-color: rgb(87, 86, 85) !important; color: rgb(221, 213, 213);">
-      Começar
-    </button>
+  <!-- Menu lateral: aparece no mobile quando botão é clicado -->
+  <div id="sidebar" class="fixed top-0 right-0 h-full w-64 bg-accent200 text-bg100 transform translate-x-full transition-transform duration-300 z-50 shadow-lg md:hidden">
+    <div class="flex justify-between items-center p-4 border-b border-bg100">
+      <h2 class="text-2xl font-slab">Menu</h2>
+      <button id="closeMenu" class="text-3xl">&times;</button>
+    </div>
+    <ul class="flex flex-col gap-4 p-4">
+      <li><a href="./museu.html" class="text-lg font-semibold">Museu</a></li>
+      <li><a href="./index.html" class="text-lg font-semibold">Início</a></li>
+      <li><a href="sobre.html" class="text-lg font-semibold">Sobre</a></li>
+    </ul>
+  </div>
+  
+  
+  <section class="hero px-4 max-w-4xl mx-auto">
+
+    <!-- Seção Antes do Museu das Palavras: EJC Mudou Meu Viver -->
+    <section class="bg-accent200 text-primary100 text-center mt-4 py-6 rounded-lg mb-4">
+      <h2 class="text-4xl font-slab">DEUS MUDOU MEU VIVER</h2>
+      <p class="mt-4 text-xl font-slab text-bg100 sm:font-slab sm:text-2xl">Compartilhe suas experiências de como você encontrou Deus por meio da participação em movimentos católicos.</p>
+      <button id="startBtn" class="bg-primary300  text-white px-6 py-2 rounded font-slab transition mt-6">
+        Começar
+      </button>
+    </section>
+
+    <!-- Meta de Palavras (oculta inicialmente) -->
+    <div id="goalSection" class="hidden w-full mx-auto h-48 mt-6 p-4 bg-accent100 rounded shadow">
+      <h3 class="text-3xl font-slab text-primary300 mb-2 text-center">Meta de Palavras</h3>
+      <p class="text-2xl font-slab text-primary300 mb-2 text-center">Vamos alcançar a meta juntos!</p>
+      <div class="w-full bg-gray-300 rounded-full h-4">
+        <div id="progressBar" class="bg-green-500 h-4 rounded-full transition-all duration-500" style="width: 0%;"></div>
+      </div>
+      <button id="askWordBtn" class="mt-3 p-2 bg-primary100 text-xl font-slab  rounded-lg w-full">Pedir a Palavra</button>
+    </div>
+
+    <!-- Palavra do Dia (oculta inicialmente) -->
+    <div id="wordSection" class="hidden flex flex-col items-center w-full mx-auto mt-6 p-4 rounded shadow bg-accent100">
+      <h3 class="text-3xl text-center mb-2 text-primary300 font-slab">Palavra do Dia</h3>
+      <p class="mb-4 text-2xl font-slab text-primary300">Escreva aqui abaixo, uma palavra que define seu dia</p>
+      <input
+        id="emotionInput"
+        class="p-2 w-full mb-2 rounded"
+        type="text"
+        placeholder="Escreva aqui"
+        aria-label="Digite uma palavra que define seu dia"
+      />
+      <button id="getVerseBtn" class="p-2 bg-gray-100 text-xl font-slab rounded-lg w-full mt-3">Buscar a Palavra</button>
+      <div id="verseOfDay" class="verse-of-day mt-4 text-white text-center"></div>
+    </div>
+
+  </section>
+
+  <!-- Modal de Imagem -->
+  <div id="imgViewerModal" class="img-modal fixed inset-0 bg-black bg-opacity-70 flex justify-center items-center hidden" onclick="fecharImagem()">
+    <span class="img-close absolute top-4 right-6 text-white text-3xl cursor-pointer">&times;</span>
+    <img class="img-modal-content max-h-[90vh] max-w-[90vw] rounded-lg shadow-lg" id="imgModalContent" alt="Imagem ampliada" />
+  </div>
+
+  <main class="p-6 sm:p-10 mt-7 rounded-lg bg-gray-100 max-w-6xl mx-auto">
+    <div class="flex flex-col md:flex-row md:items-start gap-6">
+      
+      <!-- Imagem -->
+      <div class="flex justify-center md:justify-start">
+        <img
+          src="img/bde0b9ac-ee47-466d-b881-9743b3d8cd46.jpeg"
+          class="w-full max-w-[300px] sm:max-w-[350px] md:max-w-[400px] object-cover rounded-lg cursor-pointer"
+          alt="Imagem de João Paulo compartilhando sua experiência no EJC"
+          onclick="abrirImagem(this)"
+        />
+      </div>
+
+      <!-- Texto -->
+      <div class="text-left flex-1 mt-6 md:mt-0">
+        <h2 class="text-3xl sm:text-4xl text-black font-slab">Meu Depoimento</h2>
+        <h3 class="text-lg sm:text-xl text-gray-800 mt-4 font-slab">
+          Olá Pessoal, me chamo <span class="text-blue-500  text-xl sm:text-2xl font-slab">João Paulo</span>, irei contar um pouco sobre minha experiência:
+        </h3>
+        <p class="text-gray-700 font-slab text-base sm:text-lg leading-relaxed mt-4 text-justify">
+          Entrei no EJC em 2023 e, de lá para cá, tive muitos ensinamentos. O que achei mais fascinante foi o de amar ao próximo.
+          Diversas vezes passei por ocasiões difíceis, tanto espiritualmente quanto fisicamente, e, a cada situação, eu me surpreendia
+          mais com o acolhimento e a ajuda que recebi. Acho que nunca tinha sido tão bem tratado desde que meu irmão faleceu em 2022.
+          Cheguei a pensar que nunca conseguiria me recuperar. Mas logo em seguida veio o EJC e curou todas as minhas feridas,
+          mostrando-me que vale a pena ser feliz, independentemente de qualquer situação, e que sempre devemos confiar nos planos de Deus.
+        </p>
+      </div>
+
+    </div>
+  </main>
+
+  <div class="text-center mt-10 max-w-4xl mx-auto ">
+    <p class="text-2xl font-medium text-text100">Tem Alguma Experiência para Compartilhar?</p>
+    <button id="openModalBtn" class="mt-2 px-6 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition">Enviar</button>
+  </div>
+
+  <!-- Alerta -->
+  <div id="customAlert" class="hidden fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">
+    <div class="bg-white p-6 rounded shadow-lg text-center max-w-md mx-4">
+      <p class="mb-4">Não esqueça que algumas informações e fotos sigilosas de movimentos não podem ser relatadas!</p>
+      <button id="closeAlertBtn" class="bg-blue-600 text-white px-4 py-2 rounded">Entendido, quero continuar</button>
+    </div>
+  </div>
+
+  <!-- Modal de Experiência -->
+  <div id="myModal" class="hidden fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50 p-4">
+    <div class="bg-sky-200 p-6 rounded-lg w-full max-w-xl relative">
+      <span class="close cursor-pointer text-3xl absolute top-4 right-6">&times;</span>
+      <h2 class="text-xl font-semibold mb-4">Compartilhe sua experiência</h2>
+      <form id="experienceForm" class="space-y-4" novalidate>
+        <div>
+          <label for="userName" class="block mb-1 font-medium">Primeiro Nome:</label>
+          <input
+            type="text"
+            id="userName"
+            name="userName"
+            required
+            class="w-full p-2 rounded border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500"
+          />
+        </div>
+        <div>
+          <label for="userAge" class="block mb-1 font-medium">Idade:</label>
+          <input
+            type="number"
+            id="userAge"
+            name="userAge"
+            required
+            class="w-full p-2 rounded border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500"
+          />
+        </div>
+        <div>
+          <label for="userMovement" class="block mb-1 font-medium">Nome do Movimento:</label>
+          <input
+            type="text"
+            id="userMovement"
+            name="userMovement"
+            required
+            class="w-full p-2 rounded border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500"
+          />
+        </div>
+        <div>
+          <label for="experienceImage" class="block mb-1 font-medium">Escolha sua Imagem:</label>
+          <input
+            type="file"
+            id="experienceImage"
+            name="experienceImage"
+            accept="image/*"
+            required
+            class="w-full"
+          />
+        </div>
+        <div>
+          <label for="experienceText" class="block mb-1 font-medium">Detalhe sua Experiência:</label>
+          <textarea
+            id="experienceText"
+            name="experienceText"
+            rows="3"
+            required
+            class="w-full p-2 rounded border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500"
+          ></textarea>
+        </div>
+        <button type="submit" class="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700 transition">
+          Enviar
+        </button>
+      </form>
+    </div>
+  </div>
+
+  <!-- Lista de Experiências -->
+  <section id="experienceList" class="mt-10 p-6 rounded-lg bg-primary200 text-white text-lg font-medium max-w-4xl mx-auto">
+    <!-- Cards renderizados via JS -->
+
     
   </section>
 
-<!-- Meta de Palavras (oculta inicialmente) -->
-<div id="goalSection" class="hidden w-full mx-auto h-48 mt-6 p-4 bg-white  rounded shadow">
-  <h2 class="text-lg font-semibold mb-2 text-center">Meta de Palavras</h2>
-  <p class="text-lg text-gray-600 mb-2 text-center">Vamos alcançar a meta juntos!</p>
-  <div class="w-full bg-gray-300 rounded-full h-4">
- 
-    <div id="progressBar" class="bg-green-500 h-4 rounded-full transition-all duration-500" style="width: 0%;">
-    </div>
-    <button id="askWordBtn" class="mt-3 p-2 bg-gray-100 rounded-lg w-full mt-3">Pedir a Palavra</button>
-   
-  </div>
-</div>
+<script>
+  tailwind.config = {
+    theme: {
+      extend: {
+        colors: {
+          primary100: '#d4eaf7',
+          primary200: '#b6ccd8',
+          primary300: '#454545',
+          accent100: '#25b1bf',
+          accent200: '#00668c',
+          text100: '#ffffff',
+          text200: '#0D1F2D',
+          bg100: '#fffefb',
+          bg200: '#bda78a',
+          bg300: '#cccbc8',
+        },
+        fontFamily: {
+          limelight: ['"Limelight"', 'cursive', 'Noto Serif'],
+          slab: ['"Roboto Slab"', 'serif', 'Oswald'],
+        }
+      }
+    }
+  }
+</script>
 
-  
-  <!-- Palavra do Dia (oculta inicialmente) -->
-<div id="wordSection" class="hidden flex flex-col items-center w-full  mx-auto mt-6 p-4  rounded shadow" style="background-color: rgb(8, 126, 236);">
-  <h1 class="text-2xl text-center mb-2 text-white font-serif">Palavra do Dia</h1>
-  <p class="mb-4 text-lg font-bold text-blue-100">Escreva aqui a baixo, uma palavra que define seu dia</p>
-  <input id="emotionInput" class="p-2 w-full mb-2 rounded" type="text" placeholder="escreva aqui">
-  <button id="getVerseBtn" class="p-2 bg-gray-100 rounded-lg w-full mt-3">Buscar a Palavra</button>
-  <div id="verseOfDay" class="verse-of-day mt-4"></div>
-</div>
-
-  
-
-    </main>
-
-  
-    
-    <!-- Modal de Imagem -->
-    <div id="imgViewerModal" class="img-modal" onclick="fecharImagem()">
-      <span class="img-close">&times;</span>
-      <img class="img-modal-content" id="imgModalContent">
-    </div>
-    
-      
-          <main>
-            <div class="p-6 sm:p-10 mt-7 rounded-lgq" style="background-color: rgb(212, 204, 193);">
-              <div class="flex flex-col md:flex-row md:items-start max-w-screen-xl mx-auto gap-6">
-                
-                <!-- Imagem -->
-                <div class="flex justify-center md:justify-start">
-                  <img src="img/bde0b9ac-ee47-466d-b881-9743b3d8cd46.jpeg"
-                       class="w-full max-w-[300px] sm:max-w-[350px] md:max-w-[400px] object-cover rounded-lg"
-                       alt="Imagem 1" onclick="abrirImagem(this)">
-                </div>
-          
-                <!-- Texto -->
-                <div class="text-left flex-1 mt-6 md:mt-0">
-                  <h1 class="text-[2rem] sm:text-[2.5rem] text-black font-bold" style="font-family: black;">Meu Depoimento</h1>
-                  <h2 class="text-lg sm:text-xl text-gray-800 mt-4">
-                    Olá Pessoal, me chamo <span class="text-blue-500 text-xl sm:text-2xl">João Paulo</span>, irei contar um pouco sobre minha experiência:
-                  </h2>
-                  <p class="text-gray-700 text-base sm:text-lg leading-relaxed mt-4 text-justify">
-                    Entrei no EJC em 2023 e, de lá para cá, tive muitos ensinamentos. O que achei mais fascinante foi o de amar ao próximo.
-                    Diversas vezes passei por ocasiões difíceis, tanto espiritualmente quanto fisicamente, e, a cada situação, eu me surpreendia
-                    mais com o acolhimento e a ajuda que recebi. Acho que nunca tinha sido tão bem tratado desde que meu irmão faleceu em 2022.
-                    Cheguei a pensar que nunca conseguiria me recuperar. Mas logo em seguida veio o EJC e curou todas as minhas feridas,
-                    mostrando-me que vale a pena ser feliz, independentemente de qualquer situação, e que sempre devemos confiar nos planos de Deus.
-                  </p>
-                </div>
-          
-              </div>
-            </div>
-          </main>
-          
-          
-            
-       
-       
-          <div class="submit">
-            <p>Tem Alguma Experiência para Compartilhar?</p>
-            <button id="openModalBtn" type="button">Enviar</button>
-          </div>          
-          
-          <!-- Alerta de "Enviar" -->
-          <div id="customAlert" class="hidden">
-            <div class="alert-box">
-              <p>Não esqueça que algumas informações e fotos sigilosas de movimentos não podem ser relatadas!</p>
-              <button id="closeAlertBtn">Entendido, quero continuar</button>
-            </div>
-          </div>
-          
-          <!-- Modal para enviar a experiência -->
-          <div id="myModal" class="modal">
-            <div class="modal-content" style="background-color: rgb(189, 201, 212);">
-              <span class="close">&times;</span>
-              <h2>Compartilhe sua experiência</h2>
-              <form id="experienceForm" class="form-modal">
-                <div class="form-group">
-                  <label for="userName">Primeiro Nome:</label>
-                  <input type="text" id="userName" name="userName" required style="padding: 0.5rem; border-radius: 1rem;">
-                </div>
-            
-                <div class="form-group">
-                  <label for="userAge">Idade:</label>
-                  <input type="number" id="userAge" name="userAge" required style="padding: 0.5rem; border-radius: 1rem;">
-                </div>
-            
-                <div class="form-group">
-                  <label for="userMovement">Nome do Movimento (ex: Pascom, EJC, SEGME...):</label>
-                  <input type="text" id="userMovement" name="userMovement" required style="padding: 0.5rem; border-radius: 1rem;">
-                </div>
-            
-                <!-- Alerta de upload de imagem -->
-                <div id="uploadAlert" class="hidden">
-                  <div class="alert-box" style="border-radius: 1rem; padding: 2rem;">
-                    <p>Imagem carregada com sucesso! Lembre-se caso a imagem comprometa algum movimento será deletada. Se necessário, escolha outra imagem.</p>
-                    <button id="continueButton">Continuar</button>
-                  </div>
-                </div>
-          
-                <!-- Formulário de upload -->
-                <div class="form-group">
-                  <label for="experienceImage">Escolha sua Imagem:</label>
-                  <input type="file" id="experienceImage" name="experienceImage" accept="image/*" required>
-                </div>
-          
-                <div class="form-group">
-                  <label for="experienceText">Detalhe sua Experiência:</label>
-                  <textarea id="experienceText" name="experienceText" rows="3" required></textarea>
-                </div>
-            
-                <div class="form-submit">
-                  <button type="submit">Submit</button>
-                </div>
-              </form>
-            </div>
-          </div>
-          
-          <!-- Container onde as experiências serão exibidas -->
-          <div id="experienceList" class="image-container" style="background-color: rgb(25, 145, 145); width: 100%; border-radius: 10px; font-size: 1.2rem;font-family: black;">
-          </div>
-          
-</section>
-  
+<script src="https://cdn.tailwindcss.com"></script>
 <script src="home.js"></script>
+
+ 
 </body>
 </html>

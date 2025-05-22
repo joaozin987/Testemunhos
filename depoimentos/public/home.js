@@ -1,253 +1,255 @@
-document.addEventListener('DOMContentLoaded', function () {
+document.addEventListener('DOMContentLoaded', () => {
+  // Modais e alertas
   const modal = document.getElementById("myModal");
-  const btn = document.getElementById("openModalBtn");
-  const spanClose = document.querySelector(".close");
-  const form = document.getElementById('experienceForm');
-  const experienceList = document.getElementById('experienceList');
-  
   const customAlert = document.getElementById('customAlert');
+  const uploadAlert = document.getElementById('uploadAlert'); // no seu html não achei, pode remover
   const closeAlertBtn = document.getElementById('closeAlertBtn');
-  const uploadAlert = document.getElementById('uploadAlert');
-  const continueButton = document.getElementById('continueButton');
+  const openModalBtn = document.getElementById('openModalBtn');
+  const experienceForm = document.getElementById('experienceForm');
+  const experienceList = document.getElementById('experienceList');
   const experienceImageInput = document.getElementById('experienceImage');
-  
-  const startBtn = document.getElementById('startBtn');      // Botão "Começar"
-  const askWordBtn = document.getElementById('askWordBtn');  // Botão "Pedir a Palavra"
-  const getVerseBtn = document.getElementById('getVerseBtn'); // Botão "Buscar a Palavra"
-  const verseContainer = document.getElementById('verseOfDay');
-  const emotionInput = document.getElementById('emotionInput');
+  const continueButton = document.getElementById('continueButton'); // idem, não achei no seu html
+  const progressBar = document.getElementById('progressBar');
   const goalSection = document.getElementById('goalSection');
   const wordSection = document.getElementById('wordSection');
-  const progressBar = document.getElementById('progressBar');
+  const emotionInput = document.getElementById('emotionInput');
+  const verseContainer = document.getElementById('verseOfDay');
+  const startBtn = document.getElementById('startBtn');
+  const askWordBtn = document.getElementById('askWordBtn');
+  const getVerseBtn = document.getElementById('getVerseBtn');
+  const spanClose = modal.querySelector(".close");
+  const openMenu = document.getElementById('openMenu');
+  const closeMenu = document.getElementById('closeMenu');
+  const sidebar = document.getElementById('sidebar');
 
-  const formElements = document.querySelectorAll('#experienceForm input, #experienceForm textarea, #experienceForm button');
-  const SERVER_URL = 'http://localhost:3000/upload';
 
+  const SERVER_URL = 'http://localhost:3000';
 
-  // Função para desabilitar/ativar o formulário
+  openMenu.addEventListener('click', () => {
+    sidebar.classList.remove('translate-x-full');
+  });
+
+  closeMenu.addEventListener('click', () => {
+    sidebar.classList.add('translate-x-full');
+  });
+
+  // Botão abrir modal + alerta
+  openModalBtn.addEventListener('click', () => {
+    customAlert.classList.remove('hidden');
+  });
+
+  closeAlertBtn.addEventListener('click', () => {
+    customAlert.classList.add('hidden');
+    modal.classList.remove('hidden');
+  });
+
+  spanClose.addEventListener('click', () => {
+    modal.classList.add('hidden');
+  });
+
+  window.addEventListener('click', (e) => {
+    if (e.target === modal) {
+      modal.classList.add('hidden');
+    }
+  });
+
+  // Controle do formulário: habilita/desabilita inputs e botões
   function disableForm(disabled) {
-      formElements.forEach(elem => elem.disabled = disabled);
+    [...experienceForm.elements].forEach(el => el.disabled = disabled);
   }
 
-  // Eventos de interação com a interface
-  btn.addEventListener('click', () => customAlert.classList.remove('hidden'));
-  closeAlertBtn.addEventListener('click', () => {
-      customAlert.classList.add('hidden');
-      modal.style.display = "block";
-  });
-  spanClose.onclick = () => modal.style.display = "none";
-  window.onclick = event => { if (event.target == modal) modal.style.display = "none"; };
-
-  // Exibição de alerta ao carregar imagem
-  experienceImageInput.addEventListener('change', () => {
-      if (experienceImageInput.files.length > 0) uploadAlert.classList.remove('hidden');
-  });
-
-  continueButton.addEventListener('click', () => {
-      uploadAlert.classList.add('hidden');
-      disableForm(false);
-  });
+  // Upload Alert e ContinueButton não existem no seu html, então não vou usar essa lógica
+  // Se quiser, me fala que adiciono.
 
   // Envio do formulário
-  form.addEventListener('submit', function (event) {
-      event.preventDefault(); // Evita o envio padrão do formulário
+  experienceForm.addEventListener('submit', (e) => {
+    e.preventDefault();
 
-      // Verificação de tamanho de imagem (opcional)
-      if (experienceImageInput.files[0].size > 5 * 1024 * 1024) {
-          alert("Imagem muito grande! O tamanho máximo permitido é 5MB.");
-          return;
-      }
+    if (experienceImageInput.files.length === 0) {
+      alert('Por favor, selecione uma imagem.');
+      return;
+    }
 
-      const formData = new FormData();
-      formData.append('experienceImage', experienceImageInput.files[0]);
-      formData.append('experienceText', document.getElementById('experienceText').value);
-      formData.append('userName', document.getElementById('userName').value);
-      formData.append('userAge', document.getElementById('userAge').value);
-      formData.append('userMovement', document.getElementById('userMovement').value);
+    const file = experienceImageInput.files[0];
+    if (file.size > 5 * 1024 * 1024) {
+      alert('Imagem muito grande! O máximo permitido é 5MB.');
+      return;
+    }
 
-      disableForm(true); // Desativa o formulário enquanto envia os dados
+    const formData = new FormData();
+    formData.append('experienceImage', file);
+    formData.append('experienceText', experienceForm.experienceText.value);
+    formData.append('userName', experienceForm.userName.value);
+    formData.append('userAge', experienceForm.userAge.value);
+    formData.append('userMovement', experienceForm.userMovement.value);
 
-      // Envio dos dados com fetch
-      fetch(SERVER_URL, {
-          method: 'POST',
-          body: formData
-      })
+    disableForm(true);
+
+    fetch(`${SERVER_URL}/upload`, {
+      method: 'POST',
+      body: formData
+    })
       .then(res => res.json())
       .then(data => {
-          // Atualiza a página com a nova experiência
-          addExperienceToPage({
-              image: data.image,
-              text: formData.get('experienceText'),
-              name: formData.get('userName'),
-              age: formData.get('userAge'),
-              movement: formData.get('userMovement')
-          });
-          form.reset();
-          modal.style.display = "none";
+        // Supondo que o backend retorna { id, image }
+        addExperienceToPage({
+          id: data.id,
+          image: data.image,
+          text: formData.get('experienceText'),
+          name: formData.get('userName'),
+          age: formData.get('userAge'),
+          movement: formData.get('userMovement')
+        });
+        experienceForm.reset();
+        modal.classList.add('hidden');
       })
       .catch(err => {
-          console.error('Erro ao enviar a experiência:', err);
-          alert("Ocorreu um erro ao enviar sua experiência. Tente novamente.");
+        console.error('Erro ao enviar experiência:', err);
+        alert('Erro ao enviar sua experiência, tente novamente.');
       })
-      .finally(() => disableForm(false)); // Reabilita o formulário após o envio
+      .finally(() => disableForm(false));
   });
 
-  /// Função para adicionar a experiência à página
-function addExperienceToPage(experience) {
-  const item = document.createElement('div');
-  item.className = 'card';
-  item.id = `experience-${experience.id}`;  // Define um ID único para cada item
+  // Função para criar um card de experiência na lista
+  function addExperienceToPage(exp) {
+    const card = document.createElement('div');
+    card.id = `experience-${exp.id}`;
+    card.className = 'w-full max-w-4xl mx-auto bg-white rounded-lg shadow-md p-6 mb-6 flex flex-col sm:flex-row gap-6';
 
-  item.innerHTML = `
-    <img src="${experience.image}" alt="Imagem" class="card-image">
-    <div class="card-content">
-      <h3>${experience.name}, ${experience.age}</h3>
-      <h4>${experience.movement}</h4>
-      <p class="text">${experience.text}</p>
-      <button class="delete-btn" data-id="${experience.id}">Deletar Publicação</button>
-    </div>
-  `;
+    card.innerHTML = `
+      <img src="${exp.image}" alt="Imagem do depoimento" 
+           class="w-full sm:w-48 object-cover rounded-lg cursor-pointer" onclick="abrirImagem(this)" />
+      <div class="flex-1 flex flex-col justify-between">
+        <div>
+          <h3 class="text-2xl font-black text-gray-900">${exp.name}, ${exp.age} anos</h3>
+          <h4 class="text-xl mt-2 text-gray-700 mb-3">Movimento: <span class="font-semibold text-xl">${exp.movement}</span></h4>
+          <p class="text-gray-800 font-serif">${exp.text}</p>
+        </div>
+        <button data-id="${exp.id}" class="mt-4 self-start bg-red-600 text-white px-4 py-2 rounded hover:bg-red-700 transition delete-btn">
+          Deletar Publicação
+        </button>
+      </div>
+    `;
 
-  // Adiciona listener de deletar
-  item.querySelector('.delete-btn').addEventListener('click', function () {
-    const id = this.getAttribute('data-id');
-    removeExperience(id);  // Chama a função de remoção com o id
-  });
+    card.querySelector('.delete-btn').addEventListener('click', () => {
+      const id = card.querySelector('.delete-btn').getAttribute('data-id');
+      deleteExperience(id);
+    });
 
-  // Adiciona o item à div infinita
-  const experienceList = document.getElementById('experienceList');
-  experienceList.appendChild(item);
-}
-
-// Função para remover a experiência
-function removeExperience(id) {
-  fetch(`http://localhost:3000/depoimentos/${id}`, {
-    method: 'DELETE'
-  })
-  .then(res => res.json())
-  .then(data => {
-    if (data.success) {
-      const experienceItem = document.getElementById(`experience-${id}`);  // Usa o id completo para buscar o item
-      if (experienceItem) {
-        experienceItem.remove();  // Remove o item da página
-      }
-    } else {
-      alert('Erro ao remover a experiência.');
-    }
-  })
-  .catch(err => {
-    console.error('Erro na exclusão:', err);
-    alert('Ocorreu um erro ao tentar excluir.');
-  });
-}
-
-  
- 
-
-  // Exemplo de como carregar as experiências ao carregar a página
-  fetch('http://localhost:3000/depoimentos')
-      .then(res => res.json())
-      .then(data => {
-          if (data && Array.isArray(data)) {
-              data.forEach(dep => {
-                  addExperienceToPage({
-                      id: dep.id,
-                      image: dep.imagem,
-                      text: dep.experiencia,
-                      name: dep.nome,
-                      age: dep.idade,
-                      movement: dep.movimento
-                  });
-              });
-          } else {
-              console.error('Dados inválidos recebidos da API');
-          }
-      })
-      .catch(err => console.error('Erro ao carregar os depoimentos:', err));
-
- 
-// Função para abrir a imagem em visualização maior
-function abrirImagem(element) {
-  var modal = document.getElementById("imgViewerModal");
-  var modalImg = document.getElementById("imgModalContent");
-
-  // Exibe o modal
-  modal.style.display = "flex";
-
-  // Atualiza a imagem no modal
-  modalImg.src = element.src;
-  modalImg.alt = element.alt;
-}
-
-// Função para fechar o modal
-function fecharImagem() {
-  var modal = document.getElementById("imgViewerModal");
-  modal.style.display = "none"; // Fecha o modal
-}
-
-startBtn.addEventListener('click', () => {
-  goalSection.classList.remove('hidden');
-});
-
-// Mostrar a seção de palavra ao clicar em "Pedir a Palavra"
-askWordBtn.addEventListener('click', () => {
-  wordSection.classList.remove('hidden');
-});
-
-askWordBtn.addEventListener('click', () => {
-  wordSection.classList.remove('hidden'); // <-- mostra a div Palavra do Dia
-});
-
-
-// Buscar versículo
-getVerseBtn.addEventListener('click', () => {
-  const emotion = emotionInput.value.trim().toLowerCase();
-
-  if (!emotion) {
-    verseContainer.innerHTML = `<p class="text-red-300 mt-2">Por favor, diga como está se sentindo.</p>`;
-    return;
+    experienceList.appendChild(card);
   }
 
-  verseContainer.innerHTML = "<p class='text-white mt-2'>Buscando versículo...</p>";
+  // Deletar experiência
+  function deleteExperience(id) {
+    fetch(`${SERVER_URL}/depoimentos/${id}`, {
+      method: 'DELETE'
+    })
+      .then(res => res.json())
+      .then(data => {
+        if (data.success) {
+          const elem = document.getElementById(`experience-${id}`);
+          if (elem) elem.remove();
+        } else {
+          alert('Não foi possível deletar a publicação.');
+        }
+      })
+      .catch(err => {
+        console.error('Erro ao deletar:', err);
+        alert('Erro ao tentar deletar a publicação.');
+      });
+  }
 
-  fetch('verses.json')
+  // Carregar experiências ao abrir página
+  fetch(`${SERVER_URL}/depoimentos`)
     .then(res => res.json())
     .then(data => {
-      const verses = data[emotion];
-      if (!verses || verses.length === 0) {
-        verseContainer.innerHTML = `<p class="text-yellow-200 mt-2">Não encontramos um versículo para essa palavra.</p>`;
-        return;
+      if (Array.isArray(data)) {
+        data.forEach(exp => {
+          addExperienceToPage({
+            id: exp.id,
+            image: exp.imagem,
+            text: exp.experiencia,
+            name: exp.nome,
+            age: exp.idade,
+            movement: exp.movimento
+          });
+        });
       }
-
-      const verse = verses[Math.floor(Math.random() * verses.length)];
-      verseContainer.innerHTML = `
-        <p class="text-white italic mt-4 text-center">"${verse.text}"</p>
-        <p class="text-sm text-gray-200 text-center">(${verse.reference})</p>
-      `;
-
-      fillProgressBar(() => {
-        alert("Parabéns! Meta alcançada!");
-      });
     })
     .catch(err => {
-      console.error("Erro ao buscar versículos:", err);
-      verseContainer.innerHTML = `<p class="text-red-300 mt-2">Erro ao buscar a palavra do dia.</p>`;
+      console.error('Erro ao carregar depoimentos:', err);
     });
-});
 
-// Função para preencher a barra
-function fillProgressBar(callback) {
-  let width = 0;
-  progressBar.style.width = '0%';
+  // Modal de imagem ampliada
+  window.abrirImagem = function (imgElem) {
+    const modal = document.getElementById('imgViewerModal');
+    const modalImg = document.getElementById('imgModalContent');
+    modal.style.display = 'flex';
+    modalImg.src = imgElem.src;
+    modalImg.alt = imgElem.alt;
+  };
 
-  const interval = setInterval(() => {
-    if (width >= 100) {
-      clearInterval(interval);
-      if (callback) callback();
-    } else {
-      width += 1;
-      progressBar.style.width = `${width}%`;
+  window.fecharImagem = function () {
+    const modal = document.getElementById('imgViewerModal');
+    modal.style.display = 'none';
+  };
+
+  // Palavra do dia - controle de seções e busca de versículos
+  startBtn.addEventListener('click', () => {
+    goalSection.classList.remove('hidden');
+  });
+
+  askWordBtn.addEventListener('click', () => {
+    wordSection.classList.remove('hidden');
+  });
+
+  getVerseBtn.addEventListener('click', () => {
+    const emotion = emotionInput.value.trim().toLowerCase();
+
+    if (!emotion) {
+      verseContainer.innerHTML = `<p class="bg-red-600 rounded-xl p-2 mt-2">Por favor, diga como está se sentindo.</p>`;
+      return;
     }
-  }, 100);
-}
-});
+
+    verseContainer.innerHTML = `<p class="text-white mt-2">Buscando versículo...</p>`;
+
+    fetch('verses.json')
+      .then(res => res.json())
+      .then(data => {
+        const verses = data[emotion];
+        if (!verses || verses.length === 0) {
+          verseContainer.innerHTML = `<p class=" bg-red-600 rounded-xl p-2 mt-2">Não encontramos um versículo para essa palavra.</p>`;
+          return;
+        }
+
+        const verse = verses[Math.floor(Math.random() * verses.length)];
+        verseContainer.innerHTML = `
+          <p class="text-white text-xl font-slab mt-4 sm:font-slab text-center">"${verse.text}"</p>
+          <p class="text-lg text-gray-200 font-slab text-center sm:font-slab">(${verse.reference})</p>
+        `;
+
+        fillProgressBar(() => {
+          alert("Parabéns! Meta alcançada!");
+        });
+      })
+      .catch(err => {
+        console.error("Erro ao buscar versículos:", err);
+        verseContainer.innerHTML = `<p class="text-red-300 mt-2">Erro ao buscar a palavra do dia.</p>`;
+      });
+  });
+
+  function fillProgressBar(callback) {
+    let width = 0;
+    progressBar.style.width = '0%';
+  
+    const interval = setInterval(() => {
+      width += 5;
+      progressBar.style.width = width + '%';
+  
+      if (width >= 100) {
+        clearInterval(interval);
+        if (callback) callback();
+      }
+    }, 20);
+  }
+});  
