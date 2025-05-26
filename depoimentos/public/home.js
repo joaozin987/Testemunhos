@@ -21,6 +21,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const openMenu = document.getElementById('openMenu');
   const closeMenu = document.getElementById('closeMenu');
   const sidebar = document.getElementById('sidebar');
+  const wordInput = document.getElementById('wordInput');
 
 
   const SERVER_URL = 'http://localhost:3000';
@@ -197,12 +198,41 @@ document.addEventListener('DOMContentLoaded', () => {
   // Palavra do dia - controle de seções e busca de versículos
   startBtn.addEventListener('click', () => {
     goalSection.classList.remove('hidden');
+    
   });
 
-  askWordBtn.addEventListener('click', () => {
-    wordSection.classList.remove('hidden');
-  });
+  
 
+askWordBtn.addEventListener('click', () => {
+  wordSection.classList.remove('hidden');
+
+  setTimeout(() => {
+    // Remove alerta existente antes de criar um novo
+    const existingAlert = document.getElementById('customAlert');
+    if (existingAlert) existingAlert.remove();
+
+    const alertHtml = `
+      <div id="customAlert" class="bg-yellow-300 text-yellow-900 rounded-xl p-3 mt-2 flex items-center justify-between space-x-3 shadow-md">
+        <span>⚠️ Escreva a palavra em minúsculo!</span>
+        <button id="closeAlert" class="font-bold hover:text-yellow-700">&times;</button>
+      </div>`;
+
+    wordSection.insertAdjacentHTML('beforeend', alertHtml);
+
+    document.getElementById('closeAlert').addEventListener('click', () => {
+      const alertDiv = document.getElementById('customAlert');
+      if (alertDiv) alertDiv.remove();
+    });
+  }, 300);
+});
+
+  // Remove o alerta se o usuário clicar no input
+  emotionInput.addEventListener('focus', () => {
+    const alertDiv = document.getElementById('customAlert');
+    if (alertDiv) alertDiv.remove();
+  }, 3000);
+  
+  
   getVerseBtn.addEventListener('click', () => {
     const emotion = emotionInput.value.trim().toLowerCase();
 
@@ -230,7 +260,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         fillProgressBar(() => {
           alert("Parabéns! Meta alcançada!");
-        });
+        }, 2000);
       })
       .catch(err => {
         console.error("Erro ao buscar versículos:", err);
