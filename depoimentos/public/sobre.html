@@ -5,44 +5,41 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
   <title>Youth Experiences</title>
-  <link rel="stylesheet" href="style.css" >
   
   <script src="https://cdn.tailwindcss.com"></script>
 
 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
 
 </head>
-<body >
-   <nav >
-    <div class="nav-container">
-      <h1>Conectados pela Fé</h1>
-      <p class="subtitle">
-        Compartilhe suas experiências de como você encontrou Deus por meio da participação em movimentos católicos.
-      </p>
-    </div>
-    <ul style="display: flex; justify-content: center; gap: 30px;">
-      <li class="p-2 rounded-lg">
-        <a class="text-xl p-2"
-           style="text-decoration: none; color: #6e6a6a; border-radius: 0.3rem; font-weight: bold; padding: 10px; font-family: sans-serif;"
-           href="./museu.html">
-          Museu
-        </a>
-      </li>
-      <li class="p-2 rounded-lg">
-        <a class="text-xl p-2"
-           style="text-decoration: none; color: #6e6a6a; border-radius: 0.3rem; font-weight: bold; padding: 10px; font-family: sans-serif;"
-           href="./index.html">
-          Inicio
-        </a>
-      </li>
-      <li class="p-2  rounded-lg">
-        <a class="text-xl p-2"
-           style="text-decoration: none; color: #6e6a6a; border-radius: 0.3rem; font-weight: bold; padding: 10px; font-family: sans-serif;"
-           href="">
-          sobre
-        </a>
-      </li>
-    </ul>
+    <body class="bg-accent200">
+      <nav class="bg-accent200 shadow p-4 flex items-center justify-between">
+        <h1 class="text-3xl font-slab text-primary100">Conectados pela Fé</h1>
+      
+        <!-- Botão hambúrguer: visível apenas no mobile -->
+        <button id="openMenu" class="md:hidden text-3xl text-bg100">&#9776;</button>
+      
+        <!-- Menu horizontal: visível apenas no desktop -->
+        <ul class="hidden md:flex gap-6">
+          <li><a class="text-lg font-semibold text-bg100" href="./museu.html">Museu</a></li>
+          <li><a class="text-lg font-semibold text-bg100" href="./index.html">Início</a></li>
+          <li><a class="text-lg font-semibold text-bg100" href="sobre.html">Sobre</a></li>
+          <li><a class="text-lg font-semibold text-bg100" href="exemplos.html">Exemplos de Vida</a></li>
+        </ul>
+      </nav>
+      
+      <!-- Menu lateral: aparece no mobile quando botão é clicado -->
+      <div id="sidebar" class="fixed top-0 right-0 h-75 w-64 bg-accent200 text-bg100 transform translate-x-full transition-transform duration-300 z-50 shadow-lg md:hidden">
+        <div class="flex justify-between items-center p-4 border-b border-bg100">
+          <h2 class="text-2xl font-slab">Menu</h2>
+          <button id="closeMenu" class="text-3xl">&times;</button>
+        </div>
+        <ul class="flex flex-col gap-4 p-4">
+          <li><a href="./museu.html" class="text-lg font-semibold">Museu</a></li>
+          <li><a href="./index.html" class="text-lg font-semibold">Início</a></li>
+          <li><a href="sobre.html" class="text-lg font-semibold">Sobre</a></li>
+          <li><a class="text-lg font-semibold text-bg100" href="exemplos.html">Exemplos de Vida</a></li>
+        </ul>
+      </div>
     
   </nav>
  
@@ -65,3 +62,34 @@
     </p>
   </div>
 </div>
+
+
+
+<script>
+  tailwind.config = {
+    theme: {
+      extend: {
+        colors: {
+          primary100: '#d4eaf7',
+          primary200: '#b6ccd8',
+          primary300: '#454545',
+          accent100: '#25b1bf',
+          accent200: '#00668c',
+          text100: '#ffffff',
+          text200: '#0D1F2D',
+          bg100: '#fffefb',
+          bg200: '#bda78a',
+          bg300: '#cccbc8',
+        },
+        fontFamily: {
+          limelight: ['"Limelight"', 'cursive', 'Noto Serif'],
+          slab: ['"Roboto Slab"', 'serif', 'Oswald'],
+        }
+      }
+    }
+  }
+</script>
+
+<script src="https://cdn.tailwindcss.com"></script>
+<script src="museu.js"></script>
+    </body>
