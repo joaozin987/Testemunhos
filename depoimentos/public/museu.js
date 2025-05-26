@@ -40,7 +40,7 @@ openMenu.addEventListener('click', () => {
         const msg = messages[Math.floor(Math.random() * messages.length)];
         messageContainer.innerHTML = `
           <p class="text-white text-xl font-slab mt-4 text-center">"${msg.text}"</p>
-          <p class="text-lg text-gray-200 font-slab text-center">(${msg.source})</p>
+          <p class="text-lg text-white font-slab text-center">(${msg.source})</p>
         `;
       })
       .catch(err => {
