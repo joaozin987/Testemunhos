@@ -1,5 +1,5 @@
 {
-  "exaustivo": [
+  "cansativo": [
     {
       "text": "Venham a mim, todos vocês que estão cansados e sobrecarregados, e eu lhes darei descanso.",
       "reference": "Mateus 11:28"
@@ -195,5 +195,27 @@
       "text": "O Senhor é a minha luz e a minha salvação; a quem temerei?",
       "reference": "Salmos 27:1"
     }    
-  ]
+  ],
+  "dificil": [
+  {
+    "text": "Deus é o nosso refúgio e fortaleza, socorro bem presente na angústia.",
+    "reference": "Salmos 46:1"
+  }
+],
+"turbulento": [
+ 
+  {
+    "text": "Deixo-lhes a paz; a minha paz lhes dou. Não a dou como o mundo a dá. Não se perturbem os seus corações, nem tenham medo.",
+    "reference": "João 14:27"
+  }
+],
+"preocupante": [
+  {
+    "text": "Não se turbe o vosso coração; credes em Deus, crede também em mim.",
+    "reference": "João 14:1"
+  }
+  
+]
+
+
 }
