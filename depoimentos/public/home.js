@@ -61,61 +61,11 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // Upload Alert e ContinueButton não existem no seu html, então não vou usar essa lógica
   // Se quiser, me fala que adiciono.
-
-  // Envio do formulário
-  experienceForm.addEventListener('submit', (e) => {
-    e.preventDefault();
-
-    if (experienceImageInput.files.length === 0) {
-      alert('Por favor, selecione uma imagem.');
-      return;
-    }
-
-    const file = experienceImageInput.files[0];
-    if (file.size > 5 * 1024 * 1024) {
-      alert('Imagem muito grande! O máximo permitido é 5MB.');
-      return;
-    }
-
-    const formData = new FormData();
-    formData.append('experienceImage', file);
-    formData.append('experienceText', experienceForm.experienceText.value);
-    formData.append('userName', experienceForm.userName.value);
-    formData.append('userAge', experienceForm.userAge.value);
-    formData.append('userMovement', experienceForm.userMovement.value);
-
-    disableForm(true);
-
-    fetch(`${SERVER_URL}/upload`, {
-      method: 'POST',
-      body: formData
-    })
-      .then(res => res.json())
-      .then(data => {
-        // Supondo que o backend retorna { id, image }
-        addExperienceToPage({
-          id: data.id,
-          image: data.image,
-          text: formData.get('experienceText'),
-          name: formData.get('userName'),
-          age: formData.get('userAge'),
-          movement: formData.get('userMovement')
-        });
-        experienceForm.reset();
-        modal.classList.add('hidden');
-      })
-      .catch(err => {
-        console.error('Erro ao enviar experiência:', err);
-        alert('Erro ao enviar sua experiência, tente novamente.');
-      })
-      .finally(() => disableForm(false));
-  });
-
-  // Função para criar um card de experiência na lista
+  // Criar card e adicionar na página
   function addExperienceToPage(exp) {
     const card = document.createElement('div');
     card.id = `experience-${exp.id}`;
-    card.className = 'w-full max-w-4xl mx-auto bg-white rounded-lg shadow-md p-6 mb-6 flex flex-col sm:flex-row gap-6';
+    card.className = 'card';
 
     card.innerHTML = `
       <img src="${exp.image}" alt="Imagem do depoimento" 
@@ -131,13 +81,14 @@ document.addEventListener('DOMContentLoaded', () => {
         </button>
       </div>
     `;
+    
 
     card.querySelector('.delete-btn').addEventListener('click', () => {
       const id = card.querySelector('.delete-btn').getAttribute('data-id');
       deleteExperience(id);
     });
 
-    experienceList.appendChild(card);
+    experienceList.prepend(card);
   }
 
   // Deletar experiência
@@ -145,26 +96,84 @@ document.addEventListener('DOMContentLoaded', () => {
     fetch(`${SERVER_URL}/depoimentos/${id}`, {
       method: 'DELETE'
     })
-      .then(res => res.json())
-      .then(data => {
-        if (data.success) {
-          const elem = document.getElementById(`experience-${id}`);
-          if (elem) elem.remove();
-        } else {
-          alert('Não foi possível deletar a publicação.');
-        }
-      })
-      .catch(err => {
-        console.error('Erro ao deletar:', err);
-        alert('Erro ao tentar deletar a publicação.');
-      });
-  }
-
-  // Carregar experiências ao abrir página
-  fetch(`${SERVER_URL}/depoimentos`)
     .then(res => res.json())
     .then(data => {
+      if (data.success) {
+        const elem = document.getElementById(`experience-${id}`);
+        if (elem) elem.remove();
+        alert('Experiência deletada com sucesso!');
+      } else {
+        alert('Não foi possível deletar a publicação.');
+      }
+    })
+    .catch(err => {
+      console.error('Erro ao deletar:', err);
+      alert('Erro ao tentar deletar a publicação.');
+    });
+  }
+
+  // Envio do formulário
+  experienceForm.addEventListener('submit', async (e) => {
+    e.preventDefault();
+
+    if (experienceImageInput.files.length === 0) {
+      alert('Por favor, selecione uma imagem.');
+      return;
+    }
+    const file = experienceImageInput.files[0];
+    if (file.size > 5 * 1024 * 1024) { // Limite de 5MB
+      alert('Imagem muito grande! O máximo permitido é 5MB.');
+      return;
+    }
+
+    const formData = new FormData();
+    formData.append('experienceImage', file);
+    formData.append('experienceText', experienceForm.experienceText.value);
+    formData.append('userName', experienceForm.userName.value);
+    formData.append('userAge', experienceForm.userAge.value);
+    formData.append('userMovement', experienceForm.userMovement.value);
+
+    disableForm(true);
+
+    try {
+      const response = await fetch(`${SERVER_URL}/upload`, {
+        method: 'POST',
+        body: formData
+      });
+      const data = await response.json();
+
+      if (data.status === 'ok') {
+        addExperienceToPage({
+          id: data.id,
+          image: data.image,
+          text: formData.get('experienceText'),
+          name: formData.get('userName'),
+          age: formData.get('userAge'),
+          movement: formData.get('userMovement')
+        });
+        experienceForm.reset();
+        // Fecha o modal (assumindo que você tem essa lógica)
+        document.getElementById('myModal').classList.add('hidden');
+        alert('Depoimento enviado com sucesso!');
+      } else {
+        alert('Erro ao enviar depoimento: ' + (data.error || 'Verifique os dados'));
+      }
+    } catch (err) {
+      console.error('Erro de rede ao enviar experiência:', err);
+      alert('Erro de conexão ao enviar sua experiência. Tente novamente.');
+    } finally {
+      disableForm(false);
+    }
+  });
+
+  // Carregar experiências ao abrir página
+  async function carregarExperiencias() {
+    try {
+      const response = await fetch(`${SERVER_URL}/depoimentos`);
+      const data = await response.json();
       if (Array.isArray(data)) {
+        // Limpa a lista antes de adicionar novos itens para evitar duplicatas
+        experienceList.innerHTML = ''; 
         data.forEach(exp => {
           addExperienceToPage({
             id: exp.id,
@@ -176,10 +185,14 @@ document.addEventListener('DOMContentLoaded', () => {
           });
         });
       }
-    })
-    .catch(err => {
+    } catch(err) {
       console.error('Erro ao carregar depoimentos:', err);
-    });
+      alert('Não foi possível carregar os depoimentos do servidor.');
+    }
+  }
+
+  // Chamar ao carregar
+  carregarExperiencias();
 
   // Modal de imagem ampliada
   window.abrirImagem = function (imgElem) {
