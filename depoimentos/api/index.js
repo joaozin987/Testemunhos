@@ -12,17 +12,20 @@ app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-// --- CONFIGURAÇÃO DO UPLOAD LOCAL ---
+// --- CONFIGURAÇÃO DO UPLOAD LOCAL (CORRIGIDA) ---
 
 // 1. Define o local de armazenamento das imagens
 const storage = multer.diskStorage({
   // A pasta de destino para salvar os arquivos
   destination: function (req, file, cb) {
-    cb(null, 'uploads/'); // Salva na pasta 'uploads/'
+    // ==========================================================
+    // CORREÇÃO AQUI: Aponta para a pasta 'uploads' DENTRO da pasta 'api'
+    // ==========================================================
+    const uploadPath = path.join(__dirname, 'uploads');
+    cb(null, uploadPath);
   },
-  // Define como o nome do arquivo será gerado para evitar nomes duplicados
+  // Define como o nome do arquivo será gerado
   filename: function (req, file, cb) {
-    // Usa a data atual como carimbo de tempo + a extensão original do arquivo
     cb(null, Date.now() + path.extname(file.originalname));
   }
 });
@@ -30,15 +33,14 @@ const storage = multer.diskStorage({
 // 2. Inicializa o Multer com a configuração de armazenamento em disco
 const upload = multer({ storage: storage });
 
-// 3. Torna a pasta 'uploads' publicamente acessível para o navegador poder exibir as imagens
-// A rota '/uploads' no navegador vai corresponder à pasta 'uploads' no seu projeto.
+// 3. Torna a pasta 'uploads' publicamente acessível
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
 // Servir arquivos estáticos do frontend (pasta 'public')
 app.use(express.static(path.join(__dirname, '..', 'public')));
 
 
-// Conexão PostgreSQL (nenhuma mudança aqui)
+// Conexão PostgreSQL
 const pool = new Pool({
   user: process.env.PGUSER,
   host: process.env.PGHOST,
@@ -52,7 +54,7 @@ app.get('/', (req, res) => {
   res.sendFile(path.join(__dirname, '..', 'public', 'index.html'));
 });
 
-// --- ROTA DE UPLOAD MODIFICADA ---
+// Rota de upload
 app.post('/upload', upload.single('experienceImage'), async (req, res) => {
   const { userName, userAge, userMovement, experienceText } = req.body;
 
@@ -60,8 +62,7 @@ app.post('/upload', upload.single('experienceImage'), async (req, res) => {
     return res.status(400).json({ status: 'error', error: 'Imagem não enviada' });
   }
 
-  // 4. Constrói a URL da imagem salva localmente
-  const imageUrl = `/uploads/${req.file.filename}`; // Ex: /uploads/1678886400000.jpg
+  const imageUrl = `/uploads/${req.file.filename}`;
 
   try {
     const result = await pool.query(
@@ -71,16 +72,15 @@ app.post('/upload', upload.single('experienceImage'), async (req, res) => {
     );
 
     const insertedId = result.rows[0].id;
-
-    // Retorna o caminho local da imagem para o frontend
     res.json({ status: 'ok', id: insertedId, image: imageUrl });
-  } catch (error) {
+  } catch (error)
+{
     console.error('Erro no INSERT:', error);
     res.status(500).json({ status: 'error', error: 'Erro ao salvar experiência' });
   }
 });
 
-// Listar depoimentos (nenhuma mudança aqui)
+// Listar depoimentos
 app.get('/depoimentos', async (req, res) => {
   try {
     const result = await pool.query('SELECT * FROM depoimentos ORDER BY id DESC');
@@ -91,7 +91,7 @@ app.get('/depoimentos', async (req, res) => {
   }
 });
 
-// Excluir depoimento (nenhuma mudança aqui)
+// Excluir depoimento
 app.delete('/depoimentos/:id', async (req, res) => {
   const { id } = req.params;
   if (!id || isNaN(id)) {
