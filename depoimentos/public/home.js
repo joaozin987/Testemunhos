@@ -67,21 +67,40 @@ document.addEventListener('DOMContentLoaded', () => {
     card.id = `experience-${exp.id}`;
     card.className = 'card';
 
-    card.innerHTML = `
-      <img src="${exp.image}" alt="Imagem do depoimento" 
-           class="w-full sm:w-48 object-cover rounded-lg cursor-pointer" onclick="abrirImagem(this)" />
-      <div class="flex-1 flex flex-col justify-between">
-        <div>
-          <h3 class="text-2xl font-black text-gray-900">${exp.name}, ${exp.age} anos</h3>
-          <h4 class="text-xl mt-2 text-gray-700 mb-3">Movimento: <span class="font-semibold text-xl">${exp.movement}</span></h4>
-          <p class="text-gray-800 font-serif">${exp.text}</p>
+     card.innerHTML = `
+      <!-- Container principal com 'flex' para criar o layout lado a lado -->
+      <div class="bg-white text-black p-4 rounded-lg shadow-md flex items-start gap-4 mb-6">
+
+        <!-- Coluna 1: A Imagem -->
+        <img 
+          src="${exp.image}" 
+          alt="Imagem do depoimento" 
+          class="w-48 h-full object-cover rounded-lg cursor-pointer flex-shrink-0" 
+          onclick="abrirImagem(this)" 
+        />
+
+        <!-- Coluna 2: O Texto e o Botão -->
+        <div class="flex-1 flex flex-col">
+          
+          <!-- Textos com as suas classes -->
+          <div>
+            <h3 class="text-2xl font-serif text-black">${exp.name}, ${exp.age} anos</h3>
+            <h4 class="text-xl mt-2 text-gray-700 mb-3">Movimento: <span class="font-semibold text-xl">${exp.movement}</span></h4>
+            
+            <!-- Bloco de citação para a experiência, com estilo mais profissional -->
+            <blockquote class="mt-4 bg-gray-50 p-4 rounded-lg border-l-4 border-accent100 mb-6">
+              <p class="text-gray-800 font-serif italic">"${exp.text}"</p>
+            </blockquote>
+          </div>
+          
+          <!-- Botão -->
+          <button data-id="${exp.id}" class="mt-7 self-start bg-red-600 text-white px-4 py-2 rounded hover:bg-red-700 transition delete-btn">
+            Deletar Publicação
+          </button>
         </div>
-        <button data-id="${exp.id}" class="mt-4 self-start bg-red-600 text-white px-4 py-2 rounded hover:bg-red-700 transition delete-btn">
-          Deletar Publicação
-        </button>
+
       </div>
     `;
-    
 
     card.querySelector('.delete-btn').addEventListener('click', () => {
       const id = card.querySelector('.delete-btn').getAttribute('data-id');
@@ -154,7 +173,7 @@ document.addEventListener('DOMContentLoaded', () => {
         experienceForm.reset();
         // Fecha o modal (assumindo que você tem essa lógica)
         document.getElementById('myModal').classList.add('hidden');
-        alert('Depoimento enviado com sucesso!');
+        
       } else {
         alert('Erro ao enviar depoimento: ' + (data.error || 'Verifique os dados'));
       }
