@@ -1,3 +1,8 @@
+// --- NOVAS IMPORTAÇÕES ---
+const cloudinary = require('cloudinary').v2;
+const { CloudinaryStorage } = require('multer-storage-cloudinary');
+// --- FIM DAS NOVAS IMPORTAÇÕES ---
+
 const express = require('express');
 const multer = require('multer');
 const cors = require('cors');
@@ -12,31 +17,32 @@ app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-// --- CONFIGURAÇÃO DO UPLOAD LOCAL (CORRIGIDA) ---
+// --- CONFIGURAÇÃO DO UPLOAD COM CLOUDINARY ---
 
-// 1. Define o local de armazenamento das imagens
-const storage = multer.diskStorage({
-  // A pasta de destino para salvar os arquivos
-  destination: function (req, file, cb) {
-    // ==========================================================
-    // CORREÇÃO AQUI: Aponta para a pasta 'uploads' DENTRO da pasta 'api'
-    // ==========================================================
-    const uploadPath = path.join(__dirname, 'uploads');
-    cb(null, uploadPath);
-  },
-  // Define como o nome do arquivo será gerado
-  filename: function (req, file, cb) {
-    cb(null, Date.now() + path.extname(file.originalname));
-  }
+// 1. Configura o Cloudinary com as credenciais do seu arquivo .env
+cloudinary.config({
+  cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
+  api_key: process.env.CLOUDINARY_API_KEY,
+  api_secret: process.env.CLOUDINARY_API_SECRET,
 });
 
-// 2. Inicializa o Multer com a configuração de armazenamento em disco
+// 2. Configura o armazenamento do Multer para usar o Cloudinary
+const storage = new CloudinaryStorage({
+  cloudinary: cloudinary,
+  params: {
+    folder: 'testemunhos', // Nome da pasta onde as imagens ficarão no Cloudinary
+    allowed_formats: ['jpeg', 'jpg', 'png'], // Formatos permitidos
+  },
+});
+
+// 3. Inicializa o Multer com a configuração do Cloudinary
 const upload = multer({ storage: storage });
 
-// 3. Torna a pasta 'uploads' publicamente acessível
-app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
+// --- FIM DA CONFIGURAÇÃO DO CLOUDINARY ---
+
 
 // Servir arquivos estáticos do frontend (pasta 'public')
+// A pasta 'public' está um nível acima da pasta 'api'
 app.use(express.static(path.join(__dirname, '..', 'public')));
 
 
@@ -49,12 +55,12 @@ const pool = new Pool({
   port: process.env.PGPORT,
 });
 
-// Rota inicial
+// Rota inicial - Serve o index.html
 app.get('/', (req, res) => {
   res.sendFile(path.join(__dirname, '..', 'public', 'index.html'));
 });
 
-// Rota de upload
+// Rota de upload - Agora envia para o Cloudinary
 app.post('/upload', upload.single('experienceImage'), async (req, res) => {
   const { userName, userAge, userMovement, experienceText } = req.body;
 
@@ -62,7 +68,9 @@ app.post('/upload', upload.single('experienceImage'), async (req, res) => {
     return res.status(400).json({ status: 'error', error: 'Imagem não enviada' });
   }
 
-  const imageUrl = `/uploads/${req.file.filename}`;
+  // >>> ALTERAÇÃO IMPORTANTE AQUI <<<
+  // A URL da imagem agora vem diretamente do Cloudinary através do req.file.path
+  const imageUrl = req.file.path;
 
   try {
     const result = await pool.query(
@@ -72,9 +80,9 @@ app.post('/upload', upload.single('experienceImage'), async (req, res) => {
     );
 
     const insertedId = result.rows[0].id;
+    // Retorna a URL segura do Cloudinary para o frontend
     res.json({ status: 'ok', id: insertedId, image: imageUrl });
-  } catch (error)
-{
+  } catch (error) {
     console.error('Erro no INSERT:', error);
     res.status(500).json({ status: 'error', error: 'Erro ao salvar experiência' });
   }
@@ -98,6 +106,14 @@ app.delete('/depoimentos/:id', async (req, res) => {
     return res.status(400).json({ success: false, message: 'ID inválido' });
   }
   try {
+    // Adicional: deletar a imagem do Cloudinary quando o depoimento for excluído (opcional, mas recomendado)
+    const depoimento = await pool.query('SELECT imagem FROM depoimentos WHERE id = $1', [id]);
+    if (depoimento.rows.length > 0) {
+      const imageUrl = depoimento.rows[0].imagem;
+      const publicId = imageUrl.split('/').pop().split('.')[0]; // Extrai o ID público da URL
+      cloudinary.uploader.destroy(`testemunhos/${publicId}`); // Deleta a imagem
+    }
+
     const result = await pool.query('DELETE FROM depoimentos WHERE id = $1 RETURNING *', [id]);
     if (result.rowCount === 0) {
       return res.status(404).json({ success: false, message: 'Experiência não encontrada' });
@@ -114,5 +130,6 @@ const localUrl = `http://localhost:${PORT}`;
 
 app.listen(PORT, () => {
   console.log(`Servidor rodando em: ${localUrl}`);
-  open(localUrl);
+  // A linha 'open' pode ser comentada ou removida para o ambiente de produção
+  // open(localUrl);
 });
