@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  
+  <title>Youth Experiences</title>
+  
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Merriweather&display=swap" rel="stylesheet" />
+
+</head>
+<body class="bg-accent200">
+  <nav class="bg-accent200 shadow p-4 flex items-center justify-between">
+    <h1 class="text-3xl font-slab text-primary100"><a href="">Conectados pela Fé</a></h1>
+  
+    <!-- Botão hambúrguer: visível apenas no mobile -->
+    <button id="openMenu" class="md:hidden text-3xl text-bg100">&#9776;</button>
+  
+    <!-- Menu horizontal: visível apenas no desktop -->
+    <ul class="hidden md:flex gap-6">
+      <li><a class="text-lg font-semibold text-bg100" href="">Museu</a></li>
+      <li><a class="text-lg font-semibold text-bg100" href="">Início</a></li>
+      <li><a class="text-lg font-semibold text-bg100" href="">Sobre</a></li>
+      <li><a class="text-lg font-semibold text-bg100" href="">Exemplos de Vida</a></li>
+      </ul>
+      <a href="cadastro.html" class="inline-block bg-blue-500 text-white font-bold py-2 px-4 rounded-lg mt-1 hover:bg-blue-700">
+        Faça o cadastro
+    </a>
+  
+  </nav>
+  
+  <!-- Menu lateral: aparece no mobile quando botão é clicado -->
+  <div id="sidebar" class="fixed top-0 right-0 h-75 w-64 bg-accent200 text-bg100 transform translate-x-full transition-transform duration-300 z-50 shadow-lg md:hidden">
+    <div class="flex justify-between items-center p-4 border-b border-bg100">
+      <h2 class="text-2xl font-slab">Menu</h2>
+      <button id="closeMenu" class="text-3xl">&times;</button>
+    </div>
+    <ul class="flex flex-col gap-4 p-4">
+      <li><a href="" class="text-lg font-semibold">Museu</a></li>
+      <li><a href="" class="text-lg font-semibold">Início</a></li>
+      <li><a href="" class="text-lg font-semibold">Sobre</a></li>
+      <li><a class="text-lg font-semibold text-bg100" href="">Exemplos de Vida</a></li>
+    </ul>
+    <a href="cadastro.html" class="inline-block bg-blue-500 text-white font-bold py-2 px-4 rounded-lg mt-1 hover:bg-blue-700">
+        Faça o cadastro
+    </a>
+  </div>
+  
+
+  <section class="flex justify-center items-center h-screen">
+    <div class="bg-primary200 grid p-4 text-center w-96 h-78 max-w-md rounded-xl">
+        <h1 class="text-3xl  font-slab mb-3">Faça o Login</h1>
+       
+        <label class="text-left text-xl mb-1  font-slab" for="Nome">E-mail</label>
+        <input class="rounded-lg mb-1 p-2 text-gray-700" type="text" placeholder="digite seu email">
+        <label class="text-left text-xl mb-1  font-slab" for="Nome">Senha</label>
+        <input class="rounded-lg mb-1 p-2 text-gray-700" type="text" placeholder="digite sua senha">
+        <button class="bg-blue-500 text-white font-bold py-2 px-4 rounded mt-2 hover:bg-blue-700">
+            Continuar
+        </button>
+    </div>
+</section>
+
+<script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            primary100: '#d4eaf7',
+            primary200: '#b6ccd8',
+            primary300: '#454545',
+            accent100: '#25b1bf',
+            accent200: '#00668c',
+            text100: '#ffffff',
+            text200: '#0D1F2D',
+            bg100: '#fffefb',
+            bg200: '#bda78a',
+            bg300: '#cccbc8',
+            bg400: '#dd0025'
+          },
+          fontFamily: {
+            limelight: ['"Limelight"', 'cursive', 'Noto Serif'],
+            slab: ['"Roboto Slab"', 'serif', 'Oswald'],
+          }
+        }
+      }
+    }
+  </script>
+  
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="login.js"></script>
+  
+   
+  </body>
+  </html>
+  
