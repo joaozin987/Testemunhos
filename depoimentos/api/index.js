@@ -57,7 +57,7 @@ const pool = new Pool({
 
 // Rota inicial - Serve o index.html
 app.get('/', (req, res) => {
-  res.sendFile(path.join(__dirname, '..', 'public', 'index.html'));
+  res.sendFile(path.join(__dirname, '..', 'public', 'cadastro.html'));
 });
 
 // Rota de upload - Agora envia para o Cloudinary
