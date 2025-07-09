@@ -1,23 +1,65 @@
 document.addEventListener('DOMContentLoaded', () => {
-    // --- Elementos do DOM ---
-    // Botão que abre o menu
-    const openMenu = document.getElementById('openMenu');
-    // O menu lateral em si
-    const sidebar = document.getElementById('sidebar');
-  
-    // --- Evento de Clique ---
-    // Adiciona um "ouvinte" para o evento de clique no botão de abrir
-    openMenu.addEventListener('click', () => {
-      // Remove a classe 'translate-x-full' da sidebar.
-      // Esta classe é do Tailwind CSS e provavelmente está movendo o menu
-      // para fora da tela. Ao removê-la, o menu volta à sua posição original (visível).
-      sidebar.classList.remove('translate-x-full');
-    });
-  
-    // OBS: É importante também ter o código para fechar o menu,
-    // que funciona de forma inversa, adicionando a classe de volta.
-    const closeMenu = document.getElementById('closeMenu');
-    closeMenu.addEventListener('click', () => {
-      sidebar.classList.add('translate-x-full');
-    });
-  });
+
+  const loginForm = document.getElementById('loginForm');
+  const loginMessage = document.getElementById('loginMessage');
+  const SERVER_URL = 'http://localhost:3000';
+
+  if (loginForm) {
+      loginForm.addEventListener('submit', async (e) => {
+          e.preventDefault();
+          
+          // CORREÇÃO: Verifica se o elemento de mensagem existe antes de usá-lo
+          if (loginMessage) {
+              loginMessage.textContent = ''; // Limpa mensagens antigas
+          }
+
+          const formData = new FormData(loginForm);
+          const userData = Object.fromEntries(formData.entries());
+
+          try {
+              const response = await fetch(`${SERVER_URL}/login`, {
+                  method: 'POST',
+                  headers: {
+                      'Content-Type': 'application/json',
+                  },
+                  body: JSON.stringify(userData),
+              });
+
+              const result = await response.json();
+
+              if (response.ok) {
+                  // SUCESSO!
+                  alert('Login realizado com sucesso!');
+
+                  // Guarda a "chave de acesso" (token) no navegador
+                  localStorage.setItem('authToken', result.token);
+
+                  // Redireciona para a página principal de depoimentos (ou outra que você queira)
+                  window.location.href = 'home.html'; // Mude para a sua página principal se for diferente
+
+              } else {
+                  // ERRO: Mostra o erro vindo do backend (ex: "Senha incorreta")
+                  // CORREÇÃO: Verifica se o elemento de mensagem existe
+                  if (loginMessage) {
+                      loginMessage.textContent = `Erro: ${result.error}`;
+                      loginMessage.className = 'text-red-500 mt-4 text-lg font-semibold';
+                  } else {
+                      // Se o elemento não existe, mostra um alerta como alternativa
+                      alert(`Erro: ${result.error}`);
+                  }
+              }
+
+          } catch (error) {
+              // ERRO DE REDE
+              console.error('Erro de rede no login:', error);
+              // CORREÇÃO: Verifica se o elemento de mensagem existe
+              if (loginMessage) {
+                  loginMessage.textContent = 'Erro de conexão com o servidor.';
+                  loginMessage.className = 'text-red-500 mt-4 text-lg font-semibold';
+              } else {
+                  alert('Erro de conexão com o servidor.');
+              }
+          }
+      });
+  }
+});

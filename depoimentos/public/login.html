@@ -47,21 +47,26 @@
     </a>
   </div>
   
-
   <section class="flex justify-center items-center h-screen">
-    <div class="bg-primary200 grid p-4 text-center w-96 h-[355px] max-w-md rounded-xl">
-        <h1 class="text-3xl  font-slab mb-3">Faça o Login</h1>
+    <!-- 1. Adicionamos a tag <form> e um ID para selecioná-la no JS -->
+    <form id="loginForm" class="bg-primary200 grid p-4 text-center w-96 max-w-md rounded-xl">
+        <h1 class="text-3xl font-slab mb-3">Faça o Login</h1>
        
-        <label class="text-left text-xl mb-1  font-slab" for="Nome">E-mail</label>
-        <input class="rounded-lg mb-1 p-2 text-gray-700" type="text" placeholder="digite seu email">
-        <label class="text-left text-xl mb-1  font-slab" for="Nome">Senha</label>
-        <input class="rounded-lg mb-4 p-2 text-gray-700" type="text" placeholder="digite sua senha">
+        <!-- 2. Adicionamos 'for', 'id' e 'name' para o campo de E-mail -->
+        <label class="text-left text-xl mb-1 font-slab" for="loginEmail">E-mail</label>
+        <input id="loginEmail" name="email" class="rounded-lg mb-1 p-2 text-gray-700" type="email" placeholder="digite seu email" required>
+        
+        <!-- 3. Adicionamos 'for', 'id' e 'name' para o campo de Senha e mudamos para type="password" -->
+        <label class="text-left text-xl mb-1 font-slab" for="loginPassword">Senha</label>
+        <input id="loginPassword" name="senha" class="rounded-lg mb-4 p-2 text-gray-700" type="password" placeholder="digite sua senha" required>
+        
         <a class="text-right text-blue-800" href="recuperar.html">esqueceu a senha?</a>
-        <a href="home.html" class="bg-blue-500  text-white font-bold py-2 px-4 rounded mt-4 hover:bg-blue-700">
+        
+        <!-- 4. O botão principal agora é do tipo 'submit' -->
+        <button type="submit" class="bg-blue-500 text-white font-bold py-2 px-4 rounded mt-4 hover:bg-blue-700">
             Continuar
-        </a>
-    </div>
-</section>
+        </button>
+
 
 <script>
     tailwind.config = {
