@@ -1,3 +1,4 @@
+// --- IMPORTAÇÕES ---
 const express = require('express');
 const multer = require('multer');
 const cors = require('cors');
@@ -40,48 +41,40 @@ const pool = new Pool({
 });
 
 // ==========================================================
-// --- ROTAS DE AUTENTICAÇÃO COM LOGS DE DEPURAÇÃO ---
+// --- ROTAS DE AUTENTICAÇÃO ---
 // ==========================================================
 
 // ROTA DE CADASTRO (REGISTER)
 app.post('/register', async (req, res) => {
-  // MARCADOR 1: Vemos se a rota foi acionada
-  console.log('--- [BACKEND] ROTA /register ACIONADA ---');
   const { nome, email, senha } = req.body;
-
-  // MARCADOR 2: Vemos os dados que chegaram
-  console.log('--- [BACKEND] Dados recebidos:', { nome, email, senha: '******' });
 
   if (!nome || !email || !senha) {
     return res.status(400).json({ error: 'Todos os campos são obrigatórios.' });
   }
 
   try {
-    // MARCADOR 3: Vemos se ele entra no bloco try
-    console.log('--- [BACKEND] Entrou no bloco TRY. Iniciando criptografia...');
     const salt = await bcrypt.genSalt(10);
     const senhaHash = await bcrypt.hash(senha, salt);
     
-    // MARCADOR 4: Vemos se a criptografia terminou
-    console.log('--- [BACKEND] Senha criptografada com sucesso.');
-
-    // MARCADOR 5: Vemos se ele vai tentar salvar no banco
-    console.log('--- [BACKEND] Tentando inserir no banco de dados...');
     const newUser = await pool.query(
       'INSERT INTO usuarios (nome, email, senha_hash) VALUES ($1, $2, $3) RETURNING id, nome, email',
       [nome, email, senhaHash]
     );
 
-    // MARCADOR 6: Vemos se o banco respondeu com sucesso
-    console.log('--- [BACKEND] Usuário inserido com sucesso no banco.');
-
     res.status(201).json(newUser.rows[0]);
 
   } catch (error) {
-    // MARCADOR DE ERRO: Se algo falhar, ele deve cair aqui
-    console.error('--- !!! [BACKEND] ERRO CAPTURADO NO BLOCO CATCH !!! ---');
-    console.error('--- [BACKEND] Detalhes do erro:', error);
-    res.status(500).json({ error: 'Erro interno ao registrar usuário.' });
+    // Trata o erro de email duplicado
+    if (error.code === '23505') {
+      // ==========================================================
+      // ALTERAÇÃO AQUI: Personalize a mensagem de erro como quiser.
+      // ==========================================================
+      return res.status(409).json({ error: 'O Usuário informado já foi cadastrado. Tente fazer o login.' });
+    }
+    
+    // Para outros erros, mantém a mensagem genérica
+    console.error('Erro no registro:', error);
+    res.status(500).json({ error: 'Ocorreu um erro inesperado ao registrar. Tente novamente.' });
   }
 });
 
