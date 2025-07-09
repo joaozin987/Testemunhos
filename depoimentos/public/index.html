@@ -47,30 +47,30 @@
    
   </div>
 
-  <!-- ========================================================== -->
-  <!-- SEÇÃO DO FORMULÁRIO CORRIGIDA -->
-<!-- ========================================================== -->
-<section class="flex justify-center items-center h-screen">
-  <!-- 1. A tag <form> precisa ter o id="registerForm" -->
+  <section class="flex justify-center items-center h-screen">
+  <!-- A tag <form> e os inputs já estão corretos -->
   <form id="registerForm" class="bg-primary200 grid p-4 text-center w-96 max-w-md rounded-xl">
       <h1 class="text-3xl font-slab mb-4">Crie sua conta</h1>
 
-      <!-- 2. Os inputs precisam ter os atributos 'id' e 'name' -->
       <label class="text-left text-xl mb-2 font-slab" for="registerName">Nome</label>
       <input id="registerName" name="nome" class="rounded-lg mb-2 p-2 text-gray-700" type="text" placeholder="digite seu nome" required>
 
       <label class="text-left text-xl mb-2 font-slab" for="registerEmail">E-mail</label>
       <input id="registerEmail" name="email" class="rounded-lg mb-2 p-2 text-gray-700" type="email" placeholder="digite seu email" required>
 
-      <!-- 3. O input de senha precisa ser do tipo "password" -->
       <label class="text-left text-xl mb-2 font-slab" for="registerPassword">Senha</label>
       <input id="registerPassword" name="senha" class="rounded-lg mb-2 p-2 text-gray-700" type="password" placeholder="digite sua senha" required>
 
-      <!-- 4. O botão precisa ter type="submit" para acionar o formulário -->
       <button type="submit" class="bg-blue-500 text-white font-bold py-2 px-4 rounded mt-2 hover:bg-blue-700">
           Continuar
       </button>
+
+     
+      <p id="registerMessage" class="mt-4 text-center text-lg font-semibold"></p>
+      
   </form>
+</section>
+
 
 <script>
     tailwind.config = {
