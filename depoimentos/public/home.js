@@ -170,30 +170,35 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   });
 
-  // Carregar experiências ao abrir página
-  async function carregarExperiencias() {
-    try {
-      // CORREÇÃO: Usando caminho relativo com /api
-      const response = await fetch('/api/depoimentos');
-      const data = await response.json();
-      if (Array.isArray(data)) {
-        experienceList.innerHTML = ''; 
-        data.forEach(exp => {
-          addExperienceToPage({
-            id: exp.id,
-            image: exp.imagem,
-            text: exp.experiencia,
-            name: exp.nome,
-            age: exp.idade,
-            movement: exp.movimento
-          });
-        });
-      }
-    } catch(err) {
-      console.error('Erro ao carregar depoimentos:', err);
-      // Removido o alert daqui para não perturbar o usuário se o backend estiver offline
+ async function carregarExperiencias() {
+  // Adiciona a mensagem de "carregando"
+  experienceList.innerHTML = '<p class="text-center text-gray-500">Carregando depoimentos...</p>'; 
+  try {
+    const response = await fetch('/api/depoimentos');
+
+    // Adiciona verificação se a resposta da rede foi bem sucedida
+    if (!response.ok) {
+      throw new Error(`Erro na rede: ${response.status}`);
     }
+
+    const data = await response.json();
+    if (Array.isArray(data)) {
+      experienceList.innerHTML = ''; 
+      // Se o array estiver vazio, pode mostrar uma mensagem
+      if (data.length === 0) {
+        experienceList.innerHTML = '<p class="text-center text-gray-500">Nenhum depoimento encontrado.</p>';
+        return;
+      }
+      data.forEach(exp => {
+        // ... seu código para adicionar na página
+      });
+    }
+  } catch(err) {
+    console.error('Erro ao carregar depoimentos:', err);
+    // Informa ao usuário que houve um erro
+    experienceList.innerHTML = '<p class="text-center text-red-500">Não foi possível carregar os depoimentos.</p>';
   }
+}
 
   // Chamar ao carregar
   carregarExperiencias();

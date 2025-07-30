@@ -1,5 +1,5 @@
 // ==========================================================
-// --- ARQUIVO COMPLETO E FINAL: app.js ---
+// --- ARQUIVO COMPLETO PARA: api/index.js ---
 // ==========================================================
 
 // --- IMPORTAÇÕES ---
@@ -23,7 +23,10 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-app.use(express.static(path.join(__dirname, '..', 'public')));
+
+// A Vercel servirá os arquivos da pasta 'public' automaticamente.
+// A linha abaixo pode ser mantida ou removida, pois o vercel.json já cuida do roteamento.
+app.use(express.static(path.join(__dirname, '..', '..', 'public')));
 
 
 // --- CONFIGURAÇÃO DO CLOUDINARY ---
@@ -57,8 +60,8 @@ const pool = new Pool({
 const transporter = nodemailer.createTransport({
   service: 'gmail',
   auth: {
-    user: process.env.EMAIL_USER, // Seu e-mail (ex: seu_email@gmail.com)
-    pass: process.env.EMAIL_PASS  // Sua "Senha de app" de 16 dígitos do Gmail
+    user: process.env.EMAIL_USER,
+    pass: process.env.EMAIL_PASS
   }
 });
 
@@ -129,7 +132,8 @@ app.post('/forgot-password', async (req, res) => {
       'UPDATE usuarios SET reset_token = $1, reset_token_expires = $2 WHERE email = $3',
       [token, expires, email]
     );
-    const resetLink = `http://localhost:3000/redefinir-senha.html?token=${token}`; // Altere para o link do seu frontend
+    // IMPORTANTE: Use a URL do seu site em produção aqui
+    const resetLink = `https://${process.env.VERCEL_URL}/redefinir-senha.html?token=${token}`;
     const mailOptions = {
       from: process.env.EMAIL_USER,
       to: email,
@@ -166,8 +170,8 @@ app.post('/reset-password', async (req, res) => {
       [senhaHash, user.id]
     );
     
-    // ALTERAÇÃO FINAL: Redireciona para a página de login com um status de sucesso
-    res.redirect('/login.html?reset=success');
+    // Responde com sucesso, o frontend cuidará do redirecionamento
+    res.status(200).json({ message: 'Senha redefinida com sucesso!' });
 
   } catch (error) {
     console.error('Erro em /reset-password:', error);
@@ -179,9 +183,12 @@ app.post('/reset-password', async (req, res) => {
 // ==========================================================
 // --- ROTAS DE DEPOIMENTOS ---
 // ==========================================================
+// Esta rota não é mais necessária, pois a Vercel servirá o index.html automaticamente
+/*
 app.get('/', (req, res) => {
   res.sendFile(path.join(__dirname, '..', 'public', 'index.html'));
 });
+*/
 
 app.post('/upload', upload.single('experienceImage'), async (req, res) => {
   const { userName, userAge, userMovement, experienceText } = req.body;
@@ -201,6 +208,7 @@ app.post('/upload', upload.single('experienceImage'), async (req, res) => {
   }
 });
 
+// Rota de API para os depoimentos
 app.get('/depoimentos', async (req, res) => {
   try {
     const result = await pool.query('SELECT * FROM depoimentos ORDER BY id DESC');
@@ -218,11 +226,6 @@ app.delete('/depoimentos/:id', async (req, res) => {
 });
 
 
-// --- INICIALIZAÇÃO DO SERVIDOR ---
-const PORT = process.env.PORT || 3000;
-const localUrl = `http://localhost:${PORT}`;
-
-app.listen(PORT, () => {
-  console.log(`Servidor rodando em: ${localUrl}`);
-});
-
+// --- EXPORTAÇÃO PARA A VERCEL ---
+// A Vercel usará este 'app' exportado para lidar com as requisições
+module.exports = app;
