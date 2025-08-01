@@ -1,15 +1,20 @@
 {
   "version": 2,
+  "public": true,
   "builds": [
     {
-      "src": "api/index.js",
+      "src": "depoimentos/api/index.js",
       "use": "@vercel/node"
     }
   ],
   "routes": [
     {
+      "src": "/api/(.*)",
+      "dest": "/depoimentos/api/index.js"
+    },
+    {
       "src": "/(.*)",
-      "dest": "/api/index.js"
+      "dest": "/public/$1"
     }
   ]
 }

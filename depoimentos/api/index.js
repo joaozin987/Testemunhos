@@ -26,7 +26,7 @@ app.use(express.urlencoded({ extended: true }));
 
 // A Vercel servirá os arquivos da pasta 'public' automaticamente.
 // A linha abaixo pode ser mantida ou removida, pois o vercel.json já cuida do roteamento.
-app.use(express.static(path.join(__dirname, '..', '..', 'public')));
+app.use(express.static(path.join(__dirname, '..', 'public')));
 
 
 // --- CONFIGURAÇÃO DO CLOUDINARY ---
@@ -226,6 +226,15 @@ app.delete('/depoimentos/:id', async (req, res) => {
 });
 
 
-// --- EXPORTAÇÃO PARA A VERCEL ---
-// A Vercel usará este 'app' exportado para lidar com as requisições
+// ==========================================================
+// --- EXPORTAÇÃO E EXECUÇÃO LOCAL ---
+// ==========================================================
+
 module.exports = app;
+
+if (require.main === module) {
+  const PORT = process.env.PORT || 3000;
+  app.listen(PORT, () => {
+    console.log(`Servidor rodando localmente na porta ${PORT}`);
+  });
+}
