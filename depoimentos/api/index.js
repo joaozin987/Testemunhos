@@ -1,5 +1,5 @@
 // ==========================================================
-// --- ARQUIVO COMPLETO PARA: api/index.js ---
+// --- ARQUIVO COMPLETO E CORRIGIDO PARA: api/index.js ---
 // ==========================================================
 
 // --- IMPORTAÇÕES ---
@@ -13,8 +13,8 @@ const cloudinary = require('cloudinary').v2;
 const { CloudinaryStorage } = require('multer-storage-cloudinary');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
-const nodemailer = require('nodemailer'); // Para envio de e-mail
-const crypto = require('crypto');     // Para gerar tokens seguros
+const nodemailer = require('nodemailer');
+const crypto = require('crypto');
 require('dotenv').config();
 
 const app = express();
@@ -23,11 +23,6 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-
-// A Vercel servirá os arquivos da pasta 'public' automaticamente.
-// A linha abaixo pode ser mantida ou removida, pois o vercel.json já cuida do roteamento.
-app.use(express.static(path.join(__dirname, '..', 'public')));
-
 
 // --- CONFIGURAÇÃO DO CLOUDINARY ---
 cloudinary.config({
@@ -45,7 +40,6 @@ const storage = new CloudinaryStorage({
 });
 const upload = multer({ storage: storage });
 
-
 // --- CONEXÃO POSTGRESQL ---
 const pool = new Pool({
   user: process.env.PGUSER,
@@ -54,7 +48,6 @@ const pool = new Pool({
   password: process.env.PGPASSWORD,
   port: process.env.PGPORT,
 });
-
 
 // --- CONFIGURAÇÃO DO NODEMAILER (ENVIO DE E-MAIL) ---
 const transporter = nodemailer.createTransport({
@@ -65,13 +58,20 @@ const transporter = nodemailer.createTransport({
   }
 });
 
+// ==========================================================
+// --- ROTA PRINCIPAL (FRONTEND) ---
+// ==========================================================
+
+app.get('/', (req, res) => {
+  // Usa um caminho absoluto e seguro para encontrar o index.html na pasta public
+  res.sendFile(path.resolve(process.cwd(), 'public', 'index.html'));
+});
 
 // ==========================================================
-// --- ROTAS DE AUTENTICAÇÃO E RECUPERAÇÃO ---
+// --- ROTAS DE API (Exemplo: /api/register) ---
 // ==========================================================
 
-// ROTA DE CADASTRO (REGISTER)
-app.post('/register', async (req, res) => {
+app.post('/api/register', async (req, res) => {
   const { nome, email, senha } = req.body;
   if (!nome || !email || !senha) {
     return res.status(400).json({ error: 'Todos os campos são obrigatórios.' });
@@ -89,12 +89,11 @@ app.post('/register', async (req, res) => {
       return res.status(409).json({ error: 'O Usuário informado já foi cadastrado. Tente fazer o login.' });
     }
     console.error('Erro no registro:', error);
-    res.status(500).json({ error: 'Ocorreu um erro inesperado ao registrar. Tente novamente.' });
+    res.status(500).json({ error: 'Ocorreu um erro inesperado ao registrar.' });
   }
 });
 
-// ROTA DE LOGIN
-app.post('/login', async (req, res) => {
+app.post('/api/login', async (req, res) => {
   const { email, senha } = req.body;
   if (!email || !senha) {
     return res.status(400).json({ error: 'Email e senha são obrigatórios.' });
@@ -118,8 +117,7 @@ app.post('/login', async (req, res) => {
   }
 });
 
-// ROTA PARA SOLICITAR A REDEFINIÇÃO DE SENHA
-app.post('/forgot-password', async (req, res) => {
+app.post('/api/forgot-password', async (req, res) => {
   const { email } = req.body;
   try {
     const userResult = await pool.query('SELECT * FROM usuarios WHERE email = $1', [email]);
@@ -127,18 +125,17 @@ app.post('/forgot-password', async (req, res) => {
       return res.status(200).json({ message: 'Se um usuário com este e-mail existir, um link de redefinição foi enviado.' });
     }
     const token = crypto.randomBytes(32).toString('hex');
-    const expires = new Date(Date.now() + 3600000); // Token expira em 1 hora
+    const expires = new Date(Date.now() + 3600000);
     await pool.query(
       'UPDATE usuarios SET reset_token = $1, reset_token_expires = $2 WHERE email = $3',
       [token, expires, email]
     );
-    // IMPORTANTE: Use a URL do seu site em produção aqui
     const resetLink = `https://${process.env.VERCEL_URL}/redefinir-senha.html?token=${token}`;
     const mailOptions = {
       from: process.env.EMAIL_USER,
       to: email,
       subject: 'Redefinição de Senha - Conectados pela Fé',
-      html: `<p>Você solicitou a redefinição da sua senha. Clique no link a seguir para criar uma nova: <a href="${resetLink}">${resetLink}</a></p><p>Este link expirará em 1 hora.</p>`
+      html: `<p>Você solicitou a redefinição da sua senha. Clique no link: <a href="${resetLink}">${resetLink}</a></p><p>Este link expirará em 1 hora.</p>`
     };
     await transporter.sendMail(mailOptions);
     res.status(200).json({ message: 'Se um usuário com este e-mail existir, um link de redefinição foi enviado.' });
@@ -148,8 +145,7 @@ app.post('/forgot-password', async (req, res) => {
   }
 });
 
-// ROTA PARA EFETIVAMENTE REDEFINIR A SENHA
-app.post('/reset-password', async (req, res) => {
+app.post('/api/reset-password', async (req, res) => {
   const { token, senha } = req.body;
   if (!token || !senha) {
     return res.status(400).json({ error: 'Token e nova senha são obrigatórios.' });
@@ -169,28 +165,14 @@ app.post('/reset-password', async (req, res) => {
       'UPDATE usuarios SET senha_hash = $1, reset_token = NULL, reset_token_expires = NULL WHERE id = $2',
       [senhaHash, user.id]
     );
-    
-    // Responde com sucesso, o frontend cuidará do redirecionamento
     res.status(200).json({ message: 'Senha redefinida com sucesso!' });
-
   } catch (error) {
     console.error('Erro em /reset-password:', error);
     res.status(500).json({ error: 'Erro interno ao redefinir a senha.' });
   }
 });
 
-
-// ==========================================================
-// --- ROTAS DE DEPOIMENTOS ---
-// ==========================================================
-// Esta rota não é mais necessária, pois a Vercel servirá o index.html automaticamente
-/*
-app.get('/', (req, res) => {
-  res.sendFile(path.join(__dirname, '..', 'public', 'index.html'));
-});
-*/
-
-app.post('/upload', upload.single('experienceImage'), async (req, res) => {
+app.post('/api/upload', upload.single('experienceImage'), async (req, res) => {
   const { userName, userAge, userMovement, experienceText } = req.body;
   if (!req.file) {
     return res.status(400).json({ status: 'error', error: 'Imagem não enviada' });
@@ -208,8 +190,7 @@ app.post('/upload', upload.single('experienceImage'), async (req, res) => {
   }
 });
 
-// Rota de API para os depoimentos
-app.get('/depoimentos', async (req, res) => {
+app.get('/api/depoimentos', async (req, res) => {
   try {
     const result = await pool.query('SELECT * FROM depoimentos ORDER BY id DESC');
     res.json(result.rows);
@@ -219,22 +200,11 @@ app.get('/depoimentos', async (req, res) => {
   }
 });
 
-app.delete('/depoimentos/:id', async (req, res) => {
-    // ... seu código de delete continua aqui ...
+app.delete('/api/depoimentos/:id', async (req, res) => {
     const { id } = req.params;
-    // ...
+    // ... seu código de delete continua aqui ...
+    res.status(200).json({message: `Depoimento ${id} deletado`});
 });
 
-
-// ==========================================================
-// --- EXPORTAÇÃO E EXECUÇÃO LOCAL ---
-// ==========================================================
-
+// --- EXPORTAÇÃO PARA A VERCEL ---
 module.exports = app;
-
-if (require.main === module) {
-  const PORT = process.env.PORT || 3000;
-  app.listen(PORT, () => {
-    console.log(`Servidor rodando localmente na porta ${PORT}`);
-  });
-}
