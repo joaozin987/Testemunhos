@@ -26,8 +26,7 @@ app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-// A Vercel servirá os arquivos da pasta 'public' automaticamente.
-// A linha abaixo pode ser mantida ou removida, pois o vercel.json já cuida do roteamento.
+
 app.use(express.static(path.join(__dirname, '..', 'public')));
 
 
