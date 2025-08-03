@@ -157,8 +157,9 @@ app.post('/forgot-password', async (req, res) => {
       'UPDATE usuarios SET reset_token = $1, reset_token_expires = $2 WHERE email = $3',
       [token, expires, email]
     );
-    // IMPORTANTE: Use a URL do seu site em produção aqui
-    const resetLink = `https://${process.env.VERCEL_URL}/redefinir-senha.html?token=${token}`;
+
+   // Nova linha que funciona em qualquer lugar
+const resetLink = `${process.env.PUBLIC_URL}/redefinir-senha.html?token=${token}`;
     const mailOptions = {
       from: process.env.EMAIL_USER,
       to: email,
