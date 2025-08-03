@@ -31,7 +31,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
                 if (response.ok) {
                     // Mantemos o alerta de sucesso para feedback claro antes de redirecionar
-                    alert('Cadastro realizado com sucesso! Você será redirecionado para a página de login.');
                     window.location.href = 'login.html';
                 } else {
                     // ERRO: Mostra a mensagem de erro diretamente na div
