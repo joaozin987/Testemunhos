@@ -159,7 +159,7 @@ app.post('/forgot-password', async (req, res) => {
     );
 
    // Nova linha que funciona em qualquer lugar
-const resetLink = `${process.env.PUBLIC_URL}/redefinir-senha.html?token=${token}`;
+    const resetLink = `${process.env.PUBLIC_URL}/redefinir-senha.html?token=${token}`;
     const mailOptions = {
       from: process.env.EMAIL_USER,
       to: email,
