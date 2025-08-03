@@ -1,4 +1,15 @@
+const openMenu = document.getElementById('openMenu');
+  const closeMenu = document.getElementById('closeMenu');
+   openMenu.addEventListener('click', () => {
+    sidebar.classList.remove('translate-x-full');
+  });
+
+  closeMenu.addEventListener('click', () => {
+    sidebar.classList.add('translate-x-full');
+  });
+
 // Espera o HTML carregar completamente
+
 document.addEventListener('DOMContentLoaded', () => {
 
     const registerForm = document.getElementById('registerForm');
