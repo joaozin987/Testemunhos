@@ -1,12 +1,8 @@
 // ==========================================================
-// --- VERSÃO COMPLETA, CORRIGIDA E OTIMIZADA PARA RENDER ---
+// --- VERSÃO FINAL - COMPLETA, CORRIGIDA E OTIMIZADA ---
 // ==========================================================
 
 require('dotenv').config();
-
-// LINHAS DE DEBUG (OPCIONAL):
-console.log('[DEBUG] URL Pública Carregada:', process.env.PUBLIC_URL);
-console.log('[DEBUG] Variável de Email Carregada:', process.env.EMAIL_USER ? 'Sim' : 'Não');
 
 // --- IMPORTAÇÕES ---
 const express = require('express');
@@ -46,13 +42,19 @@ const storage = new CloudinaryStorage({
 });
 const upload = multer({ storage: storage });
 
-// --- CORREÇÃO 1: Otimizar a Conexão com o Banco de Dados para a Render ---
-const pool = new Pool({
+// --- CONEXÃO POSTGRESQL COM LÓGICA CONDICIONAL DE SSL ---
+// Verifica se o ambiente é de produção (na Render, vamos definir NODE_ENV='production')
+const isProduction = process.env.NODE_ENV === 'production';
+
+// Monta as opções de conexão
+const connectionOptions = {
   connectionString: process.env.DATABASE_URL,
-  ssl: {
-    rejectUnauthorized: false
-  }
-});
+  // Usa SSL em produção (Render), mas não em desenvolvimento (local)
+  ssl: isProduction ? { rejectUnauthorized: false } : false
+};
+
+const pool = new Pool(connectionOptions);
+
 
 // --- CONFIGURAÇÃO DO NODEMAILER (ENVIO DE E-MAIL) ---
 const transporter = nodemailer.createTransport({
@@ -95,7 +97,6 @@ app.post('/register', async (req, res) => {
 
     res.status(201).json(newUser.rows[0]);
   } catch (error) {
-    // --- CORREÇÃO 2: Tratamento de Erro Mais Específico para a API Externa ---
     if (error.response && error.response.status) {
       console.error('Erro na API de validação de e-mail:', error.response.data);
       return res.status(500).json({ error: 'Serviço de validação de e-mail indisponível. Tente novamente mais tarde.' });
@@ -115,7 +116,6 @@ app.post('/login', async (req, res) => {
     return res.status(400).json({ error: 'Email e senha são obrigatórios.' });
   }
   try {
-    // --- CORREÇÃO 3: Melhoria de Segurança - Selecionar Apenas os Campos Necessários ---
     const userResult = await pool.query('SELECT id, nome, senha_hash FROM usuarios WHERE email = $1', [email]);
     
     if (userResult.rows.length === 0) {
@@ -144,7 +144,7 @@ app.post('/forgot-password', async (req, res) => {
       return res.status(200).json({ message: 'Se um usuário com este e-mail existir, um link de redefinição foi enviado.' });
     }
     const token = crypto.randomBytes(32).toString('hex');
-    const expires = new Date(Date.now() + 3600000); // Token expira em 1 hora
+    const expires = new Date(Date.now() + 3600000); // 1 hora
     await pool.query(
       'UPDATE usuarios SET reset_token = $1, reset_token_expires = $2 WHERE email = $3',
       [token, expires, email]
@@ -229,7 +229,6 @@ app.get('/depoimentos', async (req, res) => {
 
 app.delete('/depoimentos/:id', async (req, res) => {
     const { id } = req.params;
-    // Adicione a lógica para verificar autenticação/permissão aqui se necessário
     try {
         const deleteResult = await pool.query('DELETE FROM depoimentos WHERE id = $1', [id]);
         if (deleteResult.rowCount > 0) {
