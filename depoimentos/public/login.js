@@ -16,6 +16,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const loginMessage = document.getElementById('loginMessage');
   const SERVER_URL = 'http://localhost:3000';
 
+
   if (loginForm) {
       loginForm.addEventListener('submit', async (e) => {
           e.preventDefault();
@@ -64,6 +65,31 @@ document.addEventListener('DOMContentLoaded', () => {
                   loginMessage.className = 'text-red-500 mt-4 text-lg font-semibold';
               }
           }
+          fetch(`${API_URL}/login`, { /* ... opções do fetch ... */ })
+    .then(response => {
+        if (!response.ok) {
+            // Se a resposta não for OK (ex: 401, 404), trata o erro
+            return response.json().then(err => { throw new Error(err.error) });
+        }
+        return response.json();
+    })
+    .then(data => {
+        // 'data' é o objeto que vem do backend, ex: { message: '...', token: '...' }
+        if (data.token) {
+            // ---> PASSO CRUCIAL #1: Salvar o token no localStorage
+            localStorage.setItem('token', data.token); 
+            
+            // ---> PASSO CRUCIAL #2: Redirecionar para a página inicial
+            window.location.href = '/home.html'; // Ou apenas '/' se for o caso
+        } else {
+            // Mostra mensagem de erro se o backend não retornar um token
+            document.getElementById('mensagem-erro').textContent = data.error || 'Erro inesperado.';
+        }
+    })
+    .catch(error => {
+        console.error('Erro no login:', error);
+        document.getElementById('mensagem-erro').textContent = error.message;
+    });
       });
   }
 });
