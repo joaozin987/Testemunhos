@@ -24,7 +24,15 @@
       <li><a class="text-lg font-semibold text-bg100" href="sobre.html">Sobre</a></li>
       <li><a class="text-lg font-semibold text-bg100" href="exemplos.html">Exemplos de Vida</a></li>
     </ul>
-    <a href="login.html" class="nline-block bg-blue-500 text-white font-bold py-2 px-4 rounded-lg mt-1 ">Sair</a>
+   <div id="user-nav-desktop" class="flex items-center gap-4">
+    <a id="login-link-desktop" href="login.html" class="inline-block bg-blue-500 text-white font-bold py-2 px-4 rounded-lg">Entrar</a>
+
+    <div id="user-panel-desktop" class="hidden items-center gap-4">
+        <span id="user-welcome-desktop" class="text-lg text-bg100"></span>
+        <a href="perfil.html" class="text-lg font-semibold text-bg100">Perfil</a>
+        <button id="logout-btn-desktop" class="bg-red-500 text-white font-bold py-2 px-4 rounded-lg">Sair</button>
+    </div>
+</div>
   </nav>
   
   <!-- Menu lateral: aparece no mobile quando botão é clicado -->
@@ -38,7 +46,15 @@
       <li><a href="home.html" class="text-lg font-semibold">Início</a></li>
       <li><a href="sobre.html" class="text-lg font-semibold">Sobre</a></li>
       <li><a class="text-lg font-semibold text-bg100" href="exemplos.html">Exemplos de Vida</a></li>
-      <a href="login.html" class="nline-block bg-blue-500 text-white font-bold py-2 px-4 rounded-lg mt-1 ">Sair</a>
+     <li id="user-nav-mobile">
+    
+      <a id="login-link-mobile" href="login.html" class="text-lg font-semibold">Entrar / Cadastrar</a>
+
+    <div id="user-panel-mobile" class="hidden flex flex-col gap-4 mt-4">
+        <a href="perfil.html" class="text-lg font-semibold">Meu Perfil</a>
+        <button id="logout-btn-mobile" class="w-full text-left bg-red-500 text-white font-bold py-2 px-4 rounded-lg">Sair</button>
+    </div>
+</li>
     </ul>
   </div>
   

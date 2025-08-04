@@ -236,20 +236,21 @@ app.get('/perfil', autenticarToken, async (req, res) => {
 // --- ROTAS DE DEPOIMENTOS ---
 // ==========================================================
 app.post('/upload', autenticarToken, upload.single('experienceImage'), async (req, res) => {
-  const { experienceText, userMovement } = req.body;
-  const userId = req.user.id; 
-
-
+  // Pegamos os dados do formulário como antes
+  const { userName, userAge, userMovement, experienceText } = req.body;
+  const userId = req.user.id; // Pegamos o ID do usuário logado do token
+  
   const imageUrl = req.file ? req.file.path : null;
 
-  if (!experienceText) {
-    return res.status(400).json({ error: 'O texto do depoimento é obrigatório.' });
+  if (!experienceText || !userName || !userAge) { // Verificamos os campos novamente
+    return res.status(400).json({ error: 'Todos os campos do formulário são obrigatórios.' });
   }
 
   try {
+    // O INSERT agora inclui as colunas nome_autor e idade_autor
     const result = await pool.query(
-      `INSERT INTO depoimentos (experiencia, movimento, imagem_url, usuario_id) VALUES ($1, $2, $3, $4) RETURNING id`,
-      [experienceText, userMovement, imageUrl, userId]
+      `INSERT INTO depoimentos (experiencia, movimento, imagem_url, usuario_id, nome_autor, idade_autor) VALUES ($1, $2, $3, $4, $5, $6) RETURNING id`,
+      [experienceText, userMovement, imageUrl, userId, userName, userAge]
     );
     res.status(201).json({ status: 'ok', message: 'Depoimento criado com sucesso!', id: result.rows[0].id });
   } catch (error) {
@@ -257,31 +258,30 @@ app.post('/upload', autenticarToken, upload.single('experienceImage'), async (re
     res.status(500).json({ status: 'error', error: 'Erro ao salvar depoimento.' });
   }
 });
-
 app.get('/depoimentos', async (req, res) => {
-  try{
+  try {
+    // A consulta agora pega o nome_autor e idade_autor da própria tabela de depoimentos
     const result = await pool.query(`
-      SELECT
-      d.id,
-      d.experiencia,
-      d.imagem_url,
-      d.movimento,
-      d.data_criacao,
-      u.nome AS autor_nome,
-      u.foto_perfil_url AS autor_foto
-      FROM
-      depoimentos d
-      JOIN
-      usuarios u ON d.usuario_id = u.id
-      ORDER BY
-      d.data_criacao DESC
-      `);
-      res.json(result.rows);
+      SELECT 
+        id, 
+        experiencia, 
+        imagem_url, 
+        movimento, 
+        data_criacao,
+        nome_autor,    -- Usa o nome digitado no formulário
+        idade_autor    -- Usa a idade digitada no formulário
+      FROM 
+        depoimentos
+      ORDER BY 
+        data_criacao DESC
+    `);
+    res.json(result.rows);
   } catch (error) {
-    console.error('Erro ao listar depoimentos.', error);
-    res.status(500).json({error: 'Erro ao listar depoimentos.'});
+    console.error('Erro ao listar depoimentos:', error);
+    res.status(500).json({ error: 'Erro ao listar depoimentos.' });
   }
 });
+
 
 app.delete('/depoimentos/:id', async (req, res) => {
     const { id } = req.params;

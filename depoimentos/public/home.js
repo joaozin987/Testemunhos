@@ -22,7 +22,6 @@ document.addEventListener('DOMContentLoaded', () => {
   const wordInput = document.getElementById('wordInput');
 
   // A LINHA const SERVER_URL foi removida.
-
   openMenu.addEventListener('click', () => {
     sidebar.classList.remove('translate-x-full');
   });
@@ -286,3 +285,24 @@ document.addEventListener('DOMContentLoaded', () => {
     }, 20);
   }
 });
+
+
+async function setupLoggedInView(token) {
+    // ... (código para esconder/mostrar links) ...
+
+    try {
+        const response = await fetch(`${API_URL}/perfil`, { /* ... */ });
+        if (response.ok) {
+            const user = await response.json();
+            document.getElementById('user-welcome-desktop').textContent = `Olá, ${user.nome}!`;
+
+            // LINHA NOVA: Preenche o campo Nome no formulário de depoimento
+            document.getElementById('userName').value = user.nome;
+        } else {
+            logout();
+        }
+    } catch (error) {
+        console.error('Erro ao buscar perfil:', error);
+        logout();
+    }
+}
