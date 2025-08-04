@@ -286,6 +286,24 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 });
 
+const API_URL = 'http://https://testemunhos.onrender.com/:3000'; 
+
+// Função principal que roda quando a página carrega
+document.addEventListener('DOMContentLoaded', () => {
+    
+   
+    const token = localStorage.getItem('token');
+    if (!token) {
+    
+        window.location.href = '/login.html'; 
+        return; 
+    }
+   
+    setupLoggedInView(token);
+    
+   
+    setupEventListeners();
+});
 
 async function setupLoggedInView(token) {
     // ... (código para esconder/mostrar links) ...
