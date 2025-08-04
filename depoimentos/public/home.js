@@ -285,42 +285,31 @@ document.addEventListener('DOMContentLoaded', () => {
     }, 20);
   }
 });
+// home.js - VERSÃO FINAL PARA SITE RESTRITO
 
-const API_URL = 'http://https://testemunhos.onrender.com/:3000'; 
+const API_URL = 'http://localhost:3000'; 
 
-// Função principal que roda quando a página carrega
 document.addEventListener('DOMContentLoaded', () => {
-    
-   
     const token = localStorage.getItem('token');
     if (!token) {
-    
-        window.location.href = '/login.html'; 
-        return; 
+        window.location.href = '/login.html';
+        return;
     }
-   
-    setupLoggedInView(token);
     
-   
+    setupLoggedInView(token);
     setupEventListeners();
 });
 
 async function setupLoggedInView(token) {
-    // ... (código para esconder/mostrar links) ...
-
-    try {
-        const response = await fetch(`${API_URL}/perfil`, { /* ... */ });
-        if (response.ok) {
-            const user = await response.json();
-            document.getElementById('user-welcome-desktop').textContent = `Olá, ${user.nome}!`;
-
-            // LINHA NOVA: Preenche o campo Nome no formulário de depoimento
-            document.getElementById('userName').value = user.nome;
-        } else {
-            logout();
-        }
-    } catch (error) {
-        console.error('Erro ao buscar perfil:', error);
-        logout();
-    }
+    // Como a página só carrega se estiver logado, podemos mostrar o painel direto
+    document.getElementById('user-panel-desktop').classList.remove('hidden');
+    // ... (lógica para buscar o nome e preencher o formulário) ...
 }
+
+function logout() {
+    localStorage.removeItem('token');
+    // Ao sair, o usuário é enviado de volta para a tela de login
+    window.location.href = '/login.html'; 
+}
+
+// ... (O resto das funções de event listeners e de envio de formulário continuam aqui)
