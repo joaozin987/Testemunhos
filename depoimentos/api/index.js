@@ -17,6 +17,7 @@ const jwt = require('jsonwebtoken');
 const nodemailer = require('nodemailer');
 const crypto = require('crypto');
 const axios = require('axios');
+const { error } = require('console');
 
 const app = express();
 
@@ -66,6 +67,22 @@ const transporter = nodemailer.createTransport({
 });
 
 // --- ROTAS DE AUTENTICAÇÃO E RECUPERAÇÃO ---
+const autenticarToken = (req,res,next) => {
+  const authHeader = reqheaders['authorization'];
+  const token = authHeader && authHeader.split(' ')[1];
+
+  if (!token == null) {
+    return res.sendStatus(401);
+  }
+  jwt.verifiy(token, process.env.JWT_SECRET, (err, user) => {
+    if (err) {
+      return res.sendStatus(403);
+    }
+    req.user = user;
+    next();
+  });
+};
+
 
 // ROTA DE CADASTRO (REGISTER)
 app.post('/register', async (req, res) => {
@@ -195,35 +212,74 @@ app.post('/reset-password', async (req, res) => {
   }
 });
 
+app.get('/perfil', autenticarToken, async (req, res) => {
+  try {
+    const userId = req.user.id; // Pegamos o ID do usuário que o middleware extraiu do token
+
+    const perfilResult = await pool.query(
+      'SELECT id, nome, email, foto_perfil_url, bio FROM usuarios WHERE id = $1',
+      [userId]
+    );
+
+    if (perfilResult.rows.length === 0) {
+      return res.status(404).json({ error: 'Perfil de usuário não encontrado.' });
+    }
+
+    res.json(perfilResult.rows[0]);
+  } catch (error) {
+    console.error('Erro ao buscar perfil:', error);
+    res.status(500).json({ error: 'Erro interno ao buscar dados do perfil.' });
+  }
+});
+
 // ==========================================================
 // --- ROTAS DE DEPOIMENTOS ---
 // ==========================================================
+app.post('/upload', autenticarToken, upload.single('experienceImage'), async (req, res) => {
+  const { experienceText, userMovement } = req.body;
+  const userId = req.user.id; 
 
-app.post('/upload', upload.single('experienceImage'), async (req, res) => {
-  const { userName, userAge, userMovement, experienceText } = req.body;
-  if (!req.file) {
-    return res.status(400).json({ status: 'error', error: 'Imagem não enviada' });
+
+  const imageUrl = req.file ? req.file.path : null;
+
+  if (!experienceText) {
+    return res.status(400).json({ error: 'O texto do depoimento é obrigatório.' });
   }
-  const imageUrl = req.file.path;
+
   try {
     const result = await pool.query(
-      `INSERT INTO depoimentos (nome, idade, movimento, imagem, experiencia) VALUES ($1, $2, $3, $4, $5) RETURNING id`,
-      [userName, userAge, userMovement, imageUrl, experienceText]
+      `INSERT INTO depoimentos (experiencia, movimento, imagem_url, usuario_id) VALUES ($1, $2, $3, $4) RETURNING id`,
+      [experienceText, userMovement, imageUrl, userId]
     );
-    res.json({ status: 'ok', id: result.rows[0].id, image: imageUrl });
+    res.status(201).json({ status: 'ok', message: 'Depoimento criado com sucesso!', id: result.rows[0].id });
   } catch (error) {
-    console.error('Erro no INSERT:', error);
-    res.status(500).json({ status: 'error', error: 'Erro ao salvar experiência' });
+    console.error('Erro ao salvar depoimento:', error);
+    res.status(500).json({ status: 'error', error: 'Erro ao salvar depoimento.' });
   }
 });
 
 app.get('/depoimentos', async (req, res) => {
-  try {
-    const result = await pool.query('SELECT * FROM depoimentos ORDER BY id DESC');
-    res.json(result.rows);
+  try{
+    const result = await pool.query(`
+      SELECT
+      d.id,
+      d.experiencia,
+      d.imagem_url,
+      d.movimento,
+      d.data_criacao,
+      u.nome AS autor_nome,
+      u.foto_perfil_url AS autor_foto
+      FROM
+      depoimentos d
+      JOIN
+      usuarios u ON d.usuario_id = u.id
+      ORDER BY
+      d.data_criacao DESC
+      `);
+      res.json(result.rows);
   } catch (error) {
-    console.error('Erro no SELECT:', error);
-    res.status(500).json({ status: 'error', error: 'Erro ao listar depoimentos' });
+    console.error('Erro ao listar depoimentos.', error);
+    res.status(500).json({error: 'Erro ao listar depoimentos.'});
   }
 });
 
