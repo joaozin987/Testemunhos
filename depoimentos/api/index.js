@@ -1,14 +1,12 @@
+// ==========================================================
+// --- VERSÃO COMPLETA, CORRIGIDA E OTIMIZADA PARA RENDER ---
+// ==========================================================
 
-
-// LINHA MOVIDA PARA O TOPO - ESTA É A CORREÇÃO PRINCIPAL
 require('dotenv').config();
 
-// LINHAS DE DEBUG (OPCIONAL): Verifique o terminal ao iniciar o servidor
-// para confirmar que as variáveis foram carregadas corretamente.
+// LINHAS DE DEBUG (OPCIONAL):
 console.log('[DEBUG] URL Pública Carregada:', process.env.PUBLIC_URL);
-// Apenas para confirmar que a variável de email existe, sem expor o email no log
 console.log('[DEBUG] Variável de Email Carregada:', process.env.EMAIL_USER ? 'Sim' : 'Não');
-
 
 // --- IMPORTAÇÕES ---
 const express = require('express');
@@ -16,7 +14,6 @@ const multer = require('multer');
 const cors = require('cors');
 const path = require('path');
 const { Pool } = require('pg');
-const open = require('open');
 const cloudinary = require('cloudinary').v2;
 const { CloudinaryStorage } = require('multer-storage-cloudinary');
 const bcrypt = require('bcrypt');
@@ -31,9 +28,7 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-
 app.use(express.static(path.join(__dirname, '..', 'public')));
-
 
 // --- CONFIGURAÇÃO DO CLOUDINARY ---
 cloudinary.config({
@@ -51,16 +46,13 @@ const storage = new CloudinaryStorage({
 });
 const upload = multer({ storage: storage });
 
-
-// --- CONEXÃO POSTGRESQL ---
+// --- CORREÇÃO 1: Otimizar a Conexão com o Banco de Dados para a Render ---
 const pool = new Pool({
-  user: process.env.PGUSER,
-  host: process.env.PGHOST,
-  database: process.env.PGDATABASE,
-  password: process.env.PGPASSWORD,
-  port: process.env.PGPORT,
+  connectionString: process.env.DATABASE_URL,
+  ssl: {
+    rejectUnauthorized: false
+  }
 });
-
 
 // --- CONFIGURAÇÃO DO NODEMAILER (ENVIO DE E-MAIL) ---
 const transporter = nodemailer.createTransport({
@@ -71,7 +63,6 @@ const transporter = nodemailer.createTransport({
   }
 });
 
-
 // --- ROTAS DE AUTENTICAÇÃO E RECUPERAÇÃO ---
 
 // ROTA DE CADASTRO (REGISTER)
@@ -81,7 +72,6 @@ app.post('/register', async (req, res) => {
   if (!nome || !email || !senha) {
     return res.status(400).json({ error: 'Todos os campos são obrigatórios.' });
   }
-
   if (!email.endsWith('@gmail.com')) {
     return res.status(400).json({ error: 'Cadastro permitido apenas para e-mails do Gmail.' });
   }
@@ -89,7 +79,6 @@ app.post('/register', async (req, res) => {
   try {
     const apiKey = process.env.EMAIL_VALIDATION_API_KEY;
     const validationUrl = `https://emailvalidation.abstractapi.com/v1/?api_key=${apiKey}&email=${email}`;
-    
     const validationResult = await axios.get(validationUrl);
 
     if (!validationResult.data.is_smtp_valid.value) {
@@ -106,6 +95,11 @@ app.post('/register', async (req, res) => {
 
     res.status(201).json(newUser.rows[0]);
   } catch (error) {
+    // --- CORREÇÃO 2: Tratamento de Erro Mais Específico para a API Externa ---
+    if (error.response && error.response.status) {
+      console.error('Erro na API de validação de e-mail:', error.response.data);
+      return res.status(500).json({ error: 'Serviço de validação de e-mail indisponível. Tente novamente mais tarde.' });
+    }
     if (error.code === '23505') { 
       return res.status(409).json({ error: 'O e-mail informado já foi cadastrado. Tente fazer o login.' });
     }
@@ -114,7 +108,6 @@ app.post('/register', async (req, res) => {
   }
 });
 
-
 // ROTA DE LOGIN
 app.post('/login', async (req, res) => {
   const { email, senha } = req.body;
@@ -122,7 +115,9 @@ app.post('/login', async (req, res) => {
     return res.status(400).json({ error: 'Email e senha são obrigatórios.' });
   }
   try {
-    const userResult = await pool.query('SELECT * FROM usuarios WHERE email = $1', [email]);
+    // --- CORREÇÃO 3: Melhoria de Segurança - Selecionar Apenas os Campos Necessários ---
+    const userResult = await pool.query('SELECT id, nome, senha_hash FROM usuarios WHERE email = $1', [email]);
+    
     if (userResult.rows.length === 0) {
       return res.status(404).json({ error: 'Usuário não encontrado.' });
     }
@@ -200,7 +195,6 @@ app.post('/reset-password', async (req, res) => {
   }
 });
 
-
 // ==========================================================
 // --- ROTAS DE DEPOIMENTOS ---
 // ==========================================================
@@ -252,7 +246,6 @@ app.delete('/depoimentos/:id', async (req, res) => {
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
   console.log(`Servidor rodando na porta ${PORT}.`);
-  console.log(`URL Local: http://localhost:${PORT}`);
 });
 
 module.exports = app;
