@@ -1,6 +1,14 @@
-// ==========================================================
-// --- ARQUIVO COMPLETO PARA: api/index.js ---
-// ==========================================================
+
+
+// LINHA MOVIDA PARA O TOPO - ESTA É A CORREÇÃO PRINCIPAL
+require('dotenv').config();
+
+// LINHAS DE DEBUG (OPCIONAL): Verifique o terminal ao iniciar o servidor
+// para confirmar que as variáveis foram carregadas corretamente.
+console.log('[DEBUG] URL Pública Carregada:', process.env.PUBLIC_URL);
+// Apenas para confirmar que a variável de email existe, sem expor o email no log
+console.log('[DEBUG] Variável de Email Carregada:', process.env.EMAIL_USER ? 'Sim' : 'Não');
+
 
 // --- IMPORTAÇÕES ---
 const express = require('express');
@@ -13,11 +21,9 @@ const cloudinary = require('cloudinary').v2;
 const { CloudinaryStorage } = require('multer-storage-cloudinary');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
-const nodemailer = require('nodemailer'); // Para envio de e-mail
+const nodemailer = require('nodemailer');
 const crypto = require('crypto');
 const axios = require('axios');
-     // Para gerar tokens seguros
-require('dotenv').config();
 
 const app = express();
 
@@ -25,7 +31,6 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-
 
 app.use(express.static(path.join(__dirname, '..', 'public')));
 
@@ -67,9 +72,7 @@ const transporter = nodemailer.createTransport({
 });
 
 
-
 // --- ROTAS DE AUTENTICAÇÃO E RECUPERAÇÃO ---
-
 
 // ROTA DE CADASTRO (REGISTER)
 app.post('/register', async (req, res) => {
@@ -79,28 +82,23 @@ app.post('/register', async (req, res) => {
     return res.status(400).json({ error: 'Todos os campos são obrigatórios.' });
   }
 
-  // --- ETAPA 1: VERIFICAR SE O DOMÍNIO É @gmail.com ---
   if (!email.endsWith('@gmail.com')) {
     return res.status(400).json({ error: 'Cadastro permitido apenas para e-mails do Gmail.' });
   }
 
   try {
-    // --- ETAPA 2: VERIFICAR SE A CONTA GMAIL EXISTE USANDO A API ---
     const apiKey = process.env.EMAIL_VALIDATION_API_KEY;
     const validationUrl = `https://emailvalidation.abstractapi.com/v1/?api_key=${apiKey}&email=${email}`;
     
     const validationResult = await axios.get(validationUrl);
 
-    // Verifica se o e-mail pode receber mensagens (is_smtp_valid.value)
     if (!validationResult.data.is_smtp_valid.value) {
       return res.status(400).json({ error: 'Esta conta de e-mail do Gmail não é válida ou não pode ser verificada.' });
     }
 
-    // --- SE PASSOU NAS VALIDAÇÕES, PROSSEGUE COM O CADASTRO ---
-   const salt = await bcrypt.genSalt(10);
+    const salt = await bcrypt.genSalt(10);
     const senhaHash = await bcrypt.hash(senha, salt);
     
-    // O ERRO PROVAVELMENTE ESTÁ AQUI
     const newUser = await pool.query(
       'INSERT INTO usuarios (nome, email, senha_hash) VALUES ($1, $2, $3) RETURNING id, nome, email',
       [nome, email, senhaHash]
@@ -111,7 +109,6 @@ app.post('/register', async (req, res) => {
     if (error.code === '23505') { 
       return res.status(409).json({ error: 'O e-mail informado já foi cadastrado. Tente fazer o login.' });
     }
-    // Tratamento de outros erros, como falha na API de validação
     console.error('Erro no registro:', error);
     res.status(500).json({ error: 'Ocorreu um erro inesperado ao registrar. Tente novamente.' });
   }
@@ -158,7 +155,6 @@ app.post('/forgot-password', async (req, res) => {
       [token, expires, email]
     );
 
-   // Nova linha que funciona em qualquer lugar
     const resetLink = `${process.env.PUBLIC_URL}/redefinir-senha.html?token=${token}`;
     const mailOptions = {
       from: process.env.EMAIL_USER,
@@ -196,7 +192,6 @@ app.post('/reset-password', async (req, res) => {
       [senhaHash, user.id]
     );
     
-    // Responde com sucesso, o frontend cuidará do redirecionamento
     res.status(200).json({ message: 'Senha redefinida com sucesso!' });
 
   } catch (error) {
@@ -209,12 +204,6 @@ app.post('/reset-password', async (req, res) => {
 // ==========================================================
 // --- ROTAS DE DEPOIMENTOS ---
 // ==========================================================
-// Esta rota não é mais necessária, pois a Vercel servirá o index.html automaticamente
-/*
-app.get('/', (req, res) => {
-  res.sendFile(path.join(__dirname, '..', 'public', 'index.html'));
-});
-*/
 
 app.post('/upload', upload.single('experienceImage'), async (req, res) => {
   const { userName, userAge, userMovement, experienceText } = req.body;
@@ -234,7 +223,6 @@ app.post('/upload', upload.single('experienceImage'), async (req, res) => {
   }
 });
 
-// Rota de API para os depoimentos
 app.get('/depoimentos', async (req, res) => {
   try {
     const result = await pool.query('SELECT * FROM depoimentos ORDER BY id DESC');
@@ -246,9 +234,19 @@ app.get('/depoimentos', async (req, res) => {
 });
 
 app.delete('/depoimentos/:id', async (req, res) => {
-    // ... seu código de delete continua aqui ...
     const { id } = req.params;
-    // ...
+    // Adicione a lógica para verificar autenticação/permissão aqui se necessário
+    try {
+        const deleteResult = await pool.query('DELETE FROM depoimentos WHERE id = $1', [id]);
+        if (deleteResult.rowCount > 0) {
+            res.json({ status: 'ok', message: 'Depoimento deletado com sucesso.' });
+        } else {
+            res.status(404).json({ status: 'error', error: 'Depoimento não encontrado.' });
+        }
+    } catch (error) {
+        console.error('Erro no DELETE:', error);
+        res.status(500).json({ status: 'error', error: 'Erro ao deletar depoimento.' });
+    }
 });
 
 const PORT = process.env.PORT || 3000;
