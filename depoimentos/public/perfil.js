@@ -12,6 +12,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     const inputNome = document.getElementById('input-nome');
     const inputBio = document.getElementById('input-bio');
+    const inputVersiculo = document.getElementById('input-versiculo'); // Declarado aqui
 
     if (!token) {
         window.location.href = 'login.html';
@@ -21,9 +22,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     try {
         const response = await fetch(`${API_URL}/perfil`, {
             method: 'GET',
-            headers: {
-                'Authorization': `Bearer ${token}`
-            }
+            headers: { 'Authorization': `Bearer ${token}` }
         });
 
         if (response.status === 401 || response.status === 403) {
@@ -51,9 +50,13 @@ document.addEventListener('DOMContentLoaded', async () => {
         document.getElementById('nome-usuario').textContent = perfil.nome;
         document.getElementById('email-usuario').textContent = perfil.email;
         document.getElementById('bio-usuario').textContent = perfil.bio || 'Nenhuma biografia informada.';
+        document.getElementById('versiculo-usuario').textContent = perfil.versiculo_favorito || 'Nenhum versículo favorito informado.';
 
         if (perfil.foto_perfil_url) {
-            document.getElementById('foto-perfil').src = perfil.foto_perfil_url;
+            const urlCompleta = perfil.foto_perfil_url.startsWith('/uploads') 
+                ? `${API_URL}${perfil.foto_perfil_url}` 
+                : perfil.foto_perfil_url;
+            document.getElementById('foto-perfil').src = urlCompleta;
         } else {
             document.getElementById('foto-perfil').src = 'img/avatar-padrao.png';
         }
@@ -63,6 +66,9 @@ document.addEventListener('DOMContentLoaded', async () => {
         inputNome.value = document.getElementById('nome-usuario').textContent;
         const bioText = document.getElementById('bio-usuario').textContent;
         inputBio.value = bioText === 'Nenhuma biografia informada.' ? '' : bioText;
+        
+        const versiculoText = document.getElementById('versiculo-usuario').textContent;
+        inputVersiculo.value = versiculoText === 'Nenhum versículo favorito informado.' ? '' : versiculoText;
 
         perfilContentDiv.style.display = 'none';
         editContentDiv.style.display = 'block';
@@ -74,14 +80,17 @@ document.addEventListener('DOMContentLoaded', async () => {
     });
 
     formEditar.addEventListener('submit', async (event) => {
-        event.preventDefault();
+    event.preventDefault();
 
-        const dadosAtualizados = {
-            nome: inputNome.value,
-            bio: inputBio.value
-        };
+    const dadosAtualizados = {
+        nome: inputNome.value,
+        bio: inputBio.value,
+        versiculo_favorito: inputVersiculo.value
+    };
 
-        try {
+    console.log("Enviando para o back-end:", dadosAtualizados); 
+
+    try {
             const response = await fetch(`${API_URL}/perfil`, {
                 method: 'PUT',
                 headers: {
@@ -98,8 +107,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 
             const perfilAtualizado = await response.json();
             exibirPerfil(perfilAtualizado);
-            alert('Perfil atualizado com sucesso!');
-
+            
         } catch (error) {
             console.error('Erro ao atualizar:', error);
             alert(error.message);

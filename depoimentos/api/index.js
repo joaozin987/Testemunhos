@@ -230,29 +230,44 @@ app.get('/perfil', autenticarToken, async (req, res) => {
 app.put('/perfil', autenticarToken, async (req, res) => {
   try {
     const userId = req.user.id;
-    const { nome, bio } = req.body;
-    if (!nome) {
-      return res.status(400).json({ error: 'o campo é obrigatório.'});
-    } 
+    const { nome, bio, versiculo_favorito } = req.body; 
+
+    if (!nome || nome.trim() === '') {
+      return res.status(400).json({ error: 'O campo nome é obrigatório.' });
+    }
+
+    // A consulta SQL precisa de 4 parâmetros
     const query = `
-    UPDATE usuarios
-    SET nome = $1, bio = $2
-    WHERE id = $3
-    RETURNING id, nome, email, foto_perfil_url, bio
+      UPDATE usuarios
+      SET 
+        nome = $1,                -- Primeiro parâmetro
+        bio = $2,                 -- Segundo parâmetro
+        versiculo_favorito = $3   -- Terceiro parâmetro
+      WHERE 
+        id = $4                   -- QUARTO PARÂMETRO (para identificar o usuário)
+      RETURNING id, nome, email, foto_perfil_url, bio, versiculo_favorito;
     `;
-    const values = [nome, bio, userId];
+    
+    // O array de valores DEVE ter 4 itens, na ordem correta
+    const values = [
+      nome,                 // Corresponde a $1
+      bio,                  // Corresponde a $2
+      versiculo_favorito,   // Corresponde a $3
+      userId                // Corresponde a $4
+    ];
 
     const result = await pool.query(query, values);
 
     if (result.rowCount === 0) {
-      return res.status(404).json({ error: 'Usuário não encontrado.'});
+      return res.status(404).json({ error: 'Usuário não encontrado para atualizar.' });
     }
 
     res.status(200).json(result.rows[0]);
-    } catch (error) {
-      console.error('Erro ao atualizar perfil:', error);
-      res.status(500).json({ error: 'Erro interno ao atualizar perfil.'});
-    }
+
+  } catch (error) {
+    console.error('Erro ao atualizar perfil:', error);
+    res.status(500).json({ error: 'Erro interno ao atualizar perfil.' });
+  }
 });
 
 // ==========================================================
