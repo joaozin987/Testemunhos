@@ -295,10 +295,14 @@ app.delete('/depoimentos/:id', autenticarToken, async (req, res) => {
         res.status(500).json({ error: 'Erro ao deletar depoimento.' });
     }
 });
-
+// No final do seu api/index.js
 const PORT = process.env.PORT || 3000;
+
 app.listen(PORT, () => {
   console.log(`Servidor rodando na porta ${PORT}.`);
+  // Esta linha já deveria criar um link clicável na maioria dos terminais
+  console.log(`🚀 URL Local: http://localhost:${PORT}`); 
 });
 
 module.exports = app;
+
