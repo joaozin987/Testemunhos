@@ -18,7 +18,7 @@
     </div>
   </nav>
 
-  <main class="container mx-auto max-w-4xl p-4 sm:p-6 mt-8">
+<main class="container mx-auto max-w-4xl p-4 sm:p-6 mt-8">
     
     <div id="perfil-container" class="bg-white p-6 sm:p-8 rounded-lg shadow-md">
         
@@ -27,29 +27,48 @@
         </div>
 
         <div id="perfil-content" style="display: none;">
-            
             <div class="flex flex-col sm:flex-row items-center gap-6 border-b pb-6 mb-6">
                 <img id="foto-perfil" src="img/avatar-padrao.png" alt="Foto de Perfil" class="w-32 h-32 sm:w-40 sm:h-40 rounded-full object-cover border-4 border-accent200">
-                
                 <div class="text-center sm:text-left">
-                    <h2 id="nome-usuario" class="text-3xl sm:text-4xl font-bold text-gray-800"></h2>
-                    <p id="email-usuario" class="text-md text-gray-600 mt-1"></p>
+                    <h2 id="nome-usuario" class="text-3xl sm:text-4xl font-slab text-gray-800"></h2>
+                    <p id="email-usuario" class="text-xl font-slab text-gray-700 mt-2"></p>
                 </div>
             </div>
-            
             <div class="perfil-details">
-                <h3 class="text-2xl font-semibold text-gray-800 mb-2">Biografia</h3>
+                <h3 class="text-3xl font-slab text-gray-900 mb-2">Biografia</h3>
                 <p id="bio-usuario" class="text-gray-700 leading-relaxed"></p>
             </div>
-            
             <div class="mt-8 text-right">
                 <button id="btn-editar-perfil" class="bg-blue-600 text-white font-bold py-2 px-4 rounded-lg hover:bg-blue-700 transition">
                     Editar Perfil
                 </button>
             </div>
         </div>
+
+        <div id="edit-content" style="display: none;">
+            <h2 class="text-3xl sm:text-4xl font-slab text-gray-800 mb-6 border-b pb-4">Editar Perfil</h2>
+            <form id="form-editar">
+                <div class="mb-4">
+                    <label for="input-nome" class="block text-gray-700 text-lg font-slab mb-2">Nome:</label>
+                    <input type="text" id="input-nome" class="w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500">
+                </div>
+                <div class="mb-6">
+                    <label for="input-bio" class="block text-gray-700 text-lg font-slab mb-2">Biografia:</label>
+                    <textarea id="input-bio" rows="5" class="w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500"></textarea>
+                </div>
+                <div class="flex justify-end gap-4">
+                    <button type="button" id="btn-cancelar" class="bg-gray-500 text-white font-bold py-2 px-4 rounded-lg hover:bg-gray-600 transition">
+                        Cancelar
+                    </button>
+                    <button type="submit" class="bg-blue-600 text-white font-bold py-2 px-4 rounded-lg hover:bg-blue-700 transition">
+                        Salvar Alterações
+                    </button>
+                </div>
+            </form>
+        </div>
+        
     </div>
-  </main>
+</main>
 
 
 <script>

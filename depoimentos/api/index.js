@@ -227,6 +227,34 @@ app.get('/perfil', autenticarToken, async (req, res) => {
   }
 });
 
+app.put('/perfil', autenticarToken, async (req, res) => {
+  try {
+    const userId = req.user.id;
+    const { nome, bio } = req.body;
+    if (!nome) {
+      return res.status(400).json({ error: 'o campo é obrigatório.'});
+    } 
+    const query = `
+    UPDATE usuarios
+    SET nome = $1, bio = $2
+    WHERE id = $3
+    RETURNING id, nome, email, foto_perfil_url, bio
+    `;
+    const values = [nome, bio, userId];
+
+    const result = await pool.query(query, values);
+
+    if (result.rowCount === 0) {
+      return res.status(404).json({ error: 'Usuário não encontrado.'});
+    }
+
+    res.status(200).json(result.rows[0]);
+    } catch (error) {
+      console.error('Erro ao atualizar perfil:', error);
+      res.status(500).json({ error: 'Erro interno ao atualizar perfil.'});
+    }
+});
+
 // ==========================================================
 // --- ROTAS DE DEPOIMENTOS ---
 // ==========================================================
