@@ -51,6 +51,17 @@ const connectionOptions = {
 };
 const pool = new Pool(connectionOptions);
 
+async function testarConexao() {
+    try {
+        const client = await pool.connect();
+        console.log("✅ Conexão com o banco de dados local estabelecida com sucesso!");
+        client.release(); // Importante: libera o cliente de volta para o pool
+    } catch (error) {
+        console.error("❌ FALHA AO CONECTAR COM O BANCO DE DADOS LOCAL:", error);
+        process.exit(1); // Encerra o processo se a conexão com o banco falhar
+    }
+}
+testarConexao();
 
 // --- CONFIGURAÇÃO DO NODEMAILER (ENVIO DE E-MAIL) ---
 const transporter = nodemailer.createTransport({
