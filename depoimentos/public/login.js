@@ -1,36 +1,44 @@
+// login.js
 
-const openMenu = document.getElementById('openMenu');
-  const closeMenu = document.getElementById('closeMenu');
-   openMenu.addEventListener('click', () => {
-    sidebar.classList.remove('translate-x-full');
-  });
+// IMPORTANTE: Mude para a URL da sua API na Render quando for para produção
+const API_URL = 'http://localhost:3000'; 
 
-  closeMenu.addEventListener('click', () => {
-    sidebar.classList.add('translate-x-full');
-  });
-
-  
 document.addEventListener('DOMContentLoaded', () => {
 
+  // --- Lógica do Menu Mobile ---
+  // (É uma boa prática manter a lógica do menu em todas as páginas para consistência)
+  const openMenuBtn = document.getElementById('openMenu');
+  const closeMenuBtn = document.getElementById('closeMenu');
+  const sidebar = document.getElementById('sidebar');
+
+  if (openMenuBtn && closeMenuBtn && sidebar) {
+    openMenuBtn.addEventListener('click', () => {
+      sidebar.classList.remove('translate-x-full');
+    });
+
+    closeMenuBtn.addEventListener('click', () => {
+      sidebar.classList.add('translate-x-full');
+    });
+  }
+
+  // --- Lógica do Formulário de Login ---
   const loginForm = document.getElementById('loginForm');
   const loginMessage = document.getElementById('loginMessage');
-  const SERVER_URL = 'http://localhost:3000';
-
 
   if (loginForm) {
       loginForm.addEventListener('submit', async (e) => {
           e.preventDefault();
           
-          // Verifica se o elemento de mensagem existe antes de usá-lo
           if (loginMessage) {
-              loginMessage.textContent = ''; // Limpa mensagens antigas
+              loginMessage.textContent = 'Entrando...'; // Feedback para o usuário
+              loginMessage.className = 'text-gray-700 mt-4 text-lg font-semibold';
           }
 
           const formData = new FormData(loginForm);
           const userData = Object.fromEntries(formData.entries());
 
           try {
-              const response = await fetch(`${SERVER_URL}/login`, {
+              const response = await fetch(`${API_URL}/login`, {
                   method: 'POST',
                   headers: {
                       'Content-Type': 'application/json',
@@ -40,56 +48,30 @@ document.addEventListener('DOMContentLoaded', () => {
 
               const result = await response.json();
 
-              if (response.ok) {
-                  // SUCESSO! Mantemos o alerta de sucesso para feedback imediato.
+              if (response.ok && result.token) {
+                  // SUCESSO!
+                  // CORREÇÃO CRÍTICA: Salva a chave como 'token' para ser consistente com o resto do site
+                  localStorage.setItem('token', result.token);
 
-                  // Guarda a "chave de acesso" (token) no navegador
-                  localStorage.setItem('authToken', result.token);
-
-                  // Redireciona para a página principal de depoimentos
+                  // Redireciona para a página principal
                   window.location.href = 'home.html'; 
 
               } else {
-                  // ERRO: Mostra o erro vindo do backend diretamente na div
+                  // ERRO: Mostra o erro vindo do backend
                   if (loginMessage) {
-                      loginMessage.textContent = `Erro: ${result.error}`;
+                      loginMessage.textContent = `Erro: ${result.error || 'Credenciais inválidas.'}`;
                       loginMessage.className = 'text-red-500 mt-4 text-lg font-semibold';
                   }
               }
 
           } catch (error) {
-              // ERRO DE REDE: Mostra o erro de conexão diretamente na div
+              // ERRO DE REDE:
               console.error('Erro de rede no login:', error);
               if (loginMessage) {
-                  loginMessage.textContent = 'Erro de conexão com o servidor.';
+                  loginMessage.textContent = 'Erro de conexão com o servidor. Tente novamente.';
                   loginMessage.className = 'text-red-500 mt-4 text-lg font-semibold';
               }
           }
-          fetch(`${API_URL}/login`, { /* ... opções do fetch ... */ })
-    .then(response => {
-        if (!response.ok) {
-            // Se a resposta não for OK (ex: 401, 404), trata o erro
-            return response.json().then(err => { throw new Error(err.error) });
-        }
-        return response.json();
-    })
-    .then(data => {
-        // 'data' é o objeto que vem do backend, ex: { message: '...', token: '...' }
-        if (data.token) {
-            // ---> PASSO CRUCIAL #1: Salvar o token no localStorage
-            localStorage.setItem('token', data.token); 
-            
-            // ---> PASSO CRUCIAL #2: Redirecionar para a página inicial
-            window.location.href = '/home.html'; // Ou apenas '/' se for o caso
-        } else {
-            // Mostra mensagem de erro se o backend não retornar um token
-            document.getElementById('mensagem-erro').textContent = data.error || 'Erro inesperado.';
-        }
-    })
-    .catch(error => {
-        console.error('Erro no login:', error);
-        document.getElementById('mensagem-erro').textContent = error.message;
-    });
       });
   }
 });

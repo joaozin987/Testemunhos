@@ -17,7 +17,7 @@ const jwt = require('jsonwebtoken');
 const nodemailer = require('nodemailer');
 const crypto = require('crypto');
 const axios = require('axios');
-const { error } = require('console');
+// A linha 'require('console')' foi removida por ser desnecessária
 
 const app = express();
 
@@ -44,16 +44,11 @@ const storage = new CloudinaryStorage({
 const upload = multer({ storage: storage });
 
 // --- CONEXÃO POSTGRESQL COM LÓGICA CONDICIONAL DE SSL ---
-// Verifica se o ambiente é de produção (na Render, vamos definir NODE_ENV='production')
 const isProduction = process.env.NODE_ENV === 'production';
-
-// Monta as opções de conexão
 const connectionOptions = {
   connectionString: process.env.DATABASE_URL,
-  // Usa SSL em produção (Render), mas não em desenvolvimento (local)
   ssl: isProduction ? { rejectUnauthorized: false } : false
 };
-
 const pool = new Pool(connectionOptions);
 
 
@@ -66,16 +61,19 @@ const transporter = nodemailer.createTransport({
   }
 });
 
-// --- ROTAS DE AUTENTICAÇÃO E RECUPERAÇÃO ---
-const autenticarToken = (req,res,next) => {
-  const authHeader = reqheaders['authorization'];
+// --- ROTA DE AUTENTICAÇÃO E RECUPERAÇÃO --- //
+// ---> CORREÇÃO CRÍTICA NO MIDDLEWARE DE AUTENTICAÇÃO
+const autenticarToken = (req, res, next) => {
+  const authHeader = req.headers['authorization']; // CORRIGIDO: req.headers
   const token = authHeader && authHeader.split(' ')[1];
 
-  if (!token == null) {
+  if (token == null) { // CORRIGIDO: A verificação estava errada
     return res.sendStatus(401);
   }
-  jwt.verifiy(token, process.env.JWT_SECRET, (err, user) => {
+
+  jwt.verify(token, process.env.JWT_SECRET, (err, user) => { // CORRIGIDO: jwt.verify
     if (err) {
+      console.error("Erro na verificação do Token:", err.message); // Adicionado para depuração
       return res.sendStatus(403);
     }
     req.user = user;
@@ -156,7 +154,7 @@ app.post('/login', async (req, res) => {
 app.post('/forgot-password', async (req, res) => {
   const { email } = req.body;
   try {
-    const userResult = await pool.query('SELECT * FROM usuarios WHERE email = $1', [email]);
+    const userResult = await pool.query('SELECT id FROM usuarios WHERE email = $1', [email]);
     if (userResult.rows.length === 0) {
       return res.status(200).json({ message: 'Se um usuário com este e-mail existir, um link de redefinição foi enviado.' });
     }
@@ -190,7 +188,7 @@ app.post('/reset-password', async (req, res) => {
   }
   try {
     const userResult = await pool.query(
-      'SELECT * FROM usuarios WHERE reset_token = $1 AND reset_token_expires > NOW()',
+      'SELECT id FROM usuarios WHERE reset_token = $1 AND reset_token_expires > NOW()',
       [token]
     );
     if (userResult.rows.length === 0) {
@@ -214,17 +212,14 @@ app.post('/reset-password', async (req, res) => {
 
 app.get('/perfil', autenticarToken, async (req, res) => {
   try {
-    const userId = req.user.id; // Pegamos o ID do usuário que o middleware extraiu do token
-
+    const userId = req.user.id; 
     const perfilResult = await pool.query(
       'SELECT id, nome, email, foto_perfil_url, bio FROM usuarios WHERE id = $1',
       [userId]
     );
-
     if (perfilResult.rows.length === 0) {
       return res.status(404).json({ error: 'Perfil de usuário não encontrado.' });
     }
-
     res.json(perfilResult.rows[0]);
   } catch (error) {
     console.error('Erro ao buscar perfil:', error);
@@ -236,18 +231,13 @@ app.get('/perfil', autenticarToken, async (req, res) => {
 // --- ROTAS DE DEPOIMENTOS ---
 // ==========================================================
 app.post('/upload', autenticarToken, upload.single('experienceImage'), async (req, res) => {
-  // Pegamos os dados do formulário como antes
   const { userName, userAge, userMovement, experienceText } = req.body;
-  const userId = req.user.id; // Pegamos o ID do usuário logado do token
-  
+  const userId = req.user.id;
   const imageUrl = req.file ? req.file.path : null;
-
-  if (!experienceText || !userName || !userAge) { // Verificamos os campos novamente
+  if (!experienceText || !userName || !userAge) {
     return res.status(400).json({ error: 'Todos os campos do formulário são obrigatórios.' });
   }
-
   try {
-    // O INSERT agora inclui as colunas nome_autor e idade_autor
     const result = await pool.query(
       `INSERT INTO depoimentos (experiencia, movimento, imagem_url, usuario_id, nome_autor, idade_autor) VALUES ($1, $2, $3, $4, $5, $6) RETURNING id`,
       [experienceText, userMovement, imageUrl, userId, userName, userAge]
@@ -258,22 +248,20 @@ app.post('/upload', autenticarToken, upload.single('experienceImage'), async (re
     res.status(500).json({ status: 'error', error: 'Erro ao salvar depoimento.' });
   }
 });
+
 app.get('/depoimentos', async (req, res) => {
   try {
-    // A consulta agora pega o nome_autor e idade_autor da própria tabela de depoimentos
     const result = await pool.query(`
       SELECT 
-        id, 
-        experiencia, 
-        imagem_url, 
-        movimento, 
-        data_criacao,
-        nome_autor,    -- Usa o nome digitado no formulário
-        idade_autor    -- Usa a idade digitada no formulário
+        d.id, d.experiencia, d.imagem_url, d.movimento, d.data_criacao,
+        d.nome_autor, d.idade_autor,
+        u.foto_perfil_url AS autor_foto_perfil
       FROM 
-        depoimentos
+        depoimentos d
+      LEFT JOIN 
+        usuarios u ON d.usuario_id = u.id
       ORDER BY 
-        data_criacao DESC
+        d.data_criacao DESC
     `);
     res.json(result.rows);
   } catch (error) {
@@ -282,19 +270,29 @@ app.get('/depoimentos', async (req, res) => {
   }
 });
 
-
-app.delete('/depoimentos/:id', async (req, res) => {
+// ---> CORREÇÃO DE SEGURANÇA NA ROTA DE DELEÇÃO
+app.delete('/depoimentos/:id', autenticarToken, async (req, res) => {
     const { id } = req.params;
+    const userId = req.user.id;
+
     try {
+        const ownershipResult = await pool.query('SELECT usuario_id FROM depoimentos WHERE id = $1', [id]);
+        if (ownershipResult.rows.length === 0) {
+            return res.status(404).json({ error: 'Depoimento não encontrado.' });
+        }
+        if (ownershipResult.rows[0].usuario_id !== userId) {
+            return res.status(403).json({ error: 'Você não tem permissão para deletar este depoimento.' });
+        }
+        
         const deleteResult = await pool.query('DELETE FROM depoimentos WHERE id = $1', [id]);
         if (deleteResult.rowCount > 0) {
             res.json({ status: 'ok', message: 'Depoimento deletado com sucesso.' });
         } else {
-            res.status(404).json({ status: 'error', error: 'Depoimento não encontrado.' });
+            res.status(404).json({ error: 'Depoimento não encontrado durante a deleção.' });
         }
     } catch (error) {
         console.error('Erro no DELETE:', error);
-        res.status(500).json({ status: 'error', error: 'Erro ao deletar depoimento.' });
+        res.status(500).json({ error: 'Erro ao deletar depoimento.' });
     }
 });
 

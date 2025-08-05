@@ -14,30 +14,34 @@
   <nav class="bg-accent200 shadow p-4 flex items-center justify-between">
     <h1 class="text-3xl font-slab text-primary100"><a href="home.html">Conectados pela Fé</a></h1>
   
-    <!-- Botão hambúrguer: visível apenas no mobile -->
     <button id="openMenu" class="md:hidden text-3xl text-bg100">&#9776;</button>
   
-    <!-- Menu horizontal: visível apenas no desktop -->
-    <ul class="hidden md:flex gap-6">
-      <li><a class="text-lg font-semibold text-bg100" href="./museu.html">Museu</a></li>
-      <li><a class="text-lg font-semibold text-bg100" href="home.html">Início</a></li>
-      <li><a class="text-lg font-semibold text-bg100" href="sobre.html">Sobre</a></li>
-      <li><a class="text-lg font-semibold text-bg100" href="exemplos.html">Exemplos de Vida</a></li>
-    </ul>
-    <div id="user-panel-desktop" class="relative">
-    <button id="user-menu-button-desktop" class="flex items-center gap-2 bg-blue-500 text-white font-bold py-2 px-4 rounded-lg">
-        <span>Minha Conta</span>
-        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
-    </button>
-    <div id="user-menu-dropdown-desktop" class="hidden absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg py-1 z-50">
-        <a href="perfil.html" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Meu Perfil</a>
-        <button id="logout-btn-desktop" class="w-full text-left block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Sair</button>
+    <div class="hidden md:flex items-center gap-6">
+        <ul class="flex gap-6">
+            <li><a class="text-lg font-semibold text-bg100" href="./museu.html">Museu</a></li>
+            <li><a class="text-lg font-semibold text-bg100" href="home.html">Início</a></li>
+            <li><a class="text-lg font-semibold text-bg100" href="sobre.html">Sobre</a></li>
+            <li><a class="text-lg font-semibold text-bg100" href="exemplos.html">Exemplos de Vida</a></li>
+        </ul>
+
+        <div id="login-panel-desktop" class="flex items-center gap-2">
+            <a href="login.html" class="text-lg font-semibold text-bg100">Entrar</a>
+            <a href="index.html" class="inline-block bg-blue-500 text-white font-bold py-2 px-4 rounded-lg">Cadastre-se</a>
+        </div>
+        <div id="user-panel-desktop" class="hidden relative">
+            <button id="user-menu-button-desktop" class="flex items-center gap-2 bg-blue-500 text-white font-bold py-2 px-4 rounded-lg">
+                <span>Minha Conta</span>
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+            </button>
+            <div id="user-menu-dropdown-desktop" class="hidden absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg py-1 z-50">
+                <a href="perfil.html" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Meu Perfil</a>
+                <button id="logout-btn-desktop" class="w-full text-left block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Sair</button>
+            </div>
+        </div>
     </div>
-</div>
   </nav>
   
-  <!-- Menu lateral: aparece no mobile quando botão é clicado -->
-  <div id="sidebar" class="fixed top-0 right-0 h-75 w-64 bg-accent200 text-bg100 transform translate-x-full transition-transform duration-300 z-50 shadow-lg md:hidden">
+  <div id="sidebar" class="fixed top-0 right-0 h-auto w-64 bg-accent200 text-bg100 transform translate-x-full transition-transform duration-300 z-50 shadow-lg md:hidden">
     <div class="flex justify-between items-center p-4 border-b border-bg100">
       <h2 class="text-2xl font-slab">Menu</h2>
       <button id="closeMenu" class="text-3xl">&times;</button>
@@ -46,21 +50,19 @@
       <li><a href="./museu.html" class="text-lg font-semibold">Museu</a></li>
       <li><a href="home.html" class="text-lg font-semibold">Início</a></li>
       <li><a href="sobre.html" class="text-lg font-semibold">Sobre</a></li>
-      <li><a class="text-lg font-semibold text-bg100" href="exemplos.html">Exemplos de Vida</a></li>
-    <div id="user-panel-desktop" class="relative">
-    <button id="user-menu-button-desktop" class="flex items-center gap-2 bg-blue-500 text-white font-bold py-2 px-4 rounded-lg">
-        <span>Minha Conta</span>
-        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
-    </button>
-    <div id="user-menu-dropdown-desktop" class="hidden absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg py-1 z-50">
-        <a href="perfil.html" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Meu Perfil</a>
-        <button id="logout-btn-desktop" class="w-full text-left block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Sair</button>
-    </div>
-</div>>
+      <li><a href="exemplos.html" class="text-lg font-semibold">Exemplos de Vida</a></li>
+      
+      <li id="login-panel-mobile">
+        <a href="login.html" class="text-lg font-semibold">Entrar</a>
+        <a href="index.html" class="mt-2 inline-block bg-blue-500 text-white font-bold py-2 px-4 rounded-lg">Cadastre-se</a>
+      </li>
+      <li id="user-panel-mobile" class="hidden">
+          <a href="perfil.html" class="text-lg font-semibold">Meu Perfil</a>
+          <button id="logout-btn-mobile" class="mt-2 w-full text-left bg-red-500 text-white font-bold py-2 px-4 rounded-lg">Sair</button>
+      </li>
     </ul>
   </div>
-  
-  
+
   <section class="hero px-4 max-w-4xl mx-auto">
 
     <!-- Seção Antes do Museu das Palavras: EJC Mudou Meu Viver -->
