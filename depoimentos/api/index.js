@@ -25,7 +25,7 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-app.use(express.static(path.join(__dirname, '..', 'public')));
+app.use(express.static(path.join(__dirname, '..', 'meu-frontend', 'src', 'pages'))); // Serve arquivos estáticos do diretório correto
 
 // --- CONFIGURAÇÃO DO CLOUDINARY ---
 cloudinary.config({

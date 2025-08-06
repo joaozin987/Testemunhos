@@ -17,7 +17,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     if (!token) {
         window.location.href = 'login.html';
         return;
-    }
+    } 
 
     try {
         const response = await fetch(`${API_URL}/perfil`, {
