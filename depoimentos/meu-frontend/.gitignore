@@ -22,3 +22,12 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+
+# Arquivo de variáveis de ambiente - Contém segredos!
+.env
+
+# Arquivos de configuração do VS Code
+.vscode/
+
+# Arquivos de sessão SQL
+*.session.sql
