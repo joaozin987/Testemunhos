@@ -4,48 +4,37 @@ import Navbar from '../components/Navbar';
 import { useAuth } from '../context/AuthContext'; // 1. Importa a ferramenta de autenticação
 
 function LoginPage() {
-  // 2. Cria os estados para os campos e para as mensagens
-  const [email, setEmail] = useState('');
-  const [senha, setSenha] = useState('');
-  const [mensagem, setMensagem] = useState('');
-  const [isLoading, setIsLoading] = useState(false);
+      const [email, setEmail] = useState('');
+      const [senha, setSenha] = useState('');
+      const [mensagem, setMensagem] = useState('');
+      const [isLoading, setIsLoading] = useState(false);
 
-  const navigate = useNavigate();
-  const { login } = useAuth(); // 3. Pega a função 'login' do nosso AuthContext
-  const API_URL = 'http://localhost:3000';
+      const navigate = useNavigate();
+      const { login } = useAuth(); // A função 'login' já sabe como falar com a API
 
-  // 4. Função que lida com o envio do formulário
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    setIsLoading(true);
-    setMensagem('');
+      // A função handleSubmit fica MUITO mais limpa
+      const handleSubmit = async (e) => {
+        e.preventDefault();
+        setIsLoading(true);
+        setMensagem('');
 
-    try {
-      const response = await fetch(`${API_URL}/login`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ email, senha }),
-      });
+        try {
+          // 1. Apenas chamamos a função 'login' do contexto.
+          // Toda a lógica de fetch/axios, headers e body está lá dentro!
+          await login(email, senha);
 
-      const result = await response.json();
+          // 2. Se a linha acima não deu erro, o login foi um sucesso.
+          navigate('/'); // Redireciona para a página inicial
 
-      if (response.ok && result.token) {
-        // SUCESSO!
-        login(result.token); // Avisa a aplicação inteira que o login foi feito
-        navigate('/');       // Redireciona para a página inicial
-      } else {
-        // Erro vindo da API
-        setMensagem(`Erro: ${result.error || 'Credenciais inválidas.'}`);
-      }
-    } catch (error) {
-      console.error('Erro de rede no login:', error);
-      setMensagem('Erro de conexão com o servidor. Tente novamente.');
-    } finally {
-      setIsLoading(false);
-    }
-  };
+        } catch (error) {
+          // 3. Se 'login' falhou, ele vai gerar um erro que podemos capturar.
+          console.error('Erro de rede no login:', error);
+          const errorMsg = error.response?.data?.error || 'Credenciais inválidas ou erro no servidor.';
+          setMensagem(errorMsg);
+        } finally {
+          setIsLoading(false);
+        }
+      };
 
   return (
     <>

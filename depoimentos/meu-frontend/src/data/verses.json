@@ -1,0 +1,219 @@
+{
+  "cansativo": [
+    {
+      "text": "Venham a mim, todos vocês que estão cansados e sobrecarregados, e eu lhes darei descanso.",
+      "reference": "Mateus 11:28"
+    }
+  ],
+  "feliz": [
+    {
+      "text": "Este é o dia que o Senhor fez; regozijemo-nos e alegremo-nos nele.",
+      "reference": "Salmos 118:24"
+    },
+    {
+      "text": "Alegrem-se os que te amam, Senhor, e os que te buscam, Senhor.",
+      "reference": "Salmos 40:16"
+    }
+  ],
+  "triste": [
+    {
+      "text": "O choro pode durar uma noite, mas a alegria vem pela manhã.",
+      "reference": "Salmos 30:5"
+    },
+    {
+      "text": "Lança o teu cuidado sobre o Senhor, e ele te susterá.",
+      "reference": "Salmos 55:22"
+    }
+  ],
+  "ansioso": [
+    {
+      "text": "Não andem ansiosos por coisa alguma, mas em tudo, pela oração e súplicas, apresentem seus pedidos a Deus.",
+      "reference": "Filipenses 4:6"
+    }
+    
+  ],
+  "grato": [
+    {
+      "text": "Deem graças em todas as circunstâncias, pois esta é a vontade de Deus para vocês em Cristo Jesus.",
+      "reference": "1 Tessalonicenses 5:18"
+    },
+    {
+      "text": "Dêem graças ao Senhor, porque ele é bom; o seu amor dura para sempre.",
+      "reference": "Salmos 107:1"
+    }
+  ],
+  "confuso": [
+    {
+      "text": "Se alguém de vós tem falta de sabedoria, peça a Deus, que a todos dá liberalmente, e nada lhes impropera, e ser-lhe-á dada.",
+      "reference": "Tiago 1:5"
+    },
+    {
+      "text": "O Senhor é o meu pastor; nada me faltará.",
+      "reference": "Salmos 23:1"
+    }
+  ],
+  "desanimado": [
+    {
+      "text": "O Senhor está perto dos que têm o coração quebrantado e salva os de espírito abatido.",
+      "reference": "Salmos 34:18"
+    },
+    {
+      "text": "Embora o choro dure uma noite, a alegria vem pela manhã.",
+      "reference": "Salmos 30:5"
+    }
+  ],
+  "vitorioso": [
+    {
+      "text": "Mas em todas estas coisas somos mais do que vencedores, por meio daquele que nos amou.",
+      "reference": "Romanos 8:37"
+    },
+    {
+      "text": "Eu sou aquele que tem vencido o mundo.",
+      "reference": "João 16:33"
+    }
+  ],
+  "superando": [
+    {
+      "text": "Não temas, porque eu sou contigo; não te assombres, porque eu sou o teu Deus. Eu te fortaleço, e te ajudo, e te sustento com a minha destra fiel.",
+      "reference": "Isaías 41:10"
+    },
+    {
+      "text": "Em todas essas coisas, somos mais que vencedores, por meio daquele que nos amou.",
+      "reference": "Romanos 8:37"
+    }
+  ],
+  "culpado": [
+    {
+      "text": "Agora, pois, já nenhuma condenação há para os que estão em Cristo Jesus.",
+      "reference": "Romanos 8:1"
+    }
+  ],
+  "arrependido": [
+    {
+      "text": "Se confessarmos os nossos pecados, ele é fiel e justo para perdoar os nossos pecados e nos purificar de toda injustiça.",
+      "reference": "1 João 1:9"
+    }
+  ],
+  "apaixonado": [
+      {
+        "text": "Acima de tudo, porém, revistam-se do amor, que é o elo perfeito.",
+        "reference": "Colossenses 3:14"
+      }
+  ],
+  "sobrecarregado": [
+    {
+      "text": "Lançando sobre ele toda a vossa ansiedade, porque ele tem cuidado de vós.",
+      "reference": "1 Pedro 5:7"
+    }    
+  ],
+  "esperançoso": [
+    {
+      "text": "Os que esperam no Senhor renovarão as suas forças, subirão com asas como águias.",
+      "reference": "Isaías 40:31"
+    }    
+  ],
+  "sozinho": [
+    {
+      "text": "Ainda que eu ande pelo vale da sombra da morte, não temerei mal algum, porque tu estás comigo.",
+      "reference": "Salmos 23:4"
+    }    
+  ],
+  "irritado": [
+    {
+      "text": "A resposta branda desvia o furor, mas a palavra dura suscita a ira.",
+      "reference": "Provérbios 15:1"
+    }    
+  ],
+  "preocupado": [
+    {
+      "text": "Entregue o seu caminho ao Senhor; confie nele, e ele agirá.",
+      "reference": "Salmos 37:5"
+    }    
+  ],
+  "perdido": [
+    {
+      "text": "Eu sou o caminho, a verdade e a vida. Ninguém vem ao Pai senão por mim.",
+      "reference": "João 14:6"
+    }    
+  ],
+  "humilhado": [
+    {
+      "text": "Humilhai-vos na presença do Senhor, e ele vos exaltará.",
+      "reference": "Tiago 4:10"
+    }    
+  ],
+  "medo": [
+    {
+      "text": "No amor não há medo; ao contrário, o perfeito amor expulsa o medo.",
+      "reference": "1 João 4:18"
+    }    
+  ],
+  "frustrado": [
+    {
+      "text": "Entrega o teu caminho ao Senhor, confia nele, e o mais ele fará.",
+      "reference": "Salmos 37:5"
+    }    
+  ],
+  "indeciso": [
+    {
+      "text": "Confia no Senhor de todo o teu coração e não te estribes no teu próprio entendimento.",
+      "reference": "Provérbios 3:5"
+    }    
+  ],
+  "injustiçado": [
+    {
+      "text": "Confia no Senhor de todo o teu coração e não te estribes no teu próprio entendimento.",
+      "reference": "Provérbios 3:5"
+    }    
+  ],
+  "desprezado": [
+    {
+      "text": "Ainda que meu pai e minha mãe me abandonem, o Senhor me acolherá.",
+      "reference": "Salmos 27:10"
+    }    
+  ],
+  "vergonha": [
+    {
+      "text": "Aquele que crer nele não será confundido.",
+      "reference": "Romanos 10:11"
+    }    
+  ],
+  "tentado": [
+    {
+      "text": "Não sobreveio a vocês tentação que não fosse comum aos homens. Deus é fiel; ele não permitirá que sejam tentados além do que podem suportar.",
+      "reference": "1 Coríntios 10:13"
+    }    
+  ],
+  "ferido": [
+    {
+      "text": "Ele cura os de coração quebrantado e cuida das suas feridas.",
+      "reference": "Salmos 147:3"
+    }    
+  ],
+  "inseguro": [
+    {
+      "text": "O Senhor é a minha luz e a minha salvação; a quem temerei?",
+      "reference": "Salmos 27:1"
+    }    
+  ],
+  "dificil": [
+  {
+    "text": "Deus é o nosso refúgio e fortaleza, socorro bem presente na angústia.",
+    "reference": "Salmos 46:1"
+  }
+],
+"turbulento": [
+ 
+  {
+    "text": "Deixo-lhes a paz; a minha paz lhes dou. Não a dou como o mundo a dá. Não se perturbem os seus corações, nem tenham medo.",
+    "reference": "João 14:27"
+  }
+],
+"preocupante": [
+  {
+    "text": "Não se turbe o vosso coração; credes em Deus, crede também em mim.",
+    "reference": "João 14:1"
+  }
+  
+]
+}

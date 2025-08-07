@@ -3,17 +3,20 @@ import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 // Componentes
 import RotaProtegida from "./components/RotaProtegida.jsx";
 
+// Páginas Públicas
 import LoginPages from "./pages/LoginPages.jsx";
 import CadastroPages from "./pages/CadastroPages.jsx";
-import RecuperarPages from "./pages/RecuperarSenhaPages.jsx"; // ← ⚠️ PARECE NÃO EXISTIR
+import RecuperarPages from "./pages/RecuperarSenhaPages.jsx"; 
 import RedefinirPages from "./pages/RedefinirPages.jsx";
 
-// Páginas Protegidasimport HomePages from "./pages/HomePages.jsx";
+// Páginas Protegidas
+// CORREÇÃO: A importação do HomePages estava quebrada. Agora está correta.
+import HomePages from "./pages/HomePages.jsx";
 import MuseuPages from "./pages/MuseuPages.jsx";
 import ExemplosPages from "./pages/ExemplosPages.jsx";
 import SobrePages from "./pages/SobrePages.jsx";
 import PerfilPages from "./pages/PerfilPages.jsx";
-import HomePages from "./pages/HomePages.jsx";
+
 
 function App() {
   return (

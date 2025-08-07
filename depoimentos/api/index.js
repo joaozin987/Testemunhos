@@ -124,34 +124,49 @@ app.post('/register', async (req, res) => {
   }
 });
 
-// ROTA DE LOGIN
+// ROTA DE LOGIN COM CHECKPOINTS DE DEBUG
 app.post('/login', async (req, res) => {
+  console.log('--- CHECKPOINT 1: Rota /login foi acessada ---');
   const { email, senha } = req.body;
+  console.log('Dados recebidos:', { email, senha });
+
   if (!email || !senha) {
     return res.status(400).json({ error: 'Email e senha são obrigatórios.' });
   }
+
   try {
     const userResult = await pool.query('SELECT id, nome, senha_hash FROM usuarios WHERE email = $1', [email]);
+    console.log('--- CHECKPOINT 2: Resultado da query do banco ---');
+    console.log('Usuário encontrado:', userResult.rows);
     
     if (userResult.rows.length === 0) {
+      console.log('ERRO: Usuário com este email não foi encontrado no banco.');
       return res.status(404).json({ error: 'Usuário não encontrado.' });
     }
+
     const user = userResult.rows[0];
+    console.log('--- CHECKPOINT 3: Preparando para comparar a senha ---');
     const isMatch = await bcrypt.compare(senha, user.senha_hash);
+    
     if (!isMatch) {
+      console.log('ERRO: A comparação da senha com bcrypt retornou false.');
       return res.status(401).json({ error: 'Email ou senha incorretos, tente novamente.' });
     }
+
+    console.log('--- CHECKPOINT 4: Senha correta! Gerando o token... ---');
     const payload = { id: user.id, nome: user.nome };
     const token = jwt.sign(payload, process.env.JWT_SECRET, { expiresIn: '1h' });
+    
     res.json({ message: 'Login bem-sucedido!', token: token });
+
   } catch (error) {
-    console.error('Erro no login:', error);
+    console.error('ERRO CRÍTICO NO BLOCO CATCH:', error);
     res.status(500).json({ error: 'Erro interno ao fazer login.' });
   }
 });
 
 // ROTA PARA SOLICITAR A REDEFINIÇÃO DE SENHA
-app.post('/forgot-password', async (req, res) => {
+app.post('/redefinir-senha', async (req, res) => {
   const { email } = req.body;
   try {
     const userResult = await pool.query('SELECT id FROM usuarios WHERE email = $1', [email]);
@@ -181,7 +196,7 @@ app.post('/forgot-password', async (req, res) => {
 });
 
 // ROTA PARA EFETIVAMENTE REDEFINIR A SENHA
-app.post('/reset-password', async (req, res) => {
+app.post('/recuperar-senha', async (req, res) => {
   const { token, senha } = req.body;
   if (!token || !senha) {
     return res.status(400).json({ error: 'Token e nova senha são obrigatórios.' });
