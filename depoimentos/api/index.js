@@ -22,10 +22,17 @@ const axios = require('axios');
 const app = express();
 
 // --- MIDDLEWARES ---
-app.use(cors());
+
+app.use(cors({
+  origin: '*', 
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'], 
+  allowedHeaders: ['Content-Type', 'Authorization'], 
+}));
+
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-app.use(express.static(path.join(__dirname, '..', 'meu-frontend', 'src', 'pages'))); // Serve arquivos estáticos do diretório correto
+// ... o resto dos seus middlewares ...
+
 
 // --- CONFIGURAÇÃO DO CLOUDINARY ---
 cloudinary.config({
@@ -81,10 +88,10 @@ const autenticarToken = (req, res, next) => {
   });
 };
 
-
-// ROTA DE CADASTRO (REGISTER)
+// ROTA DE CADASTRO COM CHECKPOINTS DE DIAGNÓSTICO
 app.post('/register', async (req, res) => {
   const { nome, email, senha } = req.body;
+  console.log(`--- CHECKPOINT 1: Rota /register recebida com o email: ${email}`);
 
   if (!nome || !email || !senha) {
     return res.status(400).json({ error: 'Todos os campos são obrigatórios.' });
@@ -94,23 +101,31 @@ app.post('/register', async (req, res) => {
   }
 
   try {
+    console.log('--- CHECKPOINT 2: Preparando para chamar a API de validação de e-mail...');
     const apiKey = process.env.EMAIL_VALIDATION_API_KEY;
     const validationUrl = `https://emailvalidation.abstractapi.com/v1/?api_key=${apiKey}&email=${email}`;
     const validationResult = await axios.get(validationUrl);
+    console.log('--- CHECKPOINT 3: API de validação de e-mail respondeu!');
 
     if (!validationResult.data.is_smtp_valid.value) {
+      console.log('--- ERRO: A validação de e-mail retornou "inválido". ---');
       return res.status(400).json({ error: 'Esta conta de e-mail do Gmail não é válida ou não pode ser verificada.' });
     }
 
+    console.log('--- CHECKPOINT 4: Preparando para hashear a senha...');
     const salt = await bcrypt.genSalt(10);
     const senhaHash = await bcrypt.hash(senha, salt);
-    
+    console.log('--- CHECKPOINT 5: Senha hasheada com sucesso.');
+
+    console.log('--- CHECKPOINT 6: Preparando para inserir no banco de dados...');
     const newUser = await pool.query(
       'INSERT INTO usuarios (nome, email, senha_hash) VALUES ($1, $2, $3) RETURNING id, nome, email',
       [nome, email, senhaHash]
     );
+    console.log('--- CHECKPOINT 7: Usuário inserido no banco com sucesso!');
 
     res.status(201).json(newUser.rows[0]);
+
   } catch (error) {
     if (error.response && error.response.status) {
       console.error('Erro na API de validação de e-mail:', error.response.data);
@@ -119,7 +134,7 @@ app.post('/register', async (req, res) => {
     if (error.code === '23505') { 
       return res.status(409).json({ error: 'O e-mail informado já foi cadastrado. Tente fazer o login.' });
     }
-    console.error('Erro no registro:', error);
+    console.error('Erro inesperado no registro:', error);
     res.status(500).json({ error: 'Ocorreu um erro inesperado ao registrar. Tente novamente.' });
   }
 });
@@ -363,4 +378,3 @@ app.listen(PORT, () => {
 });
 
 module.exports = app;
-

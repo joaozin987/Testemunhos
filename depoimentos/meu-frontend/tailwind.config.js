@@ -1,6 +1,8 @@
 /** @type {import('tailwindcss').Config} */
-export default {
+module.exports = {
   content: [
+    // Este caminho já inclui tudo dentro da pasta src,
+    // como src/pages/LoginPages.jsx
     "./index.html",
     "./src/**/*.{js,ts,jsx,tsx}",
   ],
