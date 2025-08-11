@@ -1,47 +1,44 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import Navbar from '../components/Navbar';
-import { useAuth } from '../context/AuthContext'; // 1. Importa a ferramenta de autenticação
+import { useAuth } from '../context/AuthContext'; // Importa a ferramenta de autenticação
+
+// O Navbar provavelmente estará no seu componente de Layout (App.jsx),
+// então não precisamos dele aqui, mas mantive como no seu código.
+import Navbar from '../components/Navbar'; 
 
 function LoginPage() {
-      const [email, setEmail] = useState('');
-      const [senha, setSenha] = useState('');
-      const [mensagem, setMensagem] = useState('');
-      const [isLoading, setIsLoading] = useState(false);
+  const [email, setEmail] = useState('');
+  const [senha, setSenha] = useState('');
+  const [mensagem, setMensagem] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
 
-      const navigate = useNavigate();
-      const { login } = useAuth(); // A função 'login' já sabe como falar com a API
+  const navigate = useNavigate();
+  const { login } = useAuth(); // Sua função de login do contexto
 
-      // A função handleSubmit fica MUITO mais limpa
-      const handleSubmit = async (e) => {
-        e.preventDefault();
-        setIsLoading(true);
-        setMensagem('');
+  // Sua função handleSubmit, já otimizada
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setIsLoading(true);
+    setMensagem('');
 
-        try {
-          // 1. Apenas chamamos a função 'login' do contexto.
-          // Toda a lógica de fetch/axios, headers e body está lá dentro!
-          await login(email, senha);
+    try {
+      await login(email, senha);
+      navigate('/'); // Redireciona para a página inicial
+    } catch (error) {
+      console.error('Erro de rede no login:', error);
+      const errorMsg = error.response?.data?.error || 'Credenciais inválidas ou erro no servidor.';
+      setMensagem(errorMsg);
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
-          // 2. Se a linha acima não deu erro, o login foi um sucesso.
-          navigate('/'); // Redireciona para a página inicial
-
-        } catch (error) {
-          // 3. Se 'login' falhou, ele vai gerar um erro que podemos capturar.
-          console.error('Erro de rede no login:', error);
-          const errorMsg = error.response?.data?.error || 'Credenciais inválidas ou erro no servidor.';
-          setMensagem(errorMsg);
-        } finally {
-          setIsLoading(false);
-        }
-      };
-
+  // O HTML que criamos, agora como JSX e conectado à sua lógica
   return (
     <>
-      <Navbar />
-      
-      <section className="flex justify-center items-center h-screen bg-gray-100">
-        {/* 5. Conecta a função ao onSubmit do formulário */}
+    <Navbar></Navbar>
+      {/* <Navbar /> */}
+      <section className="flex justify-center items-center min-h-screen bg-gray-100">
         <form onSubmit={handleSubmit} className="bg-white grid p-8 text-center w-full max-w-md rounded-xl shadow-xl">
             <h1 className="text-3xl font-slab mb-3">Faça o Login</h1>
            
@@ -53,8 +50,8 @@ function LoginPage() {
               type="email" 
               placeholder="digite seu email" 
               required
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
+              value={email} // Conectado ao estado 'email'
+              onChange={(e) => setEmail(e.target.value)} // Atualiza o estado 'email'
             />
             
             <label className="text-left text-xl mb-1 mt-3 font-slab" htmlFor="loginPassword">Senha</label>
@@ -65,25 +62,24 @@ function LoginPage() {
               type="password" 
               placeholder="digite sua senha" 
               required 
-              value={senha}
-              onChange={(e) => setSenha(e.target.value)}
+              value={senha} // Conectado ao estado 'senha'
+              onChange={(e) => setSenha(e.target.value)} // Atualiza o estado 'senha'
             />
             
+            {/* Convertemos o Link do React Router */}
             <Link className="text-right text-blue-800" to="/recuperar-senha">esqueceu a senha?</Link>
             
+            {/* Botão conectado ao estado 'isLoading' */}
             <button type="submit" className="bg-blue-500 text-white font-bold py-2 px-4 rounded mt-4 hover:bg-blue-700 disabled:bg-blue-300" disabled={isLoading}>
               {isLoading ? 'Entrando...' : 'Continuar'}
             </button>
          
+            {/* Mensagem de erro conectada ao estado 'mensagem' */}
             {mensagem && (
               <p className="text-red-500 mt-4 text-center text-lg font-semibold">{mensagem}</p>
             )}
         </form>
       </section>
-
-      <footer className="bg-accent100 text-bg100 text-center py-6 mt-10">
-        <p>© 2025 Conectados pela Fé. Todos os direitos reservados.</p>
-      </footer>
     </>
   );
 }
