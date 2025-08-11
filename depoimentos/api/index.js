@@ -22,9 +22,10 @@ const upload = require('./upload.js');
 const app = express();
 
 // --- MIDDLEWARES ---
+const frontendURL = 'https://conectados-pela-fe.onrender.com'; 
 
 // Configuração de CORS mais segura para desenvolvimento e produção
-const whitelist = ['http://localhost:5173', 'https://seu-site-em-producao.com']; // Adicione a URL do seu site aqui
+const whitelist = ['http://localhost:5173', frontendURL]; // Adicione a URL do seu site aqui
 const corsOptions = {
   origin: function (origin, callback) {
     if (whitelist.indexOf(origin) !== -1 || !origin) {
