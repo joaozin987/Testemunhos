@@ -1,7 +1,6 @@
-// src/context/AuthContext.jsx (VERSÃO CORRIGIDA)
-
-import React, { createContext, useState, useEffect, useContext } from 'react';
-import api from '../api'; 
+import React, { createContext, useState, useEffect, useContext, useCallback } from 'react';
+import { useNavigate } from 'react-router-dom';
+import api from '../api';
 
 const AuthContext = createContext();
 
@@ -10,12 +9,13 @@ export const AuthProvider = ({ children }) => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [loading, setLoading] = useState(true);
 
+  const navigate = useNavigate();
+
+  // Verifica token ao iniciar
   useEffect(() => {
     const token = localStorage.getItem('token');
     if (token) {
-      // PASSO 1: Se um token existe, configure a API para usá-lo imediatamente
       api.defaults.headers.common['Authorization'] = `Bearer ${token}`;
-
       api.get('/perfil')
         .then(response => {
           setUser(response.data);
@@ -23,6 +23,8 @@ export const AuthProvider = ({ children }) => {
         })
         .catch(() => {
           localStorage.removeItem('token');
+          setUser(null);
+          setIsAuthenticated(false);
         })
         .finally(() => {
           setLoading(false);
@@ -32,38 +34,48 @@ export const AuthProvider = ({ children }) => {
     }
   }, []);
 
-  const login = async (email, senha) => {
+  // Login com redirect garantido
+const login = useCallback(async (email, senha) => {
+  try {
     const response = await api.post('/login', { email, senha });
     const { token } = response.data;
 
+    // Salva token
     localStorage.setItem('token', token);
-    
-    // PASSO 2: Configure a API para usar o novo token em todas as chamadas futuras
+
+    // Configura header imediatamente
     api.defaults.headers.common['Authorization'] = `Bearer ${token}`;
-    
-    // Agora a chamada para /perfil vai funcionar porque a autorização foi enviada
+
+    // Busca perfil já autenticado
     const profileResponse = await api.get('/perfil');
+
     setUser(profileResponse.data);
     setIsAuthenticated(true);
-  };
 
-  const logout = () => {
+    // Redireciona após garantir que o user está setado
+    navigate('/perfil');
+  } catch (error) {
+    console.error('Erro no login:', error);
+    throw error;
+  }
+}, [navigate]);
+
+
+  const logout = useCallback(() => {
     localStorage.removeItem('token');
-    
-    // PASSO 3: Limpe o cabeçalho de autorização da API
     delete api.defaults.headers.common['Authorization'];
-
     setUser(null);
     setIsAuthenticated(false);
-  };
+    navigate('/login');
+  }, [navigate]);
 
-  const value = {
+  const value = React.useMemo(() => ({
     isAuthenticated,
     user,
     loading,
     login,
     logout,
-  };
+  }), [isAuthenticated, user, loading, login, logout]);
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 };

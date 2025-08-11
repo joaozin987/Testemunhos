@@ -1,29 +1,30 @@
 import { BrowserRouter as Router, Routes, Route, Outlet } from "react-router-dom";
 import { AuthProvider } from './context/AuthContext.jsx';
 
-// Nossos Componentes de Layout
+// Layouts
 import Navbar from "./components/Navbar.jsx";
 import Footer from "./components/Footer.jsx";
+import LayoutPublico from "./components/LayoutPublico.jsx";
 
-// Nossas Páginas
-import HomePage from "./pages/HomePages.jsx";
-import LoginPage from "./pages/LoginPages.jsx";
-import CadastroPage from "./pages/CadastroPages.jsx";
-import MuseuPage from "./pages/MuseuPages.jsx";
-import ExemplosPage from "./pages/ExemplosPages.jsx";
-import SobrePage from "./pages/SobrePages.jsx";
-import PerfilPage from "./pages/PerfilPages.jsx";
-import RecuperarSenhaPage from "./pages/RecuperarSenhaPages.jsx";
-import RedefinirPage from "./pages/RedefinirPages.jsx";
+// Páginas
+import HomePage from "./pages/HomePage.jsx";
+import LoginPage from "./pages/LoginPage.jsx";
+import CadastroPage from "./pages/CadastroPage.jsx";
+import MuseuPage from "./pages/MuseuPage.jsx";
+import ExemplosPage from "./pages/ExemplosPage.jsx";
+import SobrePage from "./pages/SobrePage.jsx";
+import PerfilPage from "./pages/PerfilPage.jsx";
+import RecuperarSenhaPage from "./pages/RecuperarSenhaPage.jsx";
+import RedefinirPage from "./pages/RedefinirPage.jsx";
 import RotaProtegida from "./components/RotaProtegida.jsx";
 
-// --- COMPONENTE DE LAYOUT (A MOLDURA) ---
 function AppLayout() {
   return (
     <>
       <Navbar />
-      {/* O Outlet renderiza a página atual aqui dentro */}
-      <Outlet />
+      <main>
+        <Outlet />
+      </main>
       <Footer />
     </>
   );
@@ -32,31 +33,31 @@ function AppLayout() {
 function App() {
   return (
     <Router>
+      {/* AuthProvider precisa estar DENTRO do Router */}
       <AuthProvider>
         <Routes>
-          {/* GRUPO 1: ROTAS COM NAVBAR E FOOTER (dentro do AppLayout) */}
+          {/* Grupo 1: Rotas Públicas */}
+          <Route element={<LayoutPublico />}>
+            <Route path="/login" element={<LoginPage />} />
+            <Route path="/cadastro" element={<CadastroPage />} />
+          </Route>
+
+          {/* Grupo 2: Rotas com Navbar/Footer */}
           <Route element={<AppLayout />}>
-            
-            {/* Rotas Públicas com Layout */}
             <Route path="/" element={<HomePage />} />
             <Route path="/museu" element={<MuseuPage />} />
             <Route path="/exemplos" element={<ExemplosPage />} />
             <Route path="/sobre" element={<SobrePage />} />
 
-            {/* Rotas Protegidas com Layout */}
+            {/* Rotas Protegidas */}
             <Route element={<RotaProtegida />}>
               <Route path="/perfil" element={<PerfilPage />} />
             </Route>
-
           </Route>
 
-          {/* GRUPO 2: ROTAS SEM LAYOUT (TELA CHEIA) */}
-          <Route path="/login" element={<LoginPage />} />
-          <Route path="/cadastro" element={<CadastroPage />} />
+          {/* Grupo 3: Telas sem Layout */}
           <Route path="/recuperar-senha" element={<RecuperarSenhaPage />} />
-          {/* CORREÇÃO: A rota de redefinir senha precisa do :token */}
           <Route path="/redefinir-senha/:token" element={<RedefinirPage />} />
-
         </Routes>
       </AuthProvider>
     </Router>

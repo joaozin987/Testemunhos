@@ -1,10 +1,7 @@
-/** @type {import('tailwindcss').Config} */
 module.exports = {
   content: [
-    // Este caminho já inclui tudo dentro da pasta src,
-    // como src/pages/LoginPages.jsx
     "./index.html",
-    "./src/**/*.{js,ts,jsx,tsx}",
+    "./src/**/*.{js,jsx,ts,tsx}",
   ],
   theme: {
     extend: {
@@ -19,12 +16,12 @@ module.exports = {
         bg100: '#fffefb',
         bg200: '#bda78a',
         bg300: '#cccbc8',
-        bg400: '#dd0025'
+        bg400: '#dd0025',
       },
       fontFamily: {
         limelight: ['"Limelight"', 'cursive', 'Noto Serif'],
         slab: ['"Roboto Slab"', 'serif', 'Oswald'],
-      }
+      },
     },
   },
   plugins: [],
