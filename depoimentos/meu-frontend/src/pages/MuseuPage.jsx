@@ -87,7 +87,7 @@ function MuseuPage() {
           <div className="bg-white rounded-lg  shadow-lg overflow-hidden flex flex-col">
             <img src="src/assets/img/testemunho31.jpeg" alt="Imagem de oração" className="w-full h-40 object-cover cursor-pointer" onClick={() => abrirImagem('/img/testemunho31.jpeg')} />
             <div className="p-4 flex flex-col flex-grow">
-              <p className="text-base font-slab text-gray-700 flex-grow">"Em Tudo Amar e Servir"</p>
+              <a className="text-base font-slab text-gray-700 flex-grow" href='https://www.vaticannews.va/pt/igreja/news/2023-07/santo-inacio-loyola-amar-servir-legado-vida-companhia-jesus.html' target='blank'>"Em Tudo Amar e Servir"</a>
               <p className="font-semibold mt-2 text-right text-gray-900 text-sm">— Santo Inácio de Loyola</p>
             </div>
           </div>
@@ -96,11 +96,27 @@ function MuseuPage() {
           <div className="bg-white rounded-lg shadow-lg overflow-hidden flex flex-col">
             <img src="/src/assets/img/testemunho32.jpeg" alt="Imagem de fé" className="w-full h-40 object-cover cursor-pointer" onClick={() => abrirImagem('/img/testemunho32.jpeg')} />
             <div className="p-4 flex flex-col flex-grow">
-              <p className="text-base font-slab text-gray-700 flex-grow">"Tenho certeza de que esta é a minha vocação: viver com os últimos."</p>
+              <a className="text-base font-slab text-gray-700 flex-grow" href='https://www.livrarialoyola.com.br/produto/o-diario-de-sandra-nova-edicao-com-a-vida-o-milagre-de-cura-e-a-oracao-de-intercessao-369715' target='blank'>"Tenho certeza de que esta é a minha vocação: viver com os últimos."</a>
               <p className="font-semibold mt-2 text-right text-gray-900 text-sm">— Beata Sandra Sabattini</p>
             </div>
           </div>
-          
+              <div className="bg-white rounded-lg shadow-lg overflow-hidden flex flex-col">
+            <img src=" https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcS1umOyM3hr69ZUkl1ZTrpHgWhxY8l0kVC_Gg&s" alt="Imagem de fé" className="w-full h-40 object-cover cursor-pointer" onClick={() => abrirImagem('/img/testemunho32.jpeg')} />
+            <div className="p-4 flex flex-col flex-grow">
+              <a className="text-base font-slab text-gray-700 flex-grow" href="https://formacao.cancaonova.com/diversos/frases-de-santa-teresinha/" target='blank'>"Quero passar meu céu fazendo o bem na terra."</a>
+              <p className="font-semibold mt-2 text-right text-gray-900 text-sm">— Santa Teresinha do Menino Jesus</p>
+            </div>
+          </div>
+
+            <div className="bg-white rounded-lg shadow-lg overflow-hidden flex flex-col">
+            <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/e/ea/Saint_Augustine_by_Philippe_de_Champaigne.jpg/800px-Saint_Augustine_by_Philippe_de_Champaigne.jpg" alt="Imagem de fé" className="w-full h-40 object-cover cursor-pointer" onClick={() => abrirImagem('/img/testemunho32.jpeg')} />
+            <div className="p-4 flex flex-col flex-grow">
+              <a className="text-base font-slab text-gray-700 flex-grow" href="https://www.pensador.com/frases_de_santo_agostinho/" target='blank'>"Ter fé é assinar uma folha em branco e deixar que Deus nela escreva o que quiser."</a>
+              <p className="font-semibold mt-2 text-right text-gray-900 text-sm">— Santo Agostinho</p>
+            </div>
+          </div>
+         
+         
           {/* Adicione os outros cards aqui se precisar */}
 
         </div>
