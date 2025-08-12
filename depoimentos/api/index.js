@@ -190,27 +190,95 @@ app.post('/redefinir-senha', async (req, res) => {
 });
 
 
-
-app.get('/perfil', autenticarToken, async (req, res) => { /* ... sua lógica ... */ 
- 
+app.get('/perfil', autenticarToken, async (req, res) => {
   try {
-    const userResult = await pool.query(
-      'SELECT id, nome, email FROM usuarios WHERE id = $1',
-      [req.user.id]
+    const userId = req.user.id; 
+    // Query otimizada para buscar todos os campos necessários para a página de perfil
+    const perfilResult = await pool.query(
+      'SELECT id, nome, email, foto_perfil_url, bio, versiculo_favorito, cidade FROM usuarios WHERE id = $1',
+      [userId]
     );
 
-    if (userResult.rows.length === 0) {
-      return res.status(404).json({ error: 'Usuário não encontrado.' });
+    if (perfilResult.rows.length === 0) {
+      return res.status(404).json({ error: 'Perfil de usuário não encontrado.' });
     }
-
-    res.json(userResult.rows[0]);
+    res.json(perfilResult.rows[0]);
   } catch (error) {
     console.error('Erro ao buscar perfil:', error);
-    res.status(500).json({ error: 'Erro interno ao buscar perfil.' });
+    res.status(500).json({ error: 'Erro interno ao buscar dados do perfil.' });
   }
 });
 
-app.put('/perfil', autenticarToken, async (req, res) => { /* ... sua lógica ... */ });
+// ROTA PARA ATUALIZAR OS DADOS DO PERFIL (VERSÃO ROBUSTA)
+app.put('/perfil', autenticarToken, async (req, res) => {
+  console.log('--- Rota PUT /perfil acessada. ---');
+
+  try {
+    const userId = req.user.id;
+    const { nome, bio, versiculo_favorito, cidade } = req.body; 
+
+    console.log('--- Dados recebidos do frontend:', { nome, bio, versiculo_favorito, cidade });
+
+    if (!nome || nome.trim() === '') {
+      return res.status(400).json({ error: 'O campo nome é obrigatório.' });
+    }
+
+    // --- LÓGICA DE UPDATE DINÂMICO E SEGURO ---
+    const fields = [];
+    const values = [];
+    let queryIndex = 1;
+
+    // Adiciona cada campo à query apenas se ele foi enviado pelo frontend
+    if (nome !== undefined) {
+      fields.push(`nome = $${queryIndex++}`);
+      values.push(nome);
+    }
+    if (bio !== undefined) {
+      fields.push(`bio = $${queryIndex++}`);
+      values.push(bio);
+    }
+    if (versiculo_favorito !== undefined) {
+      fields.push(`versiculo_favorito = $${queryIndex++}`);
+      values.push(versiculo_favorito);
+    }
+    if (cidade !== undefined) {
+      fields.push(`cidade = $${queryIndex++}`);
+      values.push(cidade);
+    }
+
+    if (fields.length === 0) {
+      return res.status(400).json({ error: 'Nenhum campo para atualizar foi fornecido.' });
+    }
+
+    values.push(userId); // Adiciona o ID do usuário para a cláusula WHERE
+
+    const query = `
+      UPDATE usuarios
+      SET ${fields.join(', ')} 
+      WHERE id = $${queryIndex}
+      RETURNING id, nome, email, foto_perfil_url, bio, versiculo_favorito, cidade;
+    `;
+    
+    console.log('--- Executando query:', query);
+    console.log('--- Com os valores:', values);
+
+    const result = await pool.query(query, values);
+
+    console.log('--- Perfil atualizado com sucesso no banco! ---');
+
+    if (result.rowCount === 0) {
+      return res.status(404).json({ error: 'Usuário não encontrado para atualizar.' });
+    }
+
+    res.status(200).json(result.rows[0]);
+
+  } catch (error) {
+    // Este log agora nos dirá o erro exato do banco de dados
+    console.error('--- ERRO CRÍTICO no PUT /perfil ---:', error);
+    res.status(500).json({ error: 'Erro interno ao atualizar perfil.' });
+  }
+});
+
 app.post('/upload', autenticarToken, upload.single('experienceImage'), async (req, res) => { /* ... sua lógica ... */ });
 app.get('/depoimentos', async (req, res) => { /* ... sua lógica ... */ });
 app.delete('/depoimentos/:id', autenticarToken, async (req, res) => { /* ... sua lógica ... */ });
