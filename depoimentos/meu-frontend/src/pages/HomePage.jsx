@@ -115,15 +115,16 @@ function HomePage() {
           </div>
         )}
         <div className="p-8 sm:p-10 mt-7 rounded-lg bg-gray-300 max-w-6xl mx-auto">
-  <div className="flex flex-col md:flex-row md:items-start gap-6">
-    <div className="flex justify-center md:justify-start">
-      <img
-        src="/src/assets/img/bde0b9ac-ee47-466d-b881-9743b3d8cd46.jpeg"
-        className="w-full max-w-[300px] sm:max-w-[350px] md:max-w-[400px] object-cover rounded-lg cursor-pointer"
-        alt="Imagem de João Paulo compartilhando sua experiência no EJC"
-        onClick={() => abrirImagem('/src/assets/img/bde0b9ac-ee47-466d-b881-9743b3d8cd46.jpeg')}
-      />
-    </div>
+          <div className="flex flex-col md:flex-row md:items-start gap-8"> {/* Aumentei o gap para dar mais espaço */}
+          <div className="flex-shrink-0 flex justify-center md:justify-start"> {/* Adicionei flex-shrink-0 */}
+            <img 
+              src="/src/assets/img/bde0b9ac-ee47-466d-b881-9743b3d8cd46.jpeg" 
+              
+              className="w-72 h-72 sm:w-56 sm:h-56 md:w-80 md:h-80 object-cover rounded-lg shadow-md" 
+              alt="Imagem de João Paulo compartilhando sua experiência no EJC"
+              onClick={() => handleOpenImage('/src/assets/img/bde0b9ac-ee47-466d-b881-9743b3d8cd46.jpeg')}
+            />  
+          </div>
 
     <div className="text-left mt-10 md:mt-0 ml-0 md:ml-5 max-w-4xl">
       <h2 className="text-3xl sm:text-4xl text-black font-slab">Meu Depoimento</h2>
@@ -143,7 +144,7 @@ function HomePage() {
 
 
         <div className="text-center mt-10 max-w-4xl mx-auto">
-          <p className="text-2xl font-bold text-blue-500">Tem Alguma Experiência para Compartilhar?</p>
+          <p className="text-2xl font-bold text-white">Tem Alguma Experiência para Compartilhar?</p>
           {/* Botão "Enviar" agora abre o alerta */}
           <a href="#" onClick={handleOpenModal} className="mt-2 inline-block px-6 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition">
             Enviar

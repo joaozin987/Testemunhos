@@ -140,7 +140,9 @@ function PerfilPage() {
                 onChange={(e) => setVersiculo(e.target.value)}
                 className="w-full p-2 border border-gray-300 rounded-md shadow-sm"
               />
+              
             </div>
+
             <div className="flex justify-end gap-4">
               <button
                 type="button"
