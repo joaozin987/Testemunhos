@@ -1,32 +1,41 @@
 import React, { useState, useEffect } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+// A importação useNavigate é mantida, pois é uma boa prática para navegação futura.
+import { Link, useNavigate } from 'react-router-dom'; 
+// A importação dos versículos é essencial e foi mantida.
 import versesData from '../data/verses.json'; 
 
 function HomePage() {
+  // Seus estados existentes
   const [depoimentos, setDepoimentos] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
-  
-  // --- NOVO --- Adicionei um estado específico para o formulário
   const [isFormModalOpen, setIsFormModalOpen] = useState(false); 
-  
   const [isAlertOpen, setIsAlertOpen] = useState(false);
   const [isGoalSectionVisible, setIsGoalSectionVisible] = useState(false);
   const [isWordSectionVisible, setIsWordSectionVisible] = useState(false);
   const [isImageViewerOpen, setIsImageViewerOpen] = useState(false);
   const [currentImage, setCurrentImage] = useState('');
-  
   const [termoBusca, setTermoBusca] = useState('');
   const [versiculoEncontrado, setVersiculoEncontrado] = useState(null);
   const [erroBusca, setErroBusca] = useState('');
   
+  // Estado para controlar os campos do formulário
+  const [formData, setFormData] = useState({
+    name: '',
+    movement: '',
+    location: '',
+    experience: ''
+  });
+
   const navigate = useNavigate();
-  const API_URL = 'http://localhost:3000';
+  // Lembre-se que seu erro original de login era na porta 3001
+  const API_URL = 'http://localhost:3001'; 
 
   useEffect(() => {
     setIsLoading(false);
   }, []);
 
+  // Função para buscar o versículo (depende do verses.json)
   const handleSearchVerse = () => {
     setVersiculoEncontrado(null);
     setErroBusca('');
@@ -41,44 +50,69 @@ function HomePage() {
     }
   };
 
+  // Funções de controle dos modais
   const handleOpenImage = (imageUrl) => {
     setCurrentImage(imageUrl);
     setIsImageViewerOpen(true);
   };
   
-  // Abre o modal de ALERTA
   const handleOpenAlert = (e) => {
     e.preventDefault(); 
     setIsAlertOpen(true);
   };
   
-  // --- LÓGICA ATUALIZADA ---
-  // Fecha o ALERTA e abre o FORMULÁRIO
   const handleCloseAlertAndOpenModal = () => {
     setIsAlertOpen(false);
-    setIsFormModalOpen(true); // Abre o modal do formulário
+    setIsFormModalOpen(true);
   };
 
-  // --- NOVO --- Função para fechar o modal de FORMULÁRIO
   const handleCloseFormModal = () => {
     setIsFormModalOpen(false);
   };
+  
+  // Função para atualizar o estado do formulário
+  const handleFormChange = (e) => {
+    const { id, value } = e.target;
+    setFormData(prevState => ({
+      ...prevState,
+      [id]: value
+    }));
+  };
 
-  // --- NOVO --- Função para lidar com o envio do formulário
-  const handleFormSubmit = (e) => {
+  // Função para enviar os dados do formulário para a API
+  const handleFormSubmit = async (e) => {
     e.preventDefault();
-    // Aqui viria a lógica para enviar os dados para sua API
-    console.log("Formulário de depoimento enviado!");
-    alert("Obrigado por compartilhar sua experiência!");
-    handleCloseFormModal(); // Fecha o modal após o envio
+    console.log("Enviando dados:", formData);
+
+    try {
+      const response = await fetch(`${API_URL}/depoimentos`, { // Verifique se a rota "/depoimentos" existe no seu backend
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(formData),
+      });
+
+      if (!response.ok) {
+        throw new Error(`Falha ao enviar o depoimento. Status: ${response.status}`);
+      }
+      
+      alert("Obrigado por compartilhar sua experiência!");
+      setFormData({ name: '', movement: '', location: '', experience: '' }); // Limpa o formulário
+      handleCloseFormModal(); // Fecha o modal
+
+    } catch (error) {
+      console.error("Erro ao enviar formulário:", error);
+      alert("Houve um erro ao enviar seu relato. Verifique o console ou tente novamente.");
+    }
   };
 
 
   return (
     <>
-      {/* ... todo o seu JSX existente permanece o mesmo ... */}
       <section id="home" className="container mx-auto px-6 py-8">
-        {/* ... Seção "Deus Mudou Meu Viver" ... */}
+        {/* ... (Seu JSX para as seções da página principal) ... */}
+        {/* Seção "Deus Mudou Meu Viver" */}
         <div className="bg-blue-800 text-white text-center py-6 rounded-lg mb-4">
           <h2 className="text-4xl font-slab">DEUS MUDOU MEU VIVER</h2>
           <p className="mt-4 text-xl sm:text-2xl font-slab">Compartilhe suas experiências...</p>
@@ -87,7 +121,7 @@ function HomePage() {
           </button>
         </div>
 
-        {/* ... Seção "Meta de Palavras" ... */}
+        {/* Seção "Meta de Palavras" */}
         {isGoalSectionVisible && (
           <div className="w-full max-w-2xl mx-auto mt-6 p-4 bg-gray-200 rounded-lg shadow">
             <h3 className="text-3xl font-slab text-gray-800 mb-2 text-center">Meta de Palavras</h3>
@@ -101,7 +135,7 @@ function HomePage() {
           </div>
         )}
 
-        {/* ... Seção "Palavra do Dia" ... */}
+        {/* Seção "Palavra do Dia" */}
         {isWordSectionVisible && (
           <div className="flex flex-col items-center w-full max-w-2xl mx-auto mt-6 p-4 rounded-lg shadow bg-white">
             <h3 className="text-3xl text-center mb-2 text-gray-800 font-slab">Palavra do Dia</h3>
@@ -130,7 +164,7 @@ function HomePage() {
           </div>
         )}
 
-        {/* ... Seção "Meu Depoimento" (João Paulo) ... */}
+        {/* Seção "Meu Depoimento" */}
         <div className="p-8 sm:p-10 mt-7 rounded-lg bg-gray-300 max-w-6xl mx-auto">
           <div className="flex flex-col md:flex-row md:items-start gap-8">
             <div className="flex-shrink-0 flex justify-center md:justify-start">
@@ -153,7 +187,7 @@ function HomePage() {
           </div>
         </div>
 
-        {/* ... Seção "Tem Alguma Experiência para Compartilhar?" ... */}
+        {/* Seção "Tem Alguma Experiência para Compartilhar?" */}
         <div className="text-center mt-10 max-w-4xl mx-auto">
           <p className="text-2xl font-bold text-white">Tem Alguma Experiência para Compartilhar?</p>
           <a href="#" onClick={handleOpenAlert} className="mt-2 inline-block px-6 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition">
@@ -184,10 +218,10 @@ function HomePage() {
         </div>
       )}
       
-      {/* --- NOVO --- Modal de Formulário de Depoimento */}
+      {/* Modal de Formulário de Depoimento */}
       {isFormModalOpen && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50 p-4">
-          <div className="bg-white p-8 rounded-lg shadow-lg text-left max-w-lg w-full">
+          <div className="bg-white p-8 rounded-lg shadow-lg text-left max-w-lg w-full overflow-y-auto max-h-[90vh]">
             <h2 className="text-2xl font-bold mb-4 text-gray-800">Compartilhe sua Experiência</h2>
             <form onSubmit={handleFormSubmit}>
               <div className="mb-4">
@@ -197,24 +231,30 @@ function HomePage() {
                   id="name"
                   className="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
                   placeholder="Anônimo"
+                  value={formData.name}
+                  onChange={handleFormChange}
                 />
               </div>
               <div className="mb-4">
-                <label htmlFor="name" className="block text-gray-700 font-semibold mb-2">Nome do movimento (EJC,SEGME... entre outros)</label>
+                <label htmlFor="movement" className="block text-gray-700 font-semibold mb-2">Nome do movimento (EJC, SEGME, etc.)</label>
                 <input
                   type="text"
-                  id="name"
+                  id="movement"
                   className="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
-                  placeholder="Anônimo"
+                  placeholder="Ex: EJC"
+                  value={formData.movement}
+                  onChange={handleFormChange}
                 />
               </div>
-                  <div className="mb-4">
-                <label htmlFor="name" className="block text-gray-700 font-semibold mb-2"> Município e Estado (ou Bairro, se for de Maceió)</label>
+              <div className="mb-4">
+                <label htmlFor="location" className="block text-gray-700 font-semibold mb-2">Município e Estado (ou Bairro, se for de Maceió)</label>
                 <input
                   type="text"
-                  id="name"
+                  id="location"
                   className="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
-                  placeholder="Anônimo"
+                  placeholder="Ex: Penedo - AL"
+                  value={formData.location}
+                  onChange={handleFormChange}
                 />
               </div>
               <div className="mb-6">
@@ -225,6 +265,8 @@ function HomePage() {
                   className="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
                   placeholder="Descreva sua experiência aqui..."
                   required
+                  value={formData.experience}
+                  onChange={handleFormChange}
                 ></textarea>
               </div>
               <div className="flex justify-end gap-4">

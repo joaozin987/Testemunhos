@@ -31,6 +31,21 @@ dist-ssr
 
 # Arquivos de sessão SQL
 *.session.sql
+# Dependências do Node.js
+node_modules/
 
-#env do banckend
+# Arquivos de ambiente - NUNCA ENVIE PARA O GITHUB
 .env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+# Logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Outros
+dist/
+build/
