@@ -89,7 +89,6 @@ const autenticarToken = (req, res, next) => {
 
 // ROTA DE CADASTRO
 app.post('/register', async (req, res) => {
-  // ... (Sua lógica de cadastro, que já estava ótima, continua aqui)
   const { nome, email, senha } = req.body;
   if (!nome || !email || !senha) { return res.status(400).json({ error: 'Todos os campos são obrigatórios.' }); }
   if (!email.endsWith('@gmail.com')) { return res.status(400).json({ error: 'Cadastro permitido apenas para e-mails do Gmail.' }); }
