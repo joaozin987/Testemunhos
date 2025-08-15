@@ -54,34 +54,30 @@ const connectionOptions = {
 };
 const pool = new Pool(connectionOptions);
 
-// Nodemailer (Envio de E-mail)
 const transporter = nodemailer.createTransport({
-  service: 'gmail',
+  service: 'gmail', 
   auth: {
     user: process.env.EMAIL_USER,
     pass: process.env.EMAIL_PASS
   }
+
 });
 
+
+ 
 // --- MIDDLEWARE DE AUTENTICAÇÃO ---
 const autenticarToken = (req, res, next) => {
   const authHeader = req.headers['authorization'];
   const token = authHeader && authHeader.split(' ')[1];
 
-  if (token == null) {
-    return res.status(401).json({ error: 'Token de autenticação não fornecido.' });
-  }
+  if (token == null) return res.status(401).json({ error: 'Token de autenticação não fornecido.' });
 
   jwt.verify(token, process.env.JWT_SECRET, (err, user) => {
-    if (err) {
-      console.error("Erro na verificação do Token:", err.message);
-      return res.status(403).json({ error: 'Token inválido ou expirado.' });
-    }
+    if (err) return res.status(403).json({ error: 'Token inválido ou expirado.' });
     req.user = user;
     next();
   });
 };
-
 
 // ==========================================================
 // --- ROTAS DE AUTENTICAÇÃO ---
@@ -127,40 +123,45 @@ app.post('/login', async (req, res) => {
         res.status(500).json({ error: 'Erro interno ao fazer login.' });
     }
 });
-
-// **CORREÇÃO 1: ROTA PARA SOLICITAR A RECUPERAÇÃO DE SENHA**
 app.post('/solicitar-recuperacao', async (req, res) => {
   const { email } = req.body;
   try {
     const userResult = await pool.query('SELECT id FROM usuarios WHERE email = $1', [email]);
-    if (userResult.rows.length === 0) {
-      // **NUNCA INFORME SE O E-MAIL EXISTE OU NÃO, POR SEGURANÇA**
-      return res.status(200).json({ message: 'Se um usuário com este e-mail existir, um link de redefinição foi enviado.' });
-    }
-    const token = crypto.randomBytes(32).toString('hex');
-    const expires = new Date(Date.now() + 3600000); // 1 hora
-    await pool.query(
-      'UPDATE usuarios SET reset_token = $1, reset_token_expires = $2 WHERE email = $3',
-      [token, expires, email]
-    );
+    
+    // A lógica continua mesmo se o e-mail não for encontrado para não vazar informações.
+    if (userResult.rows.length > 0) {
+        const token = crypto.randomBytes(32).toString('hex');
+        const expires = new Date(Date.now() + 3600000); // 1 hora
+        
+        await pool.query(
+          'UPDATE usuarios SET reset_token = $1, reset_token_expires = $2 WHERE email = $3',
+          [token, expires, email]
+        );
 
-    // Use a URL do seu frontend para o link de redefinição
-    const resetLink = `${process.env.FRONTEND_URL}/redefinir-senha/${token}`;
-    const mailOptions = {
-      from: process.env.EMAIL_USER,
-      to: email,
-      subject: 'Redefinição de Senha - Conectados pela Fé',
-      html: `<p>Você solicitou a redefinição da sua senha. Clique no link a seguir para criar uma nova: <a href="${resetLink}">${resetLink}</a></p><p>Este link expirará em 1 hora.</p>`
-    };
-    await transporter.sendMail(mailOptions);
+        const resetLink = `${frontendURL}/redefinir-senha/${token}`;
+        
+        const mailOptions = {
+          from: process.env.EMAIL_USER,
+          to: email,
+          subject: 'Redefinição de Senha - Conectados pela Fé',
+          html: `<p>Você solicitou a redefinição da sua senha. Clique no link a seguir para criar uma nova: <a href="${resetLink}">${resetLink}</a></p><p>Este link expirará em 1 hora.</p>`
+        };
+
+        // A chamada que provavelmente está causando o erro 500 está aqui.
+        await transporter.sendMail(mailOptions);
+    }
+    
     res.status(200).json({ message: 'Se um usuário com este e-mail existir, um link de redefinição foi enviado.' });
+
   } catch (error) {
+    // !! OLHE O CONSOLE DO SEU SERVIDOR NODE.JS !!
+    // A mensagem de erro exata (ex: "Invalid credentials") aparecerá aqui.
     console.error('Erro em /solicitar-recuperacao:', error);
     res.status(500).json({ error: 'Erro interno ao processar a solicitação.' });
   }
 });
 
-// **CORREÇÃO 2: ROTA PARA EFETIVAMENTE REDEFINIR A SENHA**
+// **ROTA PARA EFETIVAMENTE REDEFINIR A SENHA**
 app.post('/redefinir-senha', async (req, res) => {
   const { token, senha } = req.body;
   if (!token || !senha) {
@@ -187,7 +188,6 @@ app.post('/redefinir-senha', async (req, res) => {
     res.status(500).json({ error: 'Erro interno ao redefinir a senha.' });
   }
 });
-
 
 app.get('/perfil', autenticarToken, async (req, res) => {
   try {
