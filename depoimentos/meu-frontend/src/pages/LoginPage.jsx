@@ -14,14 +14,14 @@ function LoginPage() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    alert(`Tentando conectar com a API em: ${import.meta.env.VITE_BACKEND_URL}`);
+    alert(`Tentando conectar com a API em: ${import.meta.env.VITE_API_URL}`);
     setIsLoading(true);
     setMensagem('');
 
     try {
     
       const response = await axios.post(
-        `${import.meta.env.VITE_BACKEND_URL}/login`,
+        `${import.meta.env.VITE_API_URL}/login`,
         { email, senha },
         { withCredentials: true }
       );
