@@ -2,7 +2,6 @@ import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import Navbar from '../components/Navbar';
-import axios from 'axios';
 
 function LoginPage() {
   const [email, setEmail] = useState('');
@@ -14,30 +13,18 @@ function LoginPage() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    alert(`Tentando conectar com a API em: ${import.meta.env.VITE_API_URL}`);
     setIsLoading(true);
     setMensagem('');
 
     try {
-    
-      const response = await axios.post(
-        `${import.meta.env.VITE_API_URL}/login`,
-        { email, senha },
-        { withCredentials: true }
-      );
-
-    
-      await login(response.data);
-
+      await login(email, senha); // usa o login do AuthContext
     } catch (error) {
-      console.error(error);
-      alert(`Erro capturado: ${error.message}`);
+      console.error('Erro no login:', error);
       setMensagem(error.response?.data?.error || 'Erro ao fazer login.');
     } finally {
       setIsLoading(false);
     }
   };
-
 
   return (
     <>
