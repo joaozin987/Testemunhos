@@ -21,19 +21,23 @@ const app = express();
 
 const frontendURL = 'https://conectados-pela-fe.onrender.com'; 
 
-const whitelist = ['http://localhost:5173', 
-        'https://conectados-pela-fe.onrender.com'
-];
+const whitelist = [
+  'http://localhost:5173',
+  'https://conectados-pela-fe.onrender.com',
+  'https://www.conectados-pela-fe.onrender.com'
+]
 const corsOptions = {
   origin: function (origin, callback) {
-    if (whitelist.indexOf(origin) !== -1 || !origin) {
+    if (!origin || whitelist.includes(origin)) {
       callback(null, true);
     } else {
-      callback(new Error('Not allowed by CORS'));
+      console.error("cors bloqueado para:", origin);
+      callback(new Error('Not allowed by cors'));
     }
   },
-  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
   allowedHeaders: ['Content-Type', 'Authorization'],
+  credentials: true
 };
 app.options(/.*/, cors(corsOptions));
 app.use(cors(corsOptions));
