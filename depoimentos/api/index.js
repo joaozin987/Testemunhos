@@ -183,7 +183,7 @@ app.put('/perfil', autenticarToken, async (req, res) => {
 
 app.post('/upload', autenticarToken, upload.single('experienceImage'), async (req, res) => { /* ... sua lógica ... */ });
 app.get('/depoimentos', async (req, res) => { /* ... sua lógica ... */ });
-app.delete('/depoimentos/:id', autenticarToken, async (req, res) => { /* ... sua lógica ... */ });
+//app.delete('/depoimentos/:id', autenticarToken, async (req, res) => { /* ... sua lógica ... */ });
 
 // --- INICIALIZAÇÃO DO SERVIDOR ---
 const PORT = process.env.PORT || 3000;
