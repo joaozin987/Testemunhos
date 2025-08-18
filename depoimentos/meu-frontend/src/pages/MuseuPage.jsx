@@ -219,75 +219,76 @@ function MuseuPage() {
           <div className="bg-gray-50 p-6 rounded-2xl shadow hover:shadow-lg transition">
             <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/4/4d/Virgen_de_F%C3%A1tima.JPG/800px-Virgen_de_F%C3%A1tima.JPG" alt="Nossa Senhora de Fátima" className="w-full h-64 object-cover rounded-xl mb-4 cursor-pointer" onClick={() => abrirImagem('https://upload.wikimedia.org/wikipedia/commons/thumb/4/4d/Virgen_de_F%C3%A1tima.JPG/800px-Virgen_de_F%C3%A1tima.JPG')} />
             <h3 className="text-xl font-semibold text-gray-800 mb-2">Nossa Senhora de Fátima</h3>
-            <p className="text-sm text-gray-600"><strong>Local:</strong> Fátima, Portugal – 1917</p>
-            <p className="text-sm text-gray-600"><strong>Mensagem:</strong> Rosário diário, conversão e paz.</p>
+            <p className="text-lg text-gray-600"><strong>Local:</strong> Fátima, Portugal – 1917</p>
+            <p className="text-lg text-gray-600"><strong>Mensagem:</strong> Rosário diário, conversão e paz.</p>
             <blockquote className="italic text-indigo-600 mt-3">“Rezem o terço todos os dias...”</blockquote>
+            
           </div>
           {/* Adicione os outros cards de aparições aqui... */}
 
             <div class="bg-gray-50 p-6 rounded-2xl shadow hover:shadow-lg transition">
             <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/d/d9/France-002009_-_Our_Lady_of_Lourdes_%2815774765182%29.jpg/800px-France-002009_-_Our_Lady_of_Lourdes_%2815774765182%29.jpg" alt="Nossa Senhora de Lourdes" class="w-full h-64 object-cover rounded-xl mb-4"  onClick={() => abrirImagem('https://upload.wikimedia.org/wikipedia/commons/thumb/d/d9/France-002009_-_Our_Lady_of_Lourdes_%2815774765182%29.jpg/800px-France-002009_-_Our_Lady_of_Lourdes_%2815774765182%29.jpg')} /> 
             <h3 class="text-xl font-semibold text-gray-800 mb-2">Nossa Senhora de Lourdes</h3>
-            <p class="text-sm text-gray-600"><strong>Local:</strong> Lourdes, França – 1858</p>
-            <p class="text-sm text-gray-600"><strong>Mensagem:</strong> Maria foi concebida sem a mancha do pecado original..</p>
+            <p class="text-lg text-gray-600"><strong>Local:</strong> Lourdes, França – 1858</p>
+            <p class="text-lg text-gray-600"><strong>Mensagem:</strong> Maria foi concebida sem a mancha do pecado original..</p>
             <blockquote class="italic text-indigo-600 mt-3">“Eu sou a Imaculada Conceição.”</blockquote>
           </div>
 
             <div class="bg-gray-50 p-6 rounded-2xl shadow hover:shadow-lg transition">
             <img src="https://upload.wikimedia.org/wikipedia/commons/9/96/Onuva_-_La_Virgen_de_las_Gracias_de_Onuva_-_La_Puebla_del_R%C3%ADo_%28Sevilla%29.jpg" alt="Nossa Senhora das Graças" class="w-full h-64 object-cover rounded-xl mb-4"  onClick={() => abrirImagem('https://upload.wikimedia.org/wikipedia/commons/thumb/d/d9/France-002009_-_Our_Lady_of_Lourdes_%2815774765182%29.jpg/800px-France-002009_-_Our_Lady_of_Lourdes_%2815774765182%29.jpg')} />
             <h3 class="text-xl font-semibold text-gray-800 mb-2">Nossa Senhora das Graças</h3>
-            <p class="text-sm text-gray-600"><strong>Local:</strong> Paris, França – 1830</p>
-            <p class="text-sm text-gray-600"><strong>Mensagem:</strong> Graças e proteção pela fé.</p>
+            <p class="text-lg text-gray-600"><strong>Local:</strong> Paris, França – 1830</p>
+            <p class="text-lg text-gray-600"><strong>Mensagem:</strong> Graças e proteção pela fé.</p>
             <blockquote class="italic text-indigo-600 mt-3">“Venha ao pé deste altar. Aqui as graças serão derramadas sobre todos que as pedirem com confiança e fervor.”</blockquote>
           </div>
 
            <div class="bg-gray-50 p-6 rounded-2xl shadow hover:shadow-lg transition">
             <img src="https://blog.cancaonova.com/felipeaquino/files/2019/12/07.jpg" alt="Nossa Senhora de Guadalupe" class="w-full h-64 object-cover rounded-xl mb-4" onClick={() => abrirImagem('https://blog.cancaonova.com/felipeaquino/files/2019/12/07.jpg')} />
             <h3 class="text-xl font-semibold text-gray-800 mb-2">Nossa Senhora de Guadalupe</h3>
-            <p class="text-sm text-gray-600"><strong>Local:</strong> México – 1531</p>
-            <p class="text-sm text-gray-600"><strong>Mensagem:</strong> Amor maternal e dignidade dos humildes.</p>
+            <p class="text-lg text-gray-600"><strong>Local:</strong> México – 1531</p>
+            <p class="text-lg text-gray-600"><strong>Mensagem:</strong> Amor maternal e dignidade dos humildes.</p>
             <blockquote class="italic text-indigo-600 mt-3">“Não estou eu aqui, que sou tua Mãe?”</blockquote>
           </div>
 
           <div class="bg-gray-50 p-6 rounded-2xl shadow hover:shadow-lg transition">
             <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSJ8UFqbSZTYUCbEif-Kzx1o2tHn4bUN8Nsbeg4Gry9VrmqFVU3RdfKIdDB4ifXfiEWnU8&usqp=CAU" alt="Nossa Senhora de La Salette" class="w-full h-64 object-cover rounded-xl mb-4" onClick={() => abrirImagem('https://blog.cancaonova.com/felipeaquino/files/2019/12/07.jpg')} />
             <h3 class="text-xl font-semibold text-gray-800 mb-2">Nossa Senhora de La Salette</h3>
-            <p class="text-sm text-gray-600"><strong>Local:</strong> La Salette, França – 1846</p>
-            <p class="text-sm text-gray-600"><strong>Mensagem:</strong> A necessidade de oração e penitência.</p>
+            <p class="text-lg text-gray-600"><strong>Local:</strong> La Salette, França – 1846</p>
+            <p class="text-lg text-gray-600"><strong>Mensagem:</strong> A necessidade de oração e penitência.</p>
             <blockquote class="italic text-indigo-600 mt-3">“Se meu povo não quiser se submeter, sou forçada a deixar o braço de meu Filho cair. Ele é tão pesado que já não posso segurá-lo.”</blockquote>
           </div>
 
              <div class="bg-gray-50 p-6 rounded-2xl shadow hover:shadow-lg transition">
               <img src="https://upload.wikimedia.org/wikipedia/commons/7/72/Est%C3%A1tua_original_de_Nossa_Senhora_das_L%C3%A1grimas_%28Original_statue_of_Our_Lady_of_Tears%29.jpg" alt="Nossa Senhora de La Salette" class="w-full h-64 object-cover rounded-xl mb-4" onClick={() => abrirImagem('https://upload.wikimedia.org/wikipedia/commons/7/72/Est%C3%A1tua_original_de_Nossa_Senhora_das_L%C3%A1grimas_%28Original_statue_of_Our_Lady_of_Tears%29.jpg')} />
               <h3 class="text-xl font-semibold text-gray-800 mb-2">Nossa Senhora das Lágrimas</h3>
-              <p class="text-sm text-gray-600"><strong>Local:</strong> Campinas, Brasil – 1930</p>
-              <p class="text-sm text-gray-600"><strong>Mensagem:</strong>Este é o rosário de Minhas lágrimas.</p>
+              <p class="text-lg text-gray-600"><strong>Local:</strong> Campinas, Brasil – 1930</p>
+              <p class="text-lg text-gray-600"><strong>Mensagem:</strong>Este é o rosário de Minhas lágrimas.</p>
               <blockquote class="italic text-indigo-600 mt-3">“Por meio deste rosário o demônio será derrotado e o poder do inferno destruído.</blockquote>
             </div>
 
                <div class="bg-gray-50 p-6 rounded-2xl shadow hover:shadow-lg transition">
                 <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/b/bb/N._S._Aparecida_no_Santu%C3%A1rio_Nacional.webp/984px-N._S._Aparecida_no_Santu%C3%A1rio_Nacional.webp.png" alt="Nossa Senhora de La Salette" class="w-full h-64 object-cover rounded-xl mb-4"  onClick={() => abrirImagem('https://upload.wikimedia.org/wikipedia/commons/thumb/b/bb/N._S._Aparecida_no_Santu%C3%A1rio_Nacional.webp/984px-N._S._Aparecida_no_Santu%C3%A1rio_Nacional.webp.png')} />
                 <h3 class="text-xl font-semibold text-gray-800 mb-2">Nossa Senhora Aparecida</h3>
-                <p class="text-sm text-gray-600"><strong>Local:</strong> Guaratinguetá, São Paulo – 1717</p>
-                <p class="text-sm text-gray-600"><strong>Mensagem:</strong> Conversão e fidelidade a Deus.</p>
+                <p class="text-lg text-gray-600"><strong>Local:</strong> Guaratinguetá, São Paulo – 1717</p>
+                <p class="text-lg text-gray-600"><strong>Mensagem:</strong> Conversão e fidelidade a Deus.</p>
                 <blockquote class="italic text-indigo-600 mt-3">“"Aparecida, padroeira do Brasil, rogai por nós!”</blockquote>
               </div>
 
                 <div class="bg-gray-50 p-6 rounded-2xl shadow hover:shadow-lg transition">
                   <img src="https://upload.wikimedia.org/wikipedia/commons/4/45/Virgen_del_Rosario_de_San_Nicol%C3%A1s_-_III.jpg" alt="Nossa Senhora de La Salette" class="w-full h-64 object-cover rounded-xl mb-4" onClick={() => abrirImagem('https://upload.wikimedia.org/wikipedia/commons/4/45/Virgen_del_Rosario_de_San_Nicol%C3%A1s_-_III.jpg')} />
                   <h3 class="text-xl font-semibold text-gray-800 mb-2">Nossa Senhora do Rosário de San Nicolás</h3>
-                  <p class="text-sm text-gray-600"><strong>Local:</strong>  Argentina – 1983–1990
+                  <p class="text-lg text-gray-600"><strong>Local:</strong>  Argentina – 1983–1990
                   </p>
-                  <p class="text-sm text-gray-600"><strong>Mensagem:</strong> Chamada à conversão, oração do terço, amor à Eucaristia.</p>
+                  <p class="text-lg text-gray-600"><strong>Mensagem:</strong> Chamada à conversão, oração do terço, amor à Eucaristia.</p>
                   <blockquote class="italic text-indigo-600 mt-3">“Sou a Mãe de todos os tempos. Vinde a mim quando estiverdes aflitos.”</blockquote>
                 </div>
 
                   <div class="bg-gray-50 p-6 rounded-2xl shadow hover:shadow-lg transition">
                     <img src="https://images.cdn-files-a.com/uploads/5860772/2000_6211063409eb7.jpg" alt="Nossa Senhora de La Salette" class="w-full h-64 object-cover rounded-xl mb-4" onClick={() => abrirImagem('https://images.cdn-files-a.com/uploads/5860772/2000_6211063409eb7.jpg')} />
                     <h3 class="text-xl font-semibold text-gray-800 mb-2"> Nossa Senhora de Akita</h3>
-                    <p class="text-sm text-gray-600"><strong>Local:</strong> Japão, 1973
+                    <p class="text-lg text-gray-600"><strong>Local:</strong> Japão, 1973
                     </p>
-                    <p class="text-sm text-gray-600"><strong>Mensagem:</strong> oração, penitência, reparação; profecias sobre crises na Igreja.</p>
+                    <p class="text-lg text-gray-600"><strong>Mensagem:</strong> oração, penitência, reparação; profecias sobre crises na Igreja.</p>
                     <blockquote class="italic text-indigo-600 mt-3">“O demônio infiltrará até mesmo na Igreja, de tal forma que se verão cardeais contra cardeais e bispos contra bispos.”</blockquote>
                   </div>
     

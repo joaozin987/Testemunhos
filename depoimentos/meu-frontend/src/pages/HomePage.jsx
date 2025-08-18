@@ -178,10 +178,14 @@ function HomePage() {
             <div className="text-left mt-10 md:mt-0 ml-0 md:ml-5 max-w-4xl">
               <h2 className="text-3xl sm:text-4xl text-black font-slab">Meu Depoimento</h2>
               <h3 className="text-lg sm:text-xl text-gray-800 mt-4 font-slab">
-                Olá Pessoal, me chamo <span className="text-blue-500 text-xl sm:text-2xl font-slab">João Paulo</span>...
+                Olá Pessoal, me chamo <span className="text-blue-500 text-xl sm:text-2xl font-slab">João Paulo</span>
               </h3>
               <p className="text-gray-700 font-slab text-base sm:text-lg leading-relaxed mt-4 text-justify">
-                Entrei no EJC em 2023 e, de lá para cá, tive muitos ensinamentos...
+                        Entrei no EJC em 2023 e, de lá para cá, tive muitos ensinamentos. O que achei mais fascinante foi o de amar ao próximo.
+          Diversas vezes passei por ocasiões difíceis, tanto espiritualmente quanto fisicamente, e, a cada situação, eu me surpreendia
+          mais com o acolhimento e a ajuda que recebi. Acho que nunca tinha sido tão bem tratado desde que meu irmão faleceu em 2022.
+          Cheguei a pensar que nunca conseguiria me recuperar. Mas logo em seguida veio o EJC e curou todas as minhas feridas,
+          mostrando-me que vale a pena ser feliz, independentemente de qualquer situação, e que sempre devemos confiar nos planos de Deus.
               </p>
             </div>
           </div>
