@@ -1,10 +1,6 @@
-// ==========================================================
-// --- VERSÃO FINAL - COMPLETA, CORRIGIDA E OTIMIZADA ---
-// ==========================================================
 
 require('dotenv').config();
 
-// --- IMPORTAÇÕES ---
 const express = require('express');
 const multer = require('multer');
 const cors = require('cors');
@@ -21,17 +17,11 @@ const upload = require('./upload.js');
 
 const app = express();
 
-// ==========================================================
-// --- MIDDLEWARES --- (SEÇÃO CORRIGIDA)
-// ==========================================================
-
-// Lista de origens permitidas (seu frontend local e o de produção)
-// Puxa a URL de produção das variáveis de ambiente para mais segurança
 const whitelist = ['http://localhost:5173', process.env.FRONTEND_URL]; 
 
 const corsOptions = {
   origin: function (origin, callback) {
-    // Permite requisições da sua whitelist ou requisições sem 'origin' (ex: Postman)
+    
     if (whitelist.indexOf(origin) !== -1 || !origin) {
       callback(null, true);
     } else {
@@ -42,21 +32,15 @@ const corsOptions = {
   allowedHeaders: ['Content-Type', 'Authorization'],
 };
 
-// **A CORREÇÃO ESTÁ AQUI**
-// Habilita a resposta para a "pré-pergunta" (preflight) de segurança do navegador
+
 app.options('*', cors(corsOptions)); 
-// Aplica as regras de CORS para todas as outras rotas
+
 app.use(cors(corsOptions)); 
 
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-
-// --- CONFIGURAÇÕES DE SERVIÇOS EXTERNOS ---
-
-
-// PostgreSQL (Banco de Dados)
 const isProduction = process.env.NODE_ENV === 'production';
 const connectionOptions = {
   connectionString: process.env.DATABASE_URL,
@@ -71,8 +55,7 @@ const transporter = nodemailer.createTransport({
     pass: process.env.EMAIL_PASS
   }
 });
- 
-// --- MIDDLEWARE DE AUTENTICAÇÃO ---
+
 const autenticarToken = (req, res, next) => {
   const authHeader = req.headers['authorization'];
   const token = authHeader && authHeader.split(' ')[1];
@@ -86,11 +69,6 @@ const autenticarToken = (req, res, next) => {
   });
 };
 
-// ==========================================================
-// --- ROTAS DE AUTENTICAÇÃO ---
-// ==========================================================
-
-// ROTA DE CADASTRO
 app.post('/register', async (req, res) => {
   const { nome, email, senha } = req.body;
   if (!nome || !email || !senha) { return res.status(400).json({ error: 'Todos os campos são obrigatórios.' }); }
@@ -111,7 +89,7 @@ app.post('/register', async (req, res) => {
   }
 });
 
-// ROTA DE LOGIN
+
 app.post('/login', async (req, res) => {
     const { email, senha } = req.body;
     if (!email || !senha) { return res.status(400).json({ error: 'Email e senha são obrigatórios.' }); }
@@ -129,6 +107,7 @@ app.post('/login', async (req, res) => {
         res.status(500).json({ error: 'Erro interno ao fazer login.' });
     }
 });
+
 app.post('/solicitar-recuperacao', async (req, res) => {
   const { email } = req.body;
   try {
@@ -163,7 +142,7 @@ app.post('/solicitar-recuperacao', async (req, res) => {
   }
 });
 
-// **ROTA PARA EFETIVAMENTE REDEFINIR A SENHA**
+
 app.post('/redefinir-senha', async (req, res) => {
   const { token, senha } = req.body;
   if (!token || !senha) {
@@ -209,7 +188,7 @@ app.get('/perfil', autenticarToken, async (req, res) => {
   }
 });
 
-// ROTA PARA ATUALIZAR OS DADOS DO PERFIL (VERSÃO ROBUSTA)
+
 app.put('/perfil', autenticarToken, async (req, res) => {
   try {
     const userId = req.user.id;
@@ -272,7 +251,7 @@ app.get('/depoimentos', async (req, res) => { /* ... sua lógica ... */ });
 app.delete('/depoimentos/:id', autenticarToken, async (req, res) => { /* ... sua lógica ... */ });
 
 
-// --- INICIALIZAÇÃO DO SERVIDOR ---
+
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
   console.log(`Servidor rodando na porta ${PORT}.`);
