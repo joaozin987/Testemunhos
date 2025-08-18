@@ -14,26 +14,30 @@ function LoginPage() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-   alert(`Tentando conectar com a API em: ${import.meta.env.VITE_API_URL}`);
+    alert(`Tentando conectar com a API em: ${import.meta.env.VITE_BACKEND_URL}`);
     setIsLoading(true);
     setMensagem('');
 
     try {
-      await login(email, senha); // Redirecionamento já está no contexto
-    } catch (error) {
-      alert(`Erro capturado: ${error}`);
+    
+      const response = await axios.post(
+        `${import.meta.env.VITE_BACKEND_URL}/login`,
+        { email, senha },
+        { withCredentials: true }
+      );
 
+    
+      await login(response.data);
+
+    } catch (error) {
+      console.error(error);
+      alert(`Erro capturado: ${error.message}`);
       setMensagem(error.response?.data?.error || 'Erro ao fazer login.');
     } finally {
       setIsLoading(false);
     }
   };
-  axios.post(`${import.meta.env.VITE_BACKEND_URL}/login`, {
-    email,
-    senha
-  }, {
-    withCredentials: true
-  })
+
 
   return (
     <>
