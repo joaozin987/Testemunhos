@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import Navbar from '../components/Navbar';
+import axios from 'axios';
 
 function LoginPage() {
   const [email, setEmail] = useState('');
@@ -21,12 +22,18 @@ function LoginPage() {
       await login(email, senha); // Redirecionamento já está no contexto
     } catch (error) {
       alert(`Erro capturado: ${error}`);
-      
+
       setMensagem(error.response?.data?.error || 'Erro ao fazer login.');
     } finally {
       setIsLoading(false);
     }
   };
+  axios.post(`${import.meta.env.VITE_BACKEND_URL}/login`, {
+    email,
+    senha
+  }, {
+    withCredentials: true
+  })
 
   return (
     <>
