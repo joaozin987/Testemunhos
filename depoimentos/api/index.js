@@ -1,13 +1,8 @@
 
-import path from 'path';
-import multer from 'multer';
-import cloudinary from 'cloudinary';
-import CloudinaryStorage from 'cloudinarystorage';
 
 require('dotenv').config();
 
-
-
+// --- IMPORTAÇÕES (VERSÃO COMPLETA E CORRIGIDA) ---
 const express = require('express');
 const multer = require('multer');
 const cors = require('cors');
@@ -21,7 +16,6 @@ const nodemailer = require('nodemailer');
 const crypto = require('crypto');
 const axios = require('axios');
 const upload = require('./upload.js'); 
-
 const app = express();
 
 
@@ -39,14 +33,11 @@ const corsOptions = {
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
   allowedHeaders: ['Content-Type', 'Authorization'],
 };
-app.options('*', cors(corsOptions));
+app.options(/.*/, cors(corsOptions));
 app.use(cors(corsOptions));
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-
-
-// --- CONFIGURAÇÕES DE SERVIÇOS EXTERNOS ---
 
 
 // PostgreSQL (Banco de Dados)
