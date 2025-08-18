@@ -21,13 +21,17 @@ const upload = require('./upload.js');
 
 const app = express();
 
-// --- MIDDLEWARES ---
-const frontendURL = 'https://conectados-pela-fe.onrender.com'; 
+// ==========================================================
+// --- MIDDLEWARES --- (SEÇÃO CORRIGIDA)
+// ==========================================================
 
-// Configuração de CORS mais segura para desenvolvimento e produção
-const whitelist = ['http://localhost:5173', frontendURL]; // Adicione a URL do seu site aqui
+// Lista de origens permitidas (seu frontend local e o de produção)
+// Puxa a URL de produção das variáveis de ambiente para mais segurança
+const whitelist = ['http://localhost:5173', process.env.FRONTEND_URL]; 
+
 const corsOptions = {
   origin: function (origin, callback) {
+    // Permite requisições da sua whitelist ou requisições sem 'origin' (ex: Postman)
     if (whitelist.indexOf(origin) !== -1 || !origin) {
       callback(null, true);
     } else {
@@ -37,7 +41,13 @@ const corsOptions = {
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
   allowedHeaders: ['Content-Type', 'Authorization'],
 };
-app.use(cors(corsOptions));
+
+// **A CORREÇÃO ESTÁ AQUI**
+// Habilita a resposta para a "pré-pergunta" (preflight) de segurança do navegador
+app.options('*', cors(corsOptions)); 
+// Aplica as regras de CORS para todas as outras rotas
+app.use(cors(corsOptions)); 
+
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
@@ -60,10 +70,7 @@ const transporter = nodemailer.createTransport({
     user: process.env.EMAIL_USER,
     pass: process.env.EMAIL_PASS
   }
-
 });
-
-
  
 // --- MIDDLEWARE DE AUTENTICAÇÃO ---
 const autenticarToken = (req, res, next) => {
@@ -106,7 +113,6 @@ app.post('/register', async (req, res) => {
 
 // ROTA DE LOGIN
 app.post('/login', async (req, res) => {
-    // ... (Sua lógica de login, que já estava ótima, continua aqui)
     const { email, senha } = req.body;
     if (!email || !senha) { return res.status(400).json({ error: 'Email e senha são obrigatórios.' }); }
     try {
@@ -128,7 +134,6 @@ app.post('/solicitar-recuperacao', async (req, res) => {
   try {
     const userResult = await pool.query('SELECT id FROM usuarios WHERE email = $1', [email]);
     
-    // A lógica continua mesmo se o e-mail não for encontrado para não vazar informações.
     if (userResult.rows.length > 0) {
         const token = crypto.randomBytes(32).toString('hex');
         const expires = new Date(Date.now() + 3600000); // 1 hora
@@ -138,7 +143,7 @@ app.post('/solicitar-recuperacao', async (req, res) => {
           [token, expires, email]
         );
 
-        const resetLink = `${frontendURL}/redefinir-senha/${token}`;
+        const resetLink = `${process.env.FRONTEND_URL}/redefinir-senha/${token}`;
         
         const mailOptions = {
           from: process.env.EMAIL_USER,
@@ -147,15 +152,12 @@ app.post('/solicitar-recuperacao', async (req, res) => {
           html: `<p>Você solicitou a redefinição da sua senha. Clique no link a seguir para criar uma nova: <a href="${resetLink}">${resetLink}</a></p><p>Este link expirará em 1 hora.</p>`
         };
 
-        // A chamada que provavelmente está causando o erro 500 está aqui.
         await transporter.sendMail(mailOptions);
     }
     
     res.status(200).json({ message: 'Se um usuário com este e-mail existir, um link de redefinição foi enviado.' });
 
   } catch (error) {
-    // !! OLHE O CONSOLE DO SEU SERVIDOR NODE.JS !!
-    // A mensagem de erro exata (ex: "Invalid credentials") aparecerá aqui.
     console.error('Erro em /solicitar-recuperacao:', error);
     res.status(500).json({ error: 'Erro interno ao processar a solicitação.' });
   }
@@ -192,7 +194,6 @@ app.post('/redefinir-senha', async (req, res) => {
 app.get('/perfil', autenticarToken, async (req, res) => {
   try {
     const userId = req.user.id; 
-    // Query otimizada para buscar todos os campos necessários para a página de perfil
     const perfilResult = await pool.query(
       'SELECT id, nome, email, foto_perfil_url, bio, versiculo_favorito, cidade FROM usuarios WHERE id = $1',
       [userId]
@@ -210,24 +211,18 @@ app.get('/perfil', autenticarToken, async (req, res) => {
 
 // ROTA PARA ATUALIZAR OS DADOS DO PERFIL (VERSÃO ROBUSTA)
 app.put('/perfil', autenticarToken, async (req, res) => {
-  console.log('--- Rota PUT /perfil acessada. ---');
-
   try {
     const userId = req.user.id;
     const { nome, bio, versiculo_favorito, cidade } = req.body; 
-
-    console.log('--- Dados recebidos do frontend:', { nome, bio, versiculo_favorito, cidade });
 
     if (!nome || nome.trim() === '') {
       return res.status(400).json({ error: 'O campo nome é obrigatório.' });
     }
 
-    // --- LÓGICA DE UPDATE DINÂMICO E SEGURO ---
     const fields = [];
     const values = [];
     let queryIndex = 1;
 
-    // Adiciona cada campo à query apenas se ele foi enviado pelo frontend
     if (nome !== undefined) {
       fields.push(`nome = $${queryIndex++}`);
       values.push(nome);
@@ -249,7 +244,7 @@ app.put('/perfil', autenticarToken, async (req, res) => {
       return res.status(400).json({ error: 'Nenhum campo para atualizar foi fornecido.' });
     }
 
-    values.push(userId); // Adiciona o ID do usuário para a cláusula WHERE
+    values.push(userId); 
 
     const query = `
       UPDATE usuarios
@@ -258,12 +253,7 @@ app.put('/perfil', autenticarToken, async (req, res) => {
       RETURNING id, nome, email, foto_perfil_url, bio, versiculo_favorito, cidade;
     `;
     
-    console.log('--- Executando query:', query);
-    console.log('--- Com os valores:', values);
-
     const result = await pool.query(query, values);
-
-    console.log('--- Perfil atualizado com sucesso no banco! ---');
 
     if (result.rowCount === 0) {
       return res.status(404).json({ error: 'Usuário não encontrado para atualizar.' });
@@ -272,7 +262,6 @@ app.put('/perfil', autenticarToken, async (req, res) => {
     res.status(200).json(result.rows[0]);
 
   } catch (error) {
-    // Este log agora nos dirá o erro exato do banco de dados
     console.error('--- ERRO CRÍTICO no PUT /perfil ---:', error);
     res.status(500).json({ error: 'Erro interno ao atualizar perfil.' });
   }
