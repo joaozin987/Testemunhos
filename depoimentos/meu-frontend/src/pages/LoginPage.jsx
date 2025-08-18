@@ -20,6 +20,8 @@ function LoginPage() {
     try {
       await login(email, senha); // Redirecionamento já está no contexto
     } catch (error) {
+      alert(`Erro capturado: ${error}`);
+      
       setMensagem(error.response?.data?.error || 'Erro ao fazer login.');
     } finally {
       setIsLoading(false);
