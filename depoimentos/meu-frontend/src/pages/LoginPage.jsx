@@ -13,7 +13,7 @@ function LoginPage() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    alert('tentando conectar com api em : ${import.meta.env.VITE_API_URL}');
+   alert(`Tentando conectar com a API em: ${import.meta.env.VITE_API_URL}`);
     setIsLoading(true);
     setMensagem('');
 
