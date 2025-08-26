@@ -2,22 +2,19 @@
     "liveServer.settings.root": "/depoimentos/public",
     "sqltools.connections": [
         {
+            "pgOptions": {
+                "ssl": {
+                    "rejectUnauthorized": false
+                }
+            },
             "previewLimit": 50,
             "server": "localhost",
             "port": 5432,
             "driver": "PostgreSQL",
-            "name": "testemunho",
             "database": "testemunho",
-            "username": "postgres"
-        },
-        {
-            "previewLimit": 50,
-            "server": "localhost",
-            "port": 5432,
-            "driver": "PostgreSQL",
-            "name": "depoimentos",
-            "database": "testemunho",
-            "username": "postgres"
+            "username": "postgres",
+            "name": "testemunhos",
+            "group": "localhost "
         }
     ]
 }
