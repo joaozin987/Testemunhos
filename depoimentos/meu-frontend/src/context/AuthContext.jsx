@@ -10,14 +10,14 @@ export const AuthProvider = ({ children }) => {
   const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
 
-  // Configura axios para enviar cookies automaticamente
+  
   const api = axios.create({
     baseURL: import.meta.env.VITE_API_URL,
-    withCredentials: true, // envia cookies automaticamente
+    withCredentials: true, 
   });
 
   useEffect(() => {
-    // Verifica se já existe sessão no backend
+    
     const checkSession = async () => {
       try {
         const response = await api.get('/perfil');
@@ -35,7 +35,7 @@ export const AuthProvider = ({ children }) => {
 
   const login = useCallback(async (email, senha) => {
     try {
-      await api.post('/login', { email, senha }); // backend seta o cookie httpOnly
+      await api.post('/login', { email, senha });
       const profileResponse = await api.get('/perfil');
       setUser(profileResponse.data);
       setIsAuthenticated(true);
@@ -47,7 +47,7 @@ export const AuthProvider = ({ children }) => {
 
   const logout = useCallback(async () => {
     try {
-      await api.post('/logout'); // cria rota /logout no backend que limpa o cookie
+      await api.post('/logout'); 
     } catch (err) {
       console.error('Erro ao fazer logout:', err);
     } finally {
@@ -63,7 +63,7 @@ export const AuthProvider = ({ children }) => {
     loading,
     login,
     logout,
-    api, // expõe a instância do axios pronta com cookies
+    api, 
   }), [isAuthenticated, user, loading, login, logout]);
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
