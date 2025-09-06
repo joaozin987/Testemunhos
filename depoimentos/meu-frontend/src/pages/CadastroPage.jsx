@@ -3,14 +3,14 @@ import { useNavigate } from 'react-router-dom';
 import Navbar from '../components/Navbar';
 
 function CadastroPage() {
-  // --- SUA LÓGICA COMPLETA ---
+
   const [nome, setNome] = useState('');
   const [email, setEmail] = useState('');
   const [senha, setSenha] = useState('');
   const [mensagem, setMensagem] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
-  const SERVER_URL = 'http://localhost:3000'; 
+    const API_URL = import.meta.env.VITE_API_URL; 
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -19,7 +19,7 @@ function CadastroPage() {
     const userData = { nome, email, senha };
 
     try {
-      const response = await fetch(`${SERVER_URL}/register`, {
+      const response = await fetch(`${API_URL}/usuarios`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -31,7 +31,7 @@ function CadastroPage() {
         alert('Cadastro realizado com sucesso! Você será redirecionado para o login.');
         navigate('/login');
       } else {
-        setMensagem(`Erro: ${result.error}`);
+        setMensagem(`Erro: ${result.message || 'Erro no servidor'}`);
       }
     } catch (error) {
       console.error('Erro de rede no cadastro:', error);
@@ -40,7 +40,6 @@ function CadastroPage() {
       setIsLoading(false);
     }
   };
-  // --- FIM DA SUA LÓGICA ---
 
   return (
     <>

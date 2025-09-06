@@ -1,7 +1,9 @@
 <?php
 
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\DepoimentoController;
+use App\Http\Controllers\UsuarioController;
 
-Route::get('/', function () {
-    return view('welcome');
-});
+Route::apiResource('depoimentos', DepoimentoController::class);
+Route::apiResource('usuarios', UsuarioController::class);
