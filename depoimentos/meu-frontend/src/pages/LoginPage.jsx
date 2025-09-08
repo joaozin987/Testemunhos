@@ -1,12 +1,12 @@
-import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
-import { useAuth } from '../context/AuthContext';
-import Navbar from '../components/Navbar';
+import React, { useState } from "react";
+import { Link } from "react-router-dom";
+import { useAuth } from "../context/AuthContext";
+import Navbar from "../components/Navbar";
 
 function LoginPage() {
-  const [email, setEmail] = useState('');
-  const [senha, setSenha] = useState('');
-  const [mensagem, setMensagem] = useState('');
+  const [email, setEmail] = useState("");
+  const [senha, setSenha] = useState("");
+  const [mensagem, setMensagem] = useState("");
   const [isLoading, setIsLoading] = useState(false);
 
   const { login } = useAuth();
@@ -14,13 +14,13 @@ function LoginPage() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setIsLoading(true);
-    setMensagem('');
+    setMensagem("");
 
     try {
-      await login(email, senha); // usa o login do AuthContext
+      await login(email, senha);
     } catch (error) {
-      console.error('Erro no login:', error);
-      setMensagem(error.response?.data?.error || 'Erro ao fazer login.');
+      console.error("Erro no login:", error);
+      setMensagem(error.message || "Erro ao fazer login.");
     } finally {
       setIsLoading(false);
     }
@@ -30,10 +30,18 @@ function LoginPage() {
     <>
       <Navbar />
       <section className="flex justify-center items-center min-h-screen bg-gray-100">
-        <form onSubmit={handleSubmit} className="bg-white grid p-8 text-center w-full max-w-md rounded-xl shadow-xl">
+        <form
+          onSubmit={handleSubmit}
+          className="bg-white grid p-8 text-center w-full max-w-md rounded-xl shadow-xl"
+        >
           <h1 className="text-3xl font-slab mb-3">Faça o Login</h1>
 
-          <label className="text-left text-xl mb-2 font-slab" htmlFor="loginEmail">E-mail</label>
+          <label
+            className="text-left text-xl mb-2 font-slab"
+            htmlFor="loginEmail"
+          >
+            E-mail
+          </label>
           <input
             id="loginEmail"
             className="w-full rounded-lg mb-4 p-3 border border-gray-300"
@@ -44,7 +52,12 @@ function LoginPage() {
             onChange={(e) => setEmail(e.target.value)}
           />
 
-          <label className="text-left text-xl mb-1 mt-3 font-slab" htmlFor="loginPassword">Senha</label>
+          <label
+            className="text-left text-xl mb-1 mt-3 font-slab"
+            htmlFor="loginPassword"
+          >
+            Senha
+          </label>
           <input
             id="loginPassword"
             className="w-full rounded-lg mb-4 p-3 border border-gray-300"
@@ -55,14 +68,22 @@ function LoginPage() {
             onChange={(e) => setSenha(e.target.value)}
           />
 
-          <Link className="text-right text-blue-800" to="/recuperar-senha">Esqueceu a senha?</Link>
+          <Link className="text-right text-blue-800" to="/recuperar-senha">
+            Esqueceu a senha?
+          </Link>
 
-          <button type="submit" className="bg-blue-500 text-white font-bold py-2 px-4 rounded mt-4 hover:bg-blue-700 disabled:bg-blue-300" disabled={isLoading}>
-            {isLoading ? 'Entrando...' : 'Continuar'}
+          <button
+            type="submit"
+            className="bg-blue-500 text-white font-bold py-2 px-4 rounded mt-4 hover:bg-blue-700 disabled:bg-blue-300"
+            disabled={isLoading}
+          >
+            {isLoading ? "Entrando..." : "Continuar"}
           </button>
 
           {mensagem && (
-            <p className="text-red-500 mt-4 text-center text-lg font-semibold">{mensagem}</p>
+            <p className="text-red-500 mt-4 text-center text-lg font-semibold">
+              {mensagem}
+            </p>
           )}
         </form>
       </section>

@@ -1,72 +1,132 @@
-import React, { createContext, useState, useEffect, useContext, useCallback } from 'react';
-import { useNavigate } from 'react-router-dom';
-import axios from 'axios';
+import { createContext, useContext, useState, useEffect, useCallback } from "react";
+import axios from "axios";
 
 const AuthContext = createContext();
 
-export const AuthProvider = ({ children }) => {
-  const [user, setUser] = useState(null);
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
-  const [loading, setLoading] = useState(true);
-  const navigate = useNavigate();
+export function AuthProvider({ children }) {
+  const [usuario, setUsuario] = useState(null);
+  const [carregando, setCarregando] = useState(true);
+  const API_URL = import.meta.env.VITE_API_URL || "http://localhost:8000/api";
 
-  
-  const api = axios.create({
-    baseURL: import.meta.env.VITE_API_URL,
-    withCredentials: true, 
-  });
-
+  // Configurar interceptor para responses
   useEffect(() => {
-    
-    const checkSession = async () => {
-      try {
-        const response = await api.get('/perfil');
-        setUser(response.data);
-        setIsAuthenticated(true);
-      } catch (error) {
-        setUser(null);
-        setIsAuthenticated(false);
-      } finally {
-        setLoading(false);
+    const interceptor = axios.interceptors.response.use(
+      (response) => response,
+      (error) => {
+        if (error.response?.status === 401) {
+          logout();
+        }
+        return Promise.reject(error);
       }
+    );
+
+    return () => {
+      axios.interceptors.response.eject(interceptor);
     };
-    checkSession();
   }, []);
 
-  const login = useCallback(async (email, senha) => {
+  // Verificar se há token ao carregar a aplicação
+  const verificarToken = useCallback(async () => {
+    const token = localStorage.getItem("auth_token");
+    
+    if (!token) {
+      setCarregando(false);
+      return;
+    }
+
     try {
-      await api.post('/login', { email, senha });
-      const profileResponse = await api.get('/perfil');
-      setUser(profileResponse.data);
-      setIsAuthenticated(true);
-      navigate('/perfil');
+      // Configurar axios para usar o token por padrão
+      axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
+      
+      // Buscar dados do usuário
+      const response = await axios.get(`${API_URL}/user`);
+      setUsuario(response.data);
     } catch (error) {
-      throw error;
-    }
-  }, [navigate]);
-
-  const logout = useCallback(async () => {
-    try {
-      await api.post('/logout'); 
-    } catch (err) {
-      console.error('Erro ao fazer logout:', err);
+      console.error("Erro ao verificar token:", error);
+      if (error.response?.status === 401) {
+        logout(); // Remove token inválido
+      }
     } finally {
-      setUser(null);
-      setIsAuthenticated(false);
-      navigate('/login');
+      setCarregando(false);
     }
-  }, [navigate]);
+  }, [API_URL]);
 
-  const value = React.useMemo(() => ({
-    isAuthenticated,
-    user,
-    loading,
-    login,
-    logout,
-    api, 
-  }), [isAuthenticated, user, loading, login, logout]);
+  useEffect(() => {
+    verificarToken();
+  }, [verificarToken]);
 
-  return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
+const login = async (email, senha) => {
+    try {
+        const response = await axios.post(`${API_URL}/login`, {
+            email,
+            senha,
+        });
+
+        const token = response.data.access_token;
+        
+        if (!token) {
+            throw new Error("Token não recebido do servidor");
+        }
+        
+        localStorage.setItem("auth_token", token);
+        axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
+
+        // Busque os dados completos do usuário
+        const userData = await fetchUserData();
+        setUsuario(userData);
+
+        return userData;
+    } catch (error) {
+        console.error("Erro no login:", error);
+        
+        if (error.response && error.response.data) {
+            throw new Error(error.response.data.message || "Erro ao fazer login");
+        } else {
+            throw new Error("Erro de conexão com o servidor");
+        }
+    }
 };
 
-export const useAuth = () => useContext(AuthContext);
+  const logout = useCallback(() => {
+    localStorage.removeItem("auth_token");
+    delete axios.defaults.headers.common['Authorization'];
+    setUsuario(null);
+  }, []);
+
+  const fetchUserData = async () => {
+    try {
+        const response = await axios.get(`${API_URL}/user`);
+        return response.data;
+    } catch (error) {
+        console.error("Erro ao buscar dados do usuário:", error);
+        throw error;
+    }
+};
+
+  // Função para verificar se o usuário é admin
+  const isAdmin = useCallback(() => {
+    return usuario && usuario.is_admin === true;
+  }, [usuario]);
+
+  const value = {
+    usuario,
+    carregando,
+    login,
+    logout,
+    isAdmin
+  };
+
+  return (
+    <AuthContext.Provider value={value}>
+      {children}
+    </AuthContext.Provider>
+  );
+}
+
+export const useAuth = () => {
+  const context = useContext(AuthContext);
+  if (!context) {
+    throw new Error("useAuth deve ser usado dentro de um AuthProvider");
+  }
+  return context;
+};

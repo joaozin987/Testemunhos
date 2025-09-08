@@ -18,27 +18,36 @@ function CadastroPage() {
     setMensagem('');
     const userData = { nome, email, senha };
 
-    try {
-      const response = await fetch(`${API_URL}/usuarios`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(userData),
-      });
-      const result = await response.json();
-      if (response.ok) {
-        alert('Cadastro realizado com sucesso! Você será redirecionado para o login.');
-        navigate('/login');
+     try {
+    const response = await fetch(`${API_URL}/usuarios`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(userData),
+    });
+
+    const result = await response.json();
+
+    if (response.ok) {
+      alert('Cadastro realizado com sucesso! Você será redirecionado para o login.');
+      navigate('/login');
+    } else {
+      if (response.status === 422 && result.errors) {
+        // Se houver erros de validação (status 422)
+        const firstError = Object.values(result.errors)[0][0]; 
+        setMensagem(`Erro: ${firstError}`);
       } else {
+        // Para outros erros
         setMensagem(`Erro: ${result.message || 'Erro no servidor'}`);
       }
-    } catch (error) {
-      console.error('Erro de rede no cadastro:', error);
-      setMensagem('Erro de conexão. Não foi possível se comunicar com o servidor.');
-    } finally {
-      setIsLoading(false);
     }
+  } catch (error) {
+    console.error('Erro de rede no cadastro:', error);
+    setMensagem('Erro de conexão. Não foi possível se comunicar com o servidor.');
+  } finally {
+    setIsLoading(false);
+  }
   };
 
   return (
