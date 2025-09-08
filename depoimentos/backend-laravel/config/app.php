@@ -69,7 +69,9 @@ return [
     |
     */
 
-    'timezone' => 'UTC',
+    'timezone' => 'America/Sao_Paulo',
+    'locale' => 'pt_BR',
+    'faker_locale' => 'pt_BR',
 
     /*
     |--------------------------------------------------------------------------

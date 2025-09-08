@@ -17,11 +17,11 @@ return new class extends Migration
             $table->id();
             $table->text('experiencia');
             $table->string('imagem_url')->nullable();
-            $table->string('movimento, 100');
+            $table->string('movimento', 100); 
             $table->timestamp('data_criacao')->useCurrent();
-            $table->string('nome_autor, 100')->nullable();
+            $table->string('nome_autor', 100)->nullable(); 
             $table->integer('idade_autor')->nullable();
-            $table->foreignId('usuario_id')->nullable()->constrained('usuarios')->onDelete('set null');
+            $table->foreignId('usuario_id')->nullable()->constrained('users')->onDelete('set null'); // Aponta para a tabela 'users'
             $table->timestamps();
         });
     }
