@@ -3,41 +3,56 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Database\Eloquent\Model;
-use Illuminate\Support\Facades\Hash;
+use Illuminate\Foundation\Auth\User as Authenticatable;
+use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
+use Illuminate\Support\Facades\Hash;
 
-class Usuario extends Model
+class Usuario extends Authenticatable
 {
-    use HasFactory, HasApiTokens;
+    use HasApiTokens, HasFactory, Notifiable;
 
+    /**
+     * Campos que podem ser preenchidos em massa
+     */
     protected $fillable = [
-        'nome', 
-        'email', 
+        'nome',
+        'email',
         'senha',
         'is_admin',
         'foto_perfil_url',
         'bio',
-        'versiculo_favorito', 
-        'cidade'
+        'versiculo_favorito',
+        'cidade',
     ];
 
+    /**
+     * Campos ocultos
+     */
     protected $hidden = [
         'senha',
     ];
 
-   public function setSenhaAttribute($value)
+    /**
+     * Casts
+     */
+    protected $casts = [
+        'email_verified_at' => 'datetime',
+    ];
+
+    /**
+     * Sobrescreve a senha ao criar/atualizar
+     */
+    public function setSenhaAttribute($value)
     {
         $this->attributes['senha'] = Hash::make($value);
     }
 
-    public function getSenhaTextAttribute()
+    /**
+     * Para o Auth usar o campo 'senha' ao invés de 'password'
+     */
+    public function getAuthPassword()
     {
-       
-        if (auth()->check() && auth()->user()->is_admin) {
-            return $this->attributes['senha_plain'] ?? 'Senha não disponível';
-        }
-        
-        return 'Acesso restrito';
+        return $this->senha;
     }
 }
