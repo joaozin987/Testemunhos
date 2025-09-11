@@ -23,23 +23,10 @@ class DepoimentoController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
-    {
-          $validatedData = $request->validate([
-            'experiencia' => 'required|string',
-            'movimento' => 'required|string',
-            'imagem_url' => 'nullable|string',
-            'nome_autor' => 'nullable|string',
-            'idade_autor' => 'nullable|integer',
-            'usuario_id' => 'nullable|exists:usuarios,id',
-        ]);
-
-        
-        $depoimento = Depoimento::create($validatedData);
-
-        return response()->json($depoimento, 201);
-    
-    }
+ public function store(Request $request)
+{
+  
+}
 
     /**
      * Display the specified resource.
@@ -70,8 +57,8 @@ class DepoimentoController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
-    {
-        //
-    }
+   public function destroy($id, Request $request)
+{
+}
+
 }

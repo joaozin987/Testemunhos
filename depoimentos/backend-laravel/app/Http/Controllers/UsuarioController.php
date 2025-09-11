@@ -16,9 +16,33 @@ class UsuarioController extends Controller
     public function perfil (Request $request)
       {
         return response()->json($request->user());
+
     }
+   public function atualizarPerfil(Request $request)
+{
+      $request->validate([
+        'nome' => 'nullable|string|max:255',
+        'cidade' => 'nullable|string',
+        'bio' => 'nullable|string',
+        'versiculo_favorito' => 'nullable|string',
+    ]);
+
    
- 
+    $usuario = $request->user();
+
+    $usuario->update($request->only([
+        'nome',
+        'cidade',
+        'bio',
+        'versiculo_favorito'
+    ]));
+
+    return response()->json([
+        'mensagem' => 'Perfil atualizado com sucesso!',
+        'usuario' => $usuario
+    ]);
+}
+
     public function register(Request $request)
 {
     $request->validate([
