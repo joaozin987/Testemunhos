@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import mariaData from '../data/maria.json';
 
 function MuseuPage() {
-  // Estados para controlar o modal de visualização de imagem
+  
   const [isImageViewerOpen, setIsImageViewerOpen] = useState(false);
   const [currentImage, setCurrentImage] = useState('');
  

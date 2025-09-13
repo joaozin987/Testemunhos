@@ -33,7 +33,7 @@ function AdminPage() {
         setIsAdmin(userData.is_admin === true);
         
         if (!userData.is_admin) {
-          navigate('/'); // Redireciona se não for admin
+          navigate('/');
         }
       }
     } catch (error) {

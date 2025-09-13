@@ -4,7 +4,7 @@ import { AuthProvider } from './context/AuthContext.jsx';
 import Navbar from "./components/Navbar.jsx";
 import Footer from "./components/Footer.jsx";
 import LayoutPublico from "./components/LayoutPublico.jsx";
-import AdminLayout from "./components/admin/AdminLayout.jsx"; // Novo layout para admin
+import AdminLayout from "./components/admin/AdminLayout.jsx"; 
 
 
 import HomePage from "./pages/HomePage.jsx";

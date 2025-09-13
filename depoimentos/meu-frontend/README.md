@@ -1,12 +1,47 @@
-# React + Vite
+# Projeto Conectados pela Fé
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Projeto fullstack com **backend em Laravel** e **frontend em React + Vite**.
 
-Currently, two official plugins are available:
+---
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+## Tecnologias
 
-## Expanding the ESLint configuration
+- **Backend:** Laravel 10, PHP 8.0.30, MySQL  
+- **Frontend:** React 18 + Vite, Yarn  
+- **Servidor local:** XAMPP (Apache + MySQL)
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+---
+
+## Estrutura do projeto
+
+### 1️⃣ Entrar na pasta e instalar dependências
+
+```bash
+cd backend
+composer 
+
+DB_CONNECTION=mysql
+DB_HOST=127.0.0.1
+DB_PORT=3306
+DB_DATABASE=testemunho
+DB_USERNAME=root
+DB_PASSWORD=
+
+php artisan key:generate
+php artisan migrate
+
+php artisan serve
+
+
+#entrar nas dependencias
+cd meu-frontend
+
+#instalar as dependencias
+yarn install
+
+# Inicia o servidor de desenvolvimento Vite
+yarn dev
+
+# Para build de produção
+yarn build
+

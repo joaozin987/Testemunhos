@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 
 function ExemplosPage() {
-    // A lógica do modal pode ser útil aqui no futuro se você adicionar imagens clicáveis
+   
     const [isImageViewerOpen, setIsImageViewerOpen] = useState(false);
     const [currentImage, setCurrentImage] = useState('');
 

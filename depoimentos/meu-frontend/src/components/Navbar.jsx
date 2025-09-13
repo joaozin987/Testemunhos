@@ -6,7 +6,6 @@ function Navbar() {
   const { isAuthenticated, user, logout } = useAuth();
   const [menuOpen, setMenuOpen] = useState(false);
 
-  // Toggle do menu mobile
   const toggleMenu = () => setMenuOpen(!menuOpen);
 
   return (

@@ -3,11 +3,10 @@ import { useParams, Link, useNavigate } from 'react-router-dom';
 import Navbar from '../components/Navbar';
 
 function RedefinirPage() {
-  // O hook useParams() captura os parâmetros da URL, como o :token
+
   const { token } = useParams(); 
   const navigate = useNavigate();
 
-  // Estados para o formulário
   const [novaSenha, setNovaSenha] = useState('');
   const [confirmarSenha, setConfirmarSenha] = useState('');
   const [mensagem, setMensagem] = useState('');

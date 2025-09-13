@@ -4,7 +4,7 @@ import Navbar from '../components/Navbar';
 function RecuperarSenhaPage() {
   const [email, setEmail] = useState('');
   const [mensagem, setMensagem] = useState('');
-  const [tipoMensagem, setTipoMensagem] = useState('info'); // 'info' ou 'erro'
+  const [tipoMensagem, setTipoMensagem] = useState('info'); 
   const [isLoading, setIsLoading] = useState(false);
 
   const handleSubmit = async (e) => {
@@ -13,7 +13,7 @@ function RecuperarSenhaPage() {
     setMensagem('');
 
     try {
-      // ATENÇÃO: Substitua a URL se seu backend não estiver rodando em localhost:3000
+  
       const response = await fetch('http://localhost:3000/solicitar-recuperacao', {
         method: 'POST',
         headers: {
