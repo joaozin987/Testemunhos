@@ -19,6 +19,7 @@ return new class extends Migration
             $table->string('email')->unique();
             $table->string('senha');
             $table->text('foto_perfil_url')->nullable();
+            $table->string('upload_file')->nullable();
             $table->text('bio')->nullable();
             $table->text('versiculo_favorito')->nullable();
             $table->string('cidade')->nullable();

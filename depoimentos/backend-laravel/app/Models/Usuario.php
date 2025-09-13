@@ -21,6 +21,7 @@ class Usuario extends Authenticatable
         'senha',
         'is_admin',
         'foto_perfil_url',
+        'upload_file',
         'bio',
         'versiculo_favorito',
         'cidade',

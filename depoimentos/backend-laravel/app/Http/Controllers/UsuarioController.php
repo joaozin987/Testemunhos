@@ -23,6 +23,7 @@ class UsuarioController extends Controller
       $request->validate([
         'nome' => 'nullable|string|max:255',
         'cidade' => 'nullable|string',
+        'upload_file' => 'nullable|image|mimes:jpg,jpeg,png,gif|max:2048',
         'bio' => 'nullable|string',
         'versiculo_favorito' => 'nullable|string',
     ]);
@@ -30,13 +31,17 @@ class UsuarioController extends Controller
    
     $usuario = $request->user();
 
-    $usuario->update($request->only([
-        'nome',
-        'cidade',
-        'bio',
-        'versiculo_favorito'
-    ]));
+   if($request->hasFile('upload_file')){
+    $path = $request->file('upload_file')->store('usuarios', 'public');
+    $usuario->upload_file = $path;
+   }
+   $usuario->nome = $request->input('nome', $usuario->nome);
+   $usuario->cidade = $request->input('cidade', $usuario->cidade);
+   $usuario->bio = $request->input('bio', $usuario->bio);
+   $usuario->versiculo_favorito = $request->input('versiculo_favorito', $usuario->versiculo_favorito);
 
+   $usuario->save();
+   
     return response()->json([
         'mensagem' => 'Perfil atualizado com sucesso!',
         'usuario' => $usuario

@@ -21,7 +21,7 @@ return new class extends Migration
             $table->timestamp('data_criacao')->useCurrent();
             $table->string('nome_autor', 100)->nullable(); 
             $table->integer('idade_autor')->nullable();
-            $table->foreignId('usuario_id')->nullable()->constrained('users')->onDelete('set null'); // Aponta para a tabela 'users'
+            $table->foreignId('usuario_id')->nullable()->constrained('users')->onDelete('set null');
             $table->timestamps();
         });
     }
