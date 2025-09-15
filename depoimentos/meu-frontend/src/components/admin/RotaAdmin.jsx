@@ -1,5 +1,5 @@
 import React from 'react';
-import { Navigate, useLocation } from 'react-router-dom';
+import { Navigate, Outlet, useLocation } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext.jsx';
 
 function RotaAdmin({ children }) {
@@ -29,7 +29,7 @@ function RotaAdmin({ children }) {
     );
   }
 
-  return children;
+  return <Outlet />;
 }
 
 export default RotaAdmin;

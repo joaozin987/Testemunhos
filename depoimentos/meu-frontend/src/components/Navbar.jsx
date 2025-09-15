@@ -32,6 +32,14 @@ function Navbar() {
 
         {isAuthenticated ? (
           <>
+           <li>
+              {user?.isAdmin &&(
+                <Link to="/admin" className="mr-4 text-yellow-400 font-bold">
+                  Painel Admin
+                </Link>
+              )}
+            </li>
+
             <li>
               <Link to="/perfil" className="text-white font-semibold">
                 Olá, {user?.nome || user?.email}
@@ -54,6 +62,7 @@ function Navbar() {
                 Cadastre-se
               </Link>
             </li>
+          
           </>
         )}
       </ul>
@@ -69,6 +78,14 @@ function Navbar() {
 
             {isAuthenticated ? (
               <>
+               <li>
+              {user?.isAdmin &&(
+                <Link to="/admin" className="mr-4 text-yellow-400 font-bold">
+                  Painel Admin
+                </Link>
+              )}
+            </li>
+            
                 <li>
                   <Link to="/perfil" onClick={() => setMenuOpen(false)}>
                     Olá, {user?.nome || user?.email}

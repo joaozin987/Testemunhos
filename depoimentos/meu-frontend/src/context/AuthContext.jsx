@@ -64,6 +64,7 @@ export function AuthProvider({ children }) {
       bio: data.usuario.bio || "",
       cidade: data.usuario.cidade || "",
       versiculo_favorito: data.usuario.versiculo_favorito || "",
+      isAdmin : data.usuario.isAdmin || true,
     };
     localStorage.setItem("usuario", JSON.stringify(usuario));
 

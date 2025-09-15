@@ -395,7 +395,7 @@ function HomePage() {
             ))}
 
             <button
-              onClick={() => paginate(currentPage + 1)}
+              onClick={() => paginate(currentPage + 3)}
               disabled={currentPage === totalPages}
               className={`px-4 py-2 rounded-lg font-slab transition ${currentPage === totalPages ? 'bg-gray-300 text-gray-500 cursor-not-allowed' : 'bg-blue-600 text-white hover:bg-blue-700'}`}
             >
