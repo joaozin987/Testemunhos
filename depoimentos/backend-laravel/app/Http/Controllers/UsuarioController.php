@@ -86,11 +86,12 @@ class UsuarioController extends Controller
 
 
     $token = $usuario->createToken('API Token')->plainTextToken;
-
+    $usuario->isAdmin = (bool) $usuario->is_admin;
     return response()->json([
         'mensagem' => 'Login realizado com sucesso!',
         'usuario' => $usuario,
-        'token' => $token
+        'token' => $token,
+        'isAdmin' => (bool) $usuario->is_admin,
     ]);
 }
 
