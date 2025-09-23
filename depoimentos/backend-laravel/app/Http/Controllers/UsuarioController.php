@@ -7,6 +7,12 @@ use App\Models\Usuario;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Support\Facades\Password;
+use Illuminate\Support\Str;
+use App\Mail\ResetPasswordMail;
+use Illuminate\Support\Facades\Mail;
+use Illuminate\Validation\ValidationException;
+
 
 class UsuarioController extends Controller
 {
@@ -94,6 +100,51 @@ class UsuarioController extends Controller
         'isAdmin' => (bool) $usuario->is_admin,
     ]);
 }
+
+    public function forgotPassword(Request $request): JsonResponse
+{
+    $request->validate([
+        'email' => 'required|email',
+    ]);
+
+    $status = Password::sendResetLink(
+        $request->only('email'),
+        function ($user, $token) {
+            $frontendUrl = "http://localhost:5173/resetar?token=$token&email={$user->email}";
+
+          
+            Mail::to($user->email)->send(new ResetPasswordMail($frontendUrl));
+        }
+    );
+    if ($status === Password::RESET_LINK_SENT) {
+        return response()->json(['message' => 'Link enviado com sucesso!']);
+    }
+
+    return response()->json(['message' => 'Erro ao enviar link'], 500);
+}
+    public function resetPassword(Request $request): JsonResponse
+    {
+        $request->validate([
+            'token' => 'required|string',
+            'email' => 'required|email',
+            'password' => 'required|min:6|confirmed',
+        ]);
+
+        $status = Password::reset(
+            $request->only('email', 'password', 'password_confirmation', 'token'),
+            function (Usuario $user, string $password) {
+                $user->forceFill([
+                    'senha' => Hash::make($password)
+                ])->setRememberToken(Str::random(60));
+
+                $user->save();
+            }
+        );
+
+        return $status === Password::PASSWORD_RESET
+            ? response()->json(['message' => 'Senha redefinida com sucesso'])
+            : response()->json(['message' => 'Erro ao redefinir senha'], 400);
+    }
 
     /**
      * Log the user out (revoke the token).

@@ -2,15 +2,17 @@
 
 namespace App\Models;
 
+use Illuminate\Auth\Notifications\ResetPassword;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
 use Illuminate\Support\Facades\Hash;
-
+use Illuminate\Contracts\Auth\CanResetPassword;
+use Illuminate\Auth\Passwords\CanResetPassword as CanResetPasswordTrait;
 class Usuario extends Authenticatable
 {
-    use HasApiTokens, HasFactory, Notifiable;
+    use HasApiTokens, HasFactory, Notifiable, CanResetPasswordTrait;
 
     /**
      * Campos que podem ser preenchidos em massa
@@ -26,6 +28,13 @@ class Usuario extends Authenticatable
         'versiculo_favorito',
         'cidade',
     ];
+   public function sendPasswordResetNotification($token, $frontendUrl = null)
+{
+    $url = $frontendUrl ?? "http://localhost:5173/redefinir?token={$token}&email=" . urlencode($this->email);
+
+    $this->notify(new \Illuminate\Auth\Notifications\ResetPassword($token, $url));
+}
+
 
     /**
      * Campos ocultos
