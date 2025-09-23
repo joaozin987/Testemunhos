@@ -19,7 +19,7 @@ function CadastroPage() {
     setMensagem("");
 
     try {
-      await register(nome, email, password); // envia password
+      await register(nome, email, password);
       alert("Cadastro realizado com sucesso! Você será redirecionado para o login.");
       navigate("/login");
     } catch (error) {

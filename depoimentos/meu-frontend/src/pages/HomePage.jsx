@@ -340,7 +340,7 @@ function HomePage() {
       {/* Seção Depoimentos */}
       <hr className='my-12 border-t border-gray-700' />
       <section id='depoimentos-list' className='container mx-auto px-6 py-8'>
-        <h2 className='text-4xl font-slab text-white text-center mb-10'>Depoimentos Compartilhados</h2>
+        <h2 className='text-4xl font-black text-amber-100 text-center mb-10'>Depoimentos Compartilhados</h2>
 
         {isLoading ? (
           <div className="text-center font-slab text-white text-3xl">Carregando Depoimentos...</div>
