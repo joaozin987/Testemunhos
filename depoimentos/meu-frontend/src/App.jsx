@@ -73,7 +73,7 @@ function App() {
 
           {/* Grupo 4: Telas sem Layout */}
           <Route path="/recuperar-senha" element={<RecuperarSenhaPage />} />
-          <Route path="/redefinir-senha/:token" element={<RedefinirPage />} />
+          <Route path="/redefinir-senha" element={<RedefinirPage />} />
         </Routes>
       </AuthProvider>
     </Router>
