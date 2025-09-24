@@ -106,13 +106,12 @@ class UsuarioController extends Controller
     $request->validate([
         'email' => 'required|email',
     ]);
-
+    
     $status = Password::sendResetLink(
         $request->only('email'),
         function ($user, $token) {
-            $frontendUrl = "http://localhost:5173/resetar?token=$token&email={$user->email}";
+            $frontendUrl = "http://localhost:5173/redefinir-senha?token=$token&email={$user->email}";
 
-          
             Mail::to($user->email)->send(new ResetPasswordMail($frontendUrl));
         }
     );
@@ -128,18 +127,17 @@ class UsuarioController extends Controller
             'token' => 'required|string',
             'email' => 'required|email',
             'password' => 'required|min:6|confirmed',
-        ]);
+        ]); 
 
         $status = Password::reset(
             $request->only('email', 'password', 'password_confirmation', 'token'),
-            function (Usuario $user, string $password) {
-                $user->forceFill([
-                    'senha' => Hash::make($password)
-                ])->setRememberToken(Str::random(60));
+          function (Usuario $user, string $password) {
+            $user->forceFill([
+                'senha' => Hash::make($password),
+            ])->setRememberToken(Str::random(60));
 
-                $user->save();
-            }
-        );
+            $user->save();
+        });
 
         return $status === Password::PASSWORD_RESET
             ? response()->json(['message' => 'Senha redefinida com sucesso'])
