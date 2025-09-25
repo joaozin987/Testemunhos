@@ -116,7 +116,9 @@ class UsuarioController extends Controller
         }
     );
     if ($status === Password::RESET_LINK_SENT) {
-        return response()->json(['message' => 'Link enviado com sucesso!']);
+        return response()->json(['message' => 'Link enviado com sucesso!',
+    
+    ]);
     }
 
     return response()->json(['message' => 'Erro ao enviar link'], 500);
