@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { useAuth } from "../context/AuthContext";
 import api from "../api";
+import "bootstrap-icons/font/bootstrap-icons.css";
 
 export default function PerfilPage() {
   const { user, setUser } = useAuth();
@@ -8,36 +9,45 @@ export default function PerfilPage() {
   const [formData, setFormData] = useState({
     nome: "",
     cidade: "",
-    upload_file: "",
+    upload_file: null,
     bio: "",
     versiculo_favorito: "",
   });
   const [isEditing, setIsEditing] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
   const [mensagem, setMensagem] = useState("");
+  const [previewImage, setPreviewImage] = useState(null);
 
   useEffect(() => {
     if (user) {
       setFormData({
         nome: user.nome || "",
         cidade: user.cidade || "",
-        upload_file: user.upload_file || "",
+        upload_file: user.upload_file || null,
         bio: user.bio || "",
         versiculo_favorito: user.versiculo_favorito || "",
       });
+      setPreviewImage(user.upload_file || null);
     }
   }, [user]);
 
  
   const handleChange = (e) => {
     const { name, type, value, files } = e.target;
-    setFormData((prev) => ({
-      ...prev,
-      [name]: type === "file" ? files[0] : value,
-    }));
+    if (type === "file") {
+      const file = files[0];
+      setFormData((prev) => ({ ...prev, [name]: file }));
+
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setPreviewImage(reader.result);
+      };
+      reader.readAsDataURL(file);
+    } else {
+      setFormData((prev) => ({ ...prev, [name]: value }));
+    }
   };
 
-  // Salva o perfil
   const handleSaveSubmit = async (e) => {
     e.preventDefault();
     setIsSaving(true);
@@ -70,7 +80,7 @@ export default function PerfilPage() {
       setFormData({
         nome: updatedUser.nome || "",
         cidade: updatedUser.cidade || "",
-        upload_file: updatedUser.upload_file || "",
+        upload_file: updatedUser.upload_file || null,
         bio: updatedUser.bio || "",
         versiculo_favorito: updatedUser.versiculo_favorito || "",
       });
@@ -85,10 +95,47 @@ export default function PerfilPage() {
       setIsSaving(false);
     }
   };
-
   return (
-    <div className="perfil-page mt-4 p-6 max-w-xl mx-auto bg-white shadow rounded-xl">
-      <h1 className="text-2xl font-bold mb-6">Meu Perfil</h1>
+    <div className="perfil-page mt-4 p-6 max-w-xl mx-auto bg-white shadow-2xl rounded-2xl">
+      <h1 className="text-3xl font-serif text-emerald-700 mb-6 text-center">Meu Perfil</h1>
+
+      <div className="relative w-40 h-40 mx-auto mb-5">
+        <div className="w-full h-full rounded-full bg-gray-300 overflow-hidden shadow-xl border-4 border-white flex items-center justify-center">
+          {previewImage ? (
+            <img
+              src={previewImage}
+              alt="Foto de Perfil"
+              className="w-full h-full object-cover"
+            />
+          ) : (
+            <svg
+              className="w-20 h-20 text-gray-500"
+              fill="currentColor"
+              viewBox="0 0 20 20"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path fillRule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clipRule="evenodd" />
+            </svg>
+          )}
+        </div>
+        {isEditing && (
+          <label
+            htmlFor="upload_file"
+            className="absolute bottom-0 right-0 bg-blue-500 text-white p-2 rounded-full cursor-pointer hover:bg-blue-600 transition"
+          >
+            <i className="bi bi-camera-fill text-xl"></i>
+            <input
+              type="file"
+              id="upload_file"
+              name="upload_file"
+              accept="image/*"
+              onChange={handleChange}
+              className="hidden"
+              disabled={!isEditing}
+            />
+          </label>
+        )}
+      </div>
 
       {mensagem && (
         <div
@@ -126,17 +173,6 @@ export default function PerfilPage() {
         </label>
 
         <label className="flex flex-col">
-          Escolha a sua imagem:
-          <input
-            type="file"
-            name="upload_file"
-            onChange={handleChange} // ✅ lida com arquivo
-            className="border p-2 rounded mt-1"
-            disabled={!isEditing}
-          />
-        </label>
-
-        <label className="flex flex-col">
           Bio:
           <textarea
             name="bio"
@@ -163,7 +199,7 @@ export default function PerfilPage() {
           <button
             type="button"
             onClick={() => setIsEditing(true)}
-            className="bg-blue-500 text-white px-4 py-2 rounded mt-2 w-25 hover:bg-blue-600 transition"
+            className="bg-blue-500 text-white px-4 py-2 w-40 rounded mt-2 hover:bg-blue-600 transition"
           >
             Editar
           </button>
@@ -180,13 +216,15 @@ export default function PerfilPage() {
               type="button"
               onClick={() => {
                 setIsEditing(false);
+                // Reset form data to the original user data
                 setFormData({
                   nome: user.nome || "",
                   cidade: user.cidade || "",
-                  upload_file: user.upload_file || "",
+                  upload_file: user.upload_file || null,
                   bio: user.bio || "",
                   versiculo_favorito: user.versiculo_favorito || "",
                 });
+                setPreviewImage(user.upload_file || null);
               }}
               className="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600 transition"
             >

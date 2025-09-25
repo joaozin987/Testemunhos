@@ -366,9 +366,15 @@ function HomePage() {
                   ? `${dep.experiencia.substring(0, 100)}...` 
                   : dep.experiencia
                 }"</h3>
-                <p className='text-gray-500 mt-2 text-sm'>
+                <p className='text-emerald-600 mt-2 text-lg font-black'>
                   - {dep.nome_autor || 'Anônimo'}, {dep.idade_autor && `${dep.idade_autor} anos`}
                 </p>
+
+                <button
+                type='submit' 
+                className='bg-red-500 mt-4 p-2 w-22 text-white rounded-lg right text-center hover:bg-red-600 font-serif text-lg'>Deletar</button>
+
+                <button className='text-amber-50 bg-orange-400 ml-5 p-2 rounded-lg text-lg font-serif w-22 hover:bg-orange-500' >Editar</button>
               </div>
             ))}
           </div>
