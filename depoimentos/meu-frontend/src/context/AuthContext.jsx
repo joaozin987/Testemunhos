@@ -16,7 +16,15 @@ export function AuthProvider({ children }) {
           const response = await api.get("/perfil", {
             headers: { Authorization: `Bearer ${token}` },
           });
-          setUser(response.data.usuario || response.data);
+
+          const usuarioBackend = response.data.usuario || response.data;
+
+          const usuario = {
+            ...usuarioBackend,
+            isAdmin: usuarioBackend.role === 1, // role 1 = admin
+          };
+
+          setUser(usuario);
           setIsAuthenticated(true);
         } catch (err) {
           console.error("Erro ao buscar usuário:", err);
@@ -39,8 +47,15 @@ export function AuthProvider({ children }) {
     const data = await res.json();
     if (!res.ok) throw new Error(data.erro || "Erro ao cadastrar");
 
+    const usuario = {
+      ...data.usuario,
+      isAdmin: data.usuario.role === 1,
+    };
+
     localStorage.setItem("token", data.token);
-    setUser(data.usuario);
+    localStorage.setItem("usuario", JSON.stringify(usuario));
+
+    setUser(usuario);
     setIsAuthenticated(true);
     return data;
   };
@@ -54,8 +69,6 @@ export function AuthProvider({ children }) {
     const data = await res.json();
     if (!res.ok) throw new Error(data.erro || "Erro ao logar");
 
-    localStorage.setItem("token", data.token);
-
     const usuario = {
       id: data.usuario.id,
       nome: data.usuario.nome,
@@ -64,8 +77,10 @@ export function AuthProvider({ children }) {
       bio: data.usuario.bio || "",
       cidade: data.usuario.cidade || "",
       versiculo_favorito: data.usuario.versiculo_favorito || "",
-      isAdmin : data.usuario.isAdmin || true,
+      isAdmin: data.usuario.role === 1, // role 1 = admin
     };
+
+    localStorage.setItem("token", data.token);
     localStorage.setItem("usuario", JSON.stringify(usuario));
 
     setUser(usuario);
@@ -88,6 +103,5 @@ export function AuthProvider({ children }) {
     </AuthContext.Provider>
   );
 }
-
 
 export const useAuth = () => useContext(AuthContext);

@@ -1,12 +1,13 @@
 import { BrowserRouter as Router, Routes, Route, Outlet } from "react-router-dom";
 import { AuthProvider } from './context/AuthContext.jsx';
 
+// Componentes gerais
 import Navbar from "./components/Navbar.jsx";
 import Footer from "./components/Footer.jsx";
 import LayoutPublico from "./components/LayoutPublico.jsx";
-import AdminLayout from "./components/admin/AdminLayout.jsx"; 
+import AdminLayout from "./components/admin/AdminLayout.jsx";
 
-
+// Páginas públicas
 import HomePage from "./pages/HomePage.jsx";
 import LoginPage from "./pages/LoginPage.jsx";
 import CadastroPage from "./pages/CadastroPage.jsx";
@@ -17,14 +18,14 @@ import PerfilPage from "./pages/PerfilPage.jsx";
 import RecuperarSenhaPage from "./pages/RecuperarSenhaPage.jsx";
 import RedefinirPage from "./pages/RedefinirPage.jsx";
 
+// Páginas do Admin
+import AdminPage from "./pages/admin/AdminPage.jsx"; // Dashboard Admin
+import AdminUsersPage from "./pages/admin/AdminUsersPage.jsx"; // Gestão de usuários
+import AdminPostsPage from "./pages/admin/AdminPostsPage.jsx"; // Gestão de posts
 
-import AdminPage from "./pages/admin/AdminPage.jsx";
-import AdminUsersPage from "./pages/admin/AdminUsersPage.jsx";
-import AdminPostsPage from "./pages/admin/AdminPostsPage.jsx";
-
-
+// Rotas protegidas
 import RotaProtegida from "./components/RotaProtegida.jsx";
-import RotaAdmin from "./components/admin/RotaAdmin.jsx"; 
+import RotaAdmin from "./components/admin/RotaAdmin.jsx";
 
 function AppLayout() {
   return (

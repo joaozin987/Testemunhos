@@ -18,7 +18,7 @@ export default function AdminUsersPage() {
       setCarregando(true);
       const response = await axios.get(`${API_URL}/admin/usuarios`, {
         headers: {
-          'Authorization': `Bearer ${localStorage.getItem('auth_token')}`
+          'Authorization': `Bearer ${localStorage.getItem('token')}`
         }
       });
       setUsuarios(response.data);
@@ -38,7 +38,7 @@ export default function AdminUsersPage() {
     try {
       await axios.post(`${API_URL}/admin/usuarios/${userId}/make-admin`, {}, {
         headers: {
-          'Authorization': `Bearer ${localStorage.getItem('auth_token')}`
+          'Authorization': `Bearer ${localStorage.getItem('token')}`
         }
       });
       
@@ -63,7 +63,7 @@ export default function AdminUsersPage() {
     try {
       await axios.delete(`${API_URL}/admin/usuarios/${userId}`, {
         headers: {
-          'Authorization': `Bearer ${localStorage.getItem('auth_token')}`
+          'Authorization': `Bearer ${localStorage.getItem('token')}`
         }
       });
       

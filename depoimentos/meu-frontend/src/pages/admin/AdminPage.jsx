@@ -1,7 +1,9 @@
+// src/pages/admin/AdminPage.jsx
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Navbar from '../../components/Navbar';
 import AdminSidebar from '../../components/admin/AdminSidebar';
+import AdminPosts from './AdminPostsPage';
 
 function AdminPage() {
   const [activeSection, setActiveSection] = useState('dashboard');
@@ -22,17 +24,16 @@ function AdminPage() {
     }
 
     try {
-      const response = await fetch(`${API_URL}/user`, {
+      const response = await fetch(`${API_URL}/perfil`, {
         headers: {
           'Authorization': `Bearer ${token}`
         }
       });
-      
+
       if (response.ok) {
         const userData = await response.json();
-        setIsAdmin(userData.is_admin === true);
-        
-        if (!userData.is_admin) {
+        setIsAdmin(userData.role === 1); // 1 = admin no seu banco
+        if (userData.role !== 1) {
           navigate('/');
         }
       }
@@ -70,19 +71,23 @@ function AdminPage() {
         />
         
         <div className="flex-1 p-6">
-          <h1 className="text-3xl font-bold mb-6">Painel de Administração</h1>
+          <h1 className="text-3xl font-serif mb-6">Painel de Administração</h1>
           
           {activeSection === 'dashboard' && (
             <div>
               <h2 className="text-2xl font-semibold mb-4">Visão Geral</h2>
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
                 <div className="bg-white p-4 rounded-lg shadow">
-                  <h3 className="font-semibold">Total de Usuários</h3>
-                  <p className="text-2xl">150</p>
+                  <h3 className="font-serif text-xl">Total de Usuários</h3>
+                  <p className="text-xl mt-3">150</p>
                 </div>
                 <div className="bg-white p-4 rounded-lg shadow">
-                  <h3 className="font-semibold">Posts Hoje</h3>
-                  <p className="text-2xl">23</p>
+                  <h3 className="font-serif text-xl">Posts Hoje</h3>
+                  <p className="text-2xl mt-3">23</p>
+                </div>
+                <div className="bg-white p-3 rounded-2xl shadow">
+                  <h3 className="font-serif text-xl">Post de Hoje</h3>
+                  <p className="text-xl mt-3">30</p>
                 </div>
                 <div className="bg-white p-4 rounded-lg shadow">
                   <h3 className="font-semibold">Sistema</h3>
@@ -102,7 +107,7 @@ function AdminPage() {
           {activeSection === 'posts' && (
             <div>
               <h2 className="text-2xl font-semibold mb-4">Gerenciar Posts</h2>
-              {/* Conteúdo de gerenciamento de posts */}
+              <AdminPosts />
             </div>
           )}
         </div>

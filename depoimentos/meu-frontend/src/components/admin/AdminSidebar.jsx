@@ -13,7 +13,6 @@ function AdminSidebar() {
       <div className="p-4 border-b border-gray-700">
         <h2 className="text-xl font-bold">Administração</h2>
       </div>
-      
       <nav className="mt-4">
         {menuItems.map(item => (
           <NavLink

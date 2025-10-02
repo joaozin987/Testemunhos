@@ -1,24 +1,39 @@
+// HomePage.jsx
+// ===== Parte 0 - Observações =====
+// Este arquivo contém TODO o componente HomePage com as seções que você tinha,
+// mais a lógica de editar/deletar depoimentos sem remover nada do que já existia.
+// Verifique apenas a variável API_URL e o formato dos endpoints do seu backend.
+// ===== Parte 1 - Imports e States =====
+
 import React, { useState, useEffect } from 'react';
 
 function HomePage() {
+  // Lista e status
   const [depoimentos, setDepoimentos] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
 
+  // Controle de edição / modal
+  const [depoimentoEditando, setDepoimentoEditando] = useState(null);
   const [isFormModalOpen, setIsFormModalOpen] = useState(false);
   const [isAlertOpen, setIsAlertOpen] = useState(false);
   const [isGoalSectionVisible, setIsGoalSectionVisible] = useState(false);
   const [isWordSectionVisible, setIsWordSectionVisible] = useState(false);
   const [isImageViewerOpen, setIsImageViewerOpen] = useState(false);
 
+  // Image viewer
   const [currentImage, setCurrentImage] = useState('');
+
+  // Busca de versículos / palavra do dia
   const [termoBusca, setTermoBusca] = useState('');
   const [versiculoEncontrado, setVersiculoEncontrado] = useState(null);
   const [erroBusca, setErroBusca] = useState('');
 
+  // Paginação
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage] = useState(3);
 
+  // Form
   const [formData, setFormData] = useState({
     nome_autor: '',
     movimento: '',
@@ -27,14 +42,20 @@ function HomePage() {
     imagem_url: ''
   });
 
+  // API base — ajuste se necessário
   const API_URL = 'http://127.0.0.1:8000/api';
 
+  // ===== Parte 2 - Funções auxiliares (fetch, busca, handlers) =====
 
+  // Busca todos os depoimentos
   const fetchDepoimentos = async () => {
     setIsLoading(true);
     try {
       const res = await fetch(`${API_URL}/depoimentos`);
       if (!res.ok) {
+        // tenta ler mensagem do backend para debugging
+        const text = await res.text().catch(() => null);
+        console.error('Resposta do backend (fetchDepoimentos):', res.status, text);
         throw new Error('Falha ao buscar depoimentos');
       }
       const data = await res.json();
@@ -48,11 +69,12 @@ function HomePage() {
     }
   };
 
- 
   useEffect(() => {
     fetchDepoimentos();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
+  // Buscar versículos/palavra do backend
   const handleSearchVerse = async () => {
     setVersiculoEncontrado(null);
     setErroBusca('');
@@ -62,14 +84,17 @@ function HomePage() {
     }
 
     try {
-      const res = await fetch(`${API_URL}/versiculos/${chaveBusca}`);
+      const res = await fetch(`${API_URL}/versiculos/${encodeURIComponent(chaveBusca)}`);
       if (!res.ok) {
+        const text = await res.text().catch(()=>null);
+        console.error('Erro ao buscar versículos:', res.status, text);
         throw new Error('Erro ao buscar do backend');
       }
       const data = await res.json();
       if (!data || data.length === 0) {
         setErroBusca(`Não encontrei um versículo para "${chaveBusca}".`);
       } else {
+        // escolhe um aleatório caso haja mais de um
         setVersiculoEncontrado(data[Math.floor(Math.random() * data.length)]);
       }
     } catch (err) {
@@ -78,22 +103,76 @@ function HomePage() {
     }
   };
 
- 
+  // Abrir visualizador de imagem
   const handleOpenImage = (url) => {
     setCurrentImage(url);
     setIsImageViewerOpen(true);
   };
 
+  // Abrir alert antes de criar
   const handleOpenAlert = (e) => {
     e.preventDefault();
     setIsAlertOpen(true);
   };
+
   const handleCloseAlertAndOpenModal = () => {
     setIsAlertOpen(false);
+    // limpa edição anterior e abre modal para criação
+    setDepoimentoEditando(null);
+    setFormData({ nome_autor: '', movimento: '', idade_autor: '', experiencia: '', imagem_url: '' });
     setIsFormModalOpen(true);
   };
-  const handleCloseFormModal = () => setIsFormModalOpen(false);
 
+  const handleCloseFormModal = () => {
+    setIsFormModalOpen(false);
+    setDepoimentoEditando(null);
+    setFormData({ nome_autor: '', movimento: '', idade_autor: '', experiencia: '', imagem_url: '' });
+  };
+
+ const handleDelete = async (id) => {
+  try {
+    const token = localStorage.getItem("token");
+    console.log("Tentando deletar depoimento ID:", id);
+    console.log("Token:", token);
+
+    const res = await fetch(`${API_URL}/depoimentos/${id}`, {
+      method: "DELETE",
+      headers: {
+        "Authorization": `Bearer ${token}`,
+        "Content-Type": "application/json",
+      },
+    });
+
+    console.log("Status da resposta:", res.status);
+
+    if (!res.ok) {
+      const text = await res.text();
+      console.error("Resposta do backend:", text);
+      throw new Error("Erro ao deletar depoimento");
+    }
+
+    setDepoimentos((prev) => prev.filter((d) => d.id !== id));
+    alert("Depoimento deletado com sucesso!");
+  } catch (err) {
+    console.error("Erro em handleDelete:", err);
+    alert("Erro ao deletar depoimento. Verifique o console.");
+  }
+};
+
+  // Preparar edição: abre o modal com os dados preenchidos
+  const handleEdit = (depoimento) => {
+    setDepoimentoEditando(depoimento);
+    setFormData({
+      nome_autor: depoimento.nome_autor || '',
+      movimento: depoimento.movimento || '',
+      idade_autor: depoimento.idade_autor || '',
+      experiencia: depoimento.experiencia || '',
+      imagem_url: depoimento.imagem_url || '',
+    });
+    setIsFormModalOpen(true);
+  };
+
+  // Form handlers
   const handleFormChange = (e) => {
     const { id, value } = e.target;
     setFormData(prev => ({ ...prev, [id]: value }));
@@ -108,6 +187,7 @@ function HomePage() {
         return;
       }
 
+      // cria payload baseado em formData
       const payload = {
         experiencia: formData.experiencia,
         movimento: formData.movimento,
@@ -116,8 +196,16 @@ function HomePage() {
         imagem_url: formData.imagem_url || null,
       };
 
-      const res = await fetch(`${API_URL}/depoimentos`, {
-        method: 'POST',
+      let url = `${API_URL}/depoimentos`;
+      let method = "POST";
+
+      if (depoimentoEditando) {
+        url = `${API_URL}/depoimentos/${depoimentoEditando.id}`;
+        method = "PUT";
+      }
+
+      const res = await fetch(url, {
+        method,
         headers: {
           'Content-Type': 'application/json',
           'Authorization': `Bearer ${token}`,
@@ -126,35 +214,44 @@ function HomePage() {
       });
 
       if (!res.ok) {
-        const text = await res.text();
-        console.error('Erro detalhado do backend:', text);
-        throw new Error('Falha ao enviar depoimento');
+        const text = await res.text().catch(()=>null);
+        console.error('Erro detalhado do backend (handleFormSubmit):', res.status, text);
+        throw new Error('Falha ao salvar depoimento');
       }
 
-    
+      // Recarrega lista
       await fetchDepoimentos();
 
+      // limpa e fecha
       setFormData({ nome_autor: '', movimento: '', idade_autor: '', experiencia: '', imagem_url: '' });
+      setDepoimentoEditando(null);
       handleCloseFormModal();
-      alert('Depoimento enviado com sucesso!');
+
+      alert(depoimentoEditando ? 'Depoimento atualizado!' : 'Depoimento enviado!');
     } catch (err) {
-      console.error('Erro no envio do depoimento:', err);
-      alert('Erro ao enviar depoimento. Verifique o console para mais detalhes.');
+      console.error('Erro no envio/edição do depoimento:', err);
+      alert('Erro ao salvar depoimento. Verifique o console.');
     }
   };
 
+  // Paginação helpers
   const indexOfLastItem = currentPage * itemsPerPage;
   const indexOfFirstItem = indexOfLastItem - itemsPerPage;
   const currentDepoimentos = depoimentos.slice(indexOfFirstItem, indexOfLastItem);
   const totalPages = Math.ceil(depoimentos.length / itemsPerPage);
 
-  const paginate = (pageNumber) => setCurrentPage(pageNumber);
+  const paginate = (pageNumber) => {
+    if (pageNumber < 1) pageNumber = 1;
+    if (pageNumber > totalPages) pageNumber = totalPages;
+    setCurrentPage(pageNumber);
+  };
 
   const pageNumbers = [];
   for (let i = 1; i <= totalPages; i++) {
     pageNumbers.push(i);
   }
 
+  // ===== Parte 3 - JSX completo (mantendo tudo que você tinha) =====
   return (
     <>
       {/* Seção Home */}
@@ -206,7 +303,7 @@ function HomePage() {
           </div>
         )}
 
-        {/* Meu Depoimento */}
+        {/* Meu Depoimento (seu texto original mantido) */}
         <div className="p-8 sm:p-10 mt-7 rounded-lg bg-gray-300 max-w-6xl mx-auto">
           <div className="flex flex-col md:flex-row md:items-start gap-8">
             <div className="flex-shrink-0 flex justify-center md:justify-start">
@@ -223,7 +320,7 @@ function HomePage() {
                 Olá Pessoal, me chamo <span className="text-blue-500 text-xl sm:text-2xl font-slab">João Paulo</span>
               </h3>
               <p className="text-gray-700 font-slab text-base sm:text-lg leading-relaxed mt-4 text-justify">
-                  Entrei no EJC em 2023 e, de lá para cá, tive muitos ensinamentos. O que achei mais fascinante foi o de amar ao próximo.
+                Entrei no EJC em 2023 e, de lá para cá, tive muitos ensinamentos. O que achei mais fascinante foi o de amar ao próximo.
                 Diversas vezes passei por ocasiões difíceis, tanto espiritualmente quanto fisicamente, e, a cada situação, eu me surpreendia
                 mais com o acolhimento e a ajuda que recebi. Acho que nunca tinha sido tão bem tratado desde que meu irmão faleceu em 2022.
                 Cheguei a pensar que nunca conseguiria me recuperar. Mas logo em seguida veio o EJC e curou todas as minhas feridas,
@@ -242,7 +339,7 @@ function HomePage() {
         </div>
       </section>
 
-      {/* Alert */}
+      {/* Alert (manter seu texto de aviso) */}
       {isAlertOpen && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">
           <div className="bg-white p-6 rounded shadow-lg text-center max-w-md mx-4">
@@ -256,17 +353,27 @@ function HomePage() {
 
       {/* Image Viewer */}
       {isImageViewerOpen && (
-        <div className="fixed inset-0 bg-black bg-opacity-75 flex justify-center items-center z-50" onClick={() => setIsImageViewerOpen(false)}>
-          <span className="absolute top-4 right-6 text-white text-4xl font-bold cursor-pointer">&times;</span>
+        <div
+          className="fixed inset-0 bg-black bg-opacity-75 flex justify-center items-center z-50"
+          onClick={() => setIsImageViewerOpen(false)}
+        >
+          <span
+            className="absolute top-4 right-6 text-white text-4xl font-bold cursor-pointer"
+            onClick={() => setIsImageViewerOpen(false)}
+          >
+            &times;
+          </span>
           <img className="max-h-[90vh] max-w-[90vw] rounded-lg" src={currentImage} alt="Imagem ampliada" />
         </div>
       )}
 
-      {/* Form Modal */}
+      {/* Form Modal (Criar / Editar) */}
       {isFormModalOpen && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50 p-4">
           <div className="bg-white p-8 rounded-lg shadow-lg text-left max-w-lg w-full overflow-y-auto max-h-[90vh]">
-            <h2 className="text-2xl font-bold mb-4 text-gray-800">Compartilhe sua Experiência</h2>
+            <h2 className="text-2xl font-bold mb-4 text-gray-800">
+              {depoimentoEditando ? "Editar Depoimento" : "Compartilhe sua Experiência"}
+            </h2>
             <form onSubmit={handleFormSubmit}>
               <div className="mb-4">
                 <label htmlFor="nome_autor" className="block text-gray-700 font-semibold mb-2">Seu Nome (Opcional)</label>
@@ -329,7 +436,7 @@ function HomePage() {
                   Cancelar
                 </button>
                 <button type="submit" className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 transition">
-                  Enviar Relato
+                  {depoimentoEditando ? "Salvar Alterações" : "Enviar Relato"}
                 </button>
               </div>
             </form>
@@ -351,7 +458,7 @@ function HomePage() {
         ) : (
           <div className='grid gap-8 md:grid-cols-2 lg:grid-cols-3'>
             {currentDepoimentos.map((dep, idx) => (
-              <div key={idx} className='bg-white p-6 rounded-lg shadow-lg'>
+              <div key={dep.id ?? idx} className='bg-white p-6 rounded-lg shadow-lg'>
                 {dep.imagem_url && (
                   <img
                     src={dep.imagem_url}
@@ -362,19 +469,29 @@ function HomePage() {
                 )}
                 <p className='text-gray-600 font-bold text-sm'>{dep.movimento}</p>
                 <h3 className='text-xl font-bold text-gray-700 mt-2'>"{
-                  dep.experiencia.length > 100 
-                  ? `${dep.experiencia.substring(0, 100)}...` 
-                  : dep.experiencia
+                  (dep.experiencia || '').length > 100
+                    ? `${dep.experiencia.substring(0, 100)}...`
+                    : dep.experiencia
                 }"</h3>
                 <p className='text-emerald-600 mt-2 text-lg font-black'>
                   - {dep.nome_autor || 'Anônimo'}, {dep.idade_autor && `${dep.idade_autor} anos`}
                 </p>
 
                 <button
-                type='submit' 
-                className='bg-red-500 mt-4 p-2 w-22 text-white rounded-lg right text-center hover:bg-red-600 font-serif text-lg'>Deletar</button>
+                  type='button'
+                  onClick={() => handleDelete(dep.id)}
+                  className='bg-red-500 mt-4 p-2 w-22 text-white rounded-lg right text-center hover:bg-red-600 font-serif text-lg'
+                >
+                  Deletar
+                </button>
 
-                <button className='text-amber-50 bg-orange-400 ml-5 p-2 rounded-lg text-lg font-serif w-22 hover:bg-orange-500' >Editar</button>
+                <button
+                  type='button'
+                  onClick={() => handleEdit(dep)}
+                  className='text-amber-50 bg-orange-400 ml-5 p-2 rounded-lg text-lg font-serif w-22 hover:bg-orange-500'
+                >
+                  Editar
+                </button>
               </div>
             ))}
           </div>
@@ -401,7 +518,7 @@ function HomePage() {
             ))}
 
             <button
-              onClick={() => paginate(currentPage + 3)}
+              onClick={() => paginate(currentPage + 1)}
               disabled={currentPage === totalPages}
               className={`px-4 py-2 rounded-lg font-slab transition ${currentPage === totalPages ? 'bg-gray-300 text-gray-500 cursor-not-allowed' : 'bg-blue-600 text-white hover:bg-blue-700'}`}
             >
@@ -410,6 +527,8 @@ function HomePage() {
           </div>
         )}
       </section>
+
+      {/* Seção final / rodapé (se você tinha um rodapé, mantenha-o aqui) */}
     </>
   );
 }
