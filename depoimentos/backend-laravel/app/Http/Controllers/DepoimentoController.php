@@ -80,8 +80,19 @@ class DepoimentoController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-   public function destroy($id, Request $request)
-{
-}
+   public function destroy($id){
+        $depoimento = Depoimento::find($id);
+        if(!$depoimento){
+            return response()->json(['message' => 'Usuario nao encontrado'], 404);
+        }
+        $depoimento->delete();
+        return response()->json(['message' => 'Usuario deletado com sucesso'], 200);
+    }
 
+
+    public function indexAdmin()
+    {
+        $depoimentos = \App\Models\Depoimento::with('usuario')->get();
+        return response()->json($depoimentos);    
+    }
 }

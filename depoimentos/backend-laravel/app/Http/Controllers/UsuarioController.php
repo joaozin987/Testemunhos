@@ -76,21 +76,16 @@ class UsuarioController extends Controller
         'token' => $token
     ], 201);
 }
-
-   public function login(Request $request)
+public function login(Request $request)
 {
     $request->validate([
         'email' => 'required|email',
         'password' => 'required|string'
     ]);
-
     $usuario = Usuario::where('email', $request->email)->first();
-
     if (!$usuario || !Hash::check($request->password, $usuario->senha)) {
         return response()->json(['erro' => 'Credenciais inválidas'], 401);
     }
-
-
     $token = $usuario->createToken('API Token')->plainTextToken;
     $usuario->isAdmin = (bool) $usuario->is_admin;
     return response()->json([
@@ -101,50 +96,44 @@ class UsuarioController extends Controller
     ]);
 }
 
-    public function forgotPassword(Request $request): JsonResponse
+ public function forgotPassword(Request $request): JsonResponse
 {
     $request->validate([
         'email' => 'required|email',
     ]);
-    
     $status = Password::sendResetLink(
         $request->only('email'),
         function ($user, $token) {
             $frontendUrl = "http://localhost:5173/redefinir-senha?token=$token&email={$user->email}";
-
             Mail::to($user->email)->send(new ResetPasswordMail($frontendUrl));
         }
     );
     if ($status === Password::RESET_LINK_SENT) {
-        return response()->json(['message' => 'Link enviado com sucesso!',
-    
-    ]);
+        return response()->json(['message' => 'Link enviado com sucesso!']);
     }
-
     return response()->json(['message' => 'Erro ao enviar link'], 500);
 }
-    public function resetPassword(Request $request): JsonResponse
-    {
-        $request->validate([
-            'token' => 'required|string',
-            'email' => 'required|email',
-            'password' => 'required|min:6|confirmed',
-        ]); 
 
-        $status = Password::reset(
-            $request->only('email', 'password', 'password_confirmation', 'token'),
-          function (Usuario $user, string $password) {
+public function resetPassword(Request $request): JsonResponse
+{
+    $request->validate([
+        'token' => 'required|string',
+        'email' => 'required|email',
+        'password' => 'required|min:6|confirmed',
+    ]);
+    $status = Password::reset(
+        $request->only('email', 'password', 'password_confirmation', 'token'),
+        function (Usuario $user, string $password) {
             $user->forceFill([
-                'senha' => Hash::make($password),
+                'senha' => Hash::make($password), 
             ])->setRememberToken(Str::random(60));
-
             $user->save();
-        });
-
-        return $status === Password::PASSWORD_RESET
-            ? response()->json(['message' => 'Senha redefinida com sucesso'])
-            : response()->json(['message' => 'Erro ao redefinir senha'], 400);
-    }
+        }
+    );
+    return $status === Password::PASSWORD_RESET
+        ? response()->json(['message' => 'Senha redefinida com sucesso'])
+        : response()->json(['message' => 'Erro ao redefinir senha'], 400);
+}
 
     /**
      * Log the user out (revoke the token).

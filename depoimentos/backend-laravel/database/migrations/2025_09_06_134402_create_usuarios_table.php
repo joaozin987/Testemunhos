@@ -23,6 +23,7 @@ return new class extends Migration
             $table->text('bio')->nullable();
             $table->text('versiculo_favorito')->nullable();
             $table->string('cidade')->nullable();
+            $table->int('role')->default('usuarios');
             $table->string('reset_token')->nullable();
             $table->timestamp('reset_token_expiry')->nullable(); 
             $table->timestamps();
