@@ -216,7 +216,6 @@ export default function PerfilPage() {
               type="button"
               onClick={() => {
                 setIsEditing(false);
-                // Reset form data to the original user data
                 setFormData({
                   nome: user.nome || "",
                   cidade: user.cidade || "",

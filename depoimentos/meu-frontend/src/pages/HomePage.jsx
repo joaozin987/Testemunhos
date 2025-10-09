@@ -308,10 +308,10 @@ function HomePage() {
           <div className="flex flex-col md:flex-row md:items-start gap-8">
             <div className="flex-shrink-0 flex justify-center md:justify-start">
               <img
-                src="/src/assets/img/bde0b9ac-ee47-466d-b881-9743b3d8cd46.jpeg"
+                src="/public/img/bde0b9ac-ee47-466d-b881-9743b3d8cd46.jpeg"
                 className="w-72 h-72 sm:w-56 sm:h-56 md:w-80 md:h-80 object-cover rounded-lg shadow-md cursor-pointer"
                 alt="Imagem de João Paulo compartilhando sua experiência no EJC"
-                onClick={() => handleOpenImage('/src/assets/img/bde0b9ac-ee47-466d-b881-9743b3d8cd46.jpeg')}
+                onClick={() => handleOpenImage('/public/img/bde0b9ac-ee47-466d-b881-9743b3d8cd46.jpeg')}
               />
             </div>
             <div className="text-left mt-10 md:mt-0 ml-0 md:ml-5 max-w-4xl">
