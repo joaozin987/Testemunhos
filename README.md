@@ -15,3 +15,4 @@ Projeto fullstack com **backend em Laravel** e **frontend em React + Vite**.
 - ** na pagina da confissao colocar um mapa do google para localizar igrejas por pertos para a confissao
 - **subir o backend para teste
 - ** Implementar a Api de Biblia para os versiculos
+- ** Uma Pagina ou adicionar em sobre mesmo algo que fale que eu sou o criado pode ser uma div arrendodada com uma foto e uma descricao ao lado contanto que sou o desenvolvedor
