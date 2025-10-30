@@ -9,3 +9,9 @@ Projeto fullstack com **backend em Laravel** e **frontend em React + Vite**.
 - **Backend:** Laravel , PHP , PGSQL  
 - **Frontend:** React  + Vite,   
 ---
+
+## Preciso adicionar algumas novidades
+- ** uma pagina para falar sobre a confissao
+- ** na pagina da confissao colocar um mapa do google para localizar igrejas por pertos para a confissao
+- **subir o backend para teste
+- ** Implementar a Api de Biblia para os versiculos
