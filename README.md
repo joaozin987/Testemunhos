@@ -1,4 +1,4 @@
-# Projeto Conectados pela Fé
+# Projeto Testemunho de Fé
 
 Projeto fullstack com **backend em Laravel** e **frontend em React + Vite**.
 
