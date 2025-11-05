@@ -18,3 +18,4 @@ Projeto fullstack com **backend em Laravel** e **frontend em React + Vite**.
 - ** Uma Pagina ou adicionar em sobre mesmo algo que fale que eu sou o criado pode ser uma div arrendodada com uma foto e uma descricao ao lado contanto que sou o desenvolvedor
 - ** Reajustar a foto de perfil que por algum motivo nao esta sendo salva e nem permanece no perfil do usuario.
 - ** Garantir que o sistema interprete corretamente as entradas dos usuários independentemente de:
+- ** Futuramente colocar um chatbot para facilitar a navegação pelo site , pode ter um guia de instruções
