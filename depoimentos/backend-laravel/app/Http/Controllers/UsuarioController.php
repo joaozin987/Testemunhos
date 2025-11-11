@@ -12,132 +12,197 @@ use Illuminate\Support\Str;
 use App\Mail\ResetPasswordMail;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Validation\ValidationException;
-
+use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Log; 
 
 class UsuarioController extends Controller
 {
     /**
      * Handle an authentication attempt.
      */
-    public function perfil (Request $request)
-      {
+    public function perfil(Request $request)
+    {
         return response()->json($request->user());
-
     }
-   public function atualizarPerfil(Request $request)
+    public function atualizarPerfil(Request $request)
 {
-      $request->validate([
-        'nome' => 'nullable|string|max:255',
-        'cidade' => 'nullable|string',
-        'upload_file' => 'nullable|image|mimes:jpg,jpeg,png,gif|max:2048',
-        'bio' => 'nullable|string',
-        'versiculo_favorito' => 'nullable|string',
-    ]);
+    try {
+        Log::info('Iniciando atualização de perfil', ['user_id' => $request->user()->id]);
 
-   
-    $usuario = $request->user();
+        $validated = $request->validate([
+            'nome' => 'nullable|string|max:255',
+            'cidade' => 'nullable|string',
+            'upload_file' => 'nullable|image|mimes:jpg,jpeg,png,gif,webp|max:4096',
+            'bio' => 'nullable|string',
+            'versiculo_favorito' => 'nullable|string',
+        ]);
 
-   if($request->hasFile('upload_file')){
-    $path = $request->file('upload_file')->store('usuarios', 'public');
-    $usuario->upload_file = $path;
-   }
-   $usuario->nome = $request->input('nome', $usuario->nome);
-   $usuario->cidade = $request->input('cidade', $usuario->cidade);
-   $usuario->bio = $request->input('bio', $usuario->bio);
-   $usuario->versiculo_favorito = $request->input('versiculo_favorito', $usuario->versiculo_favorito);
+        $usuario = $request->user();
 
-   $usuario->save();
-   
-    return response()->json([
-        'mensagem' => 'Perfil atualizado com sucesso!',
-        'usuario' => $usuario
-    ]);
+        Log::info('Dados validados', $validated);
+
+        if ($request->hasFile('upload_file')) {
+            $file = $request->file('upload_file');
+            Log::info('Arquivo recebido', [
+                'original_name' => $file->getClientOriginalName(),
+                'size' => $file->getSize(),
+                'mime_type' => $file->getMimeType(),
+            ]);
+
+            if ($file->isValid()) {
+                Log::info('Arquivo é válido');
+
+                // Deletar imagem anterior se existir
+                if ($usuario->upload_file) {
+                    $oldImagePath = str_replace('/storage/', '', $usuario->upload_file);
+                    if (Storage::disk('public')->exists($oldImagePath)) {
+                        Storage::disk('public')->delete($oldImagePath);
+                        Log::info('Imagem anterior deletada', ['path' => $oldImagePath]);
+                    }
+                }
+
+                $fileName = 'user_' . $usuario->id . '_' . time() . '.' . $file->getClientOriginalExtension();
+                $path = $file->storeAs('perfis', $fileName, 'public');
+                Log::info('Arquivo armazenado', ['path' => $path]);
+
+                $usuario->upload_file = '/storage/' . $path;
+                Log::info('Novo caminho da imagem', ['upload_file' => $usuario->upload_file]);
+            } else {
+                Log::error('Arquivo inválido');
+            }
+        } else {
+            Log::info('Nenhum arquivo de imagem foi enviado');
+        }
+
+        $usuario->nome = $request->input('nome', $usuario->nome);
+        $usuario->cidade = $request->input('cidade', $usuario->cidade);
+        $usuario->bio = $request->input('bio', $usuario->bio);
+        $usuario->versiculo_favorito = $request->input('versiculo_favorito', $usuario->versiculo_favorito);
+        $usuario->save();
+
+        Log::info('Perfil atualizado com sucesso');
+
+        return response()->json([
+            'mensagem' => 'Perfil atualizado com sucesso!',
+            'usuario' => $usuario
+        ]);
+
+    } catch (\Exception $e) {
+        Log::error('Erro ao atualizar perfil', [
+            'user_id' => $request->user()->id ?? 'unknown',
+            'error' => $e->getMessage(),
+            'trace' => $e->getTraceAsString()
+        ]);
+
+        return response()->json([
+            'mensagem' => 'Erro interno: ' . $e->getMessage()
+        ], 500);
+    }
 }
 
     public function register(Request $request)
-{
-    $request->validate([
-        'nome' => 'required|string|max:255',
-        'email' => 'required|email|unique:usuarios,email',
-        'password' => 'required|string|min:6',
-    ]);
+    {
+        $request->validate([
+            'nome' => 'required|string|max:255',
+            'email' => 'required|email|unique:usuarios,email',
+            'password' => 'required|string|min:6',
+        ]);
 
-    $usuario = Usuario::create([
-        'nome' => $request->nome,
-        'email' => $request->email,
-        'senha' => $request->password,
-    ]);
+        $usuario = Usuario::create([
+            'nome' => $request->nome,
+            'email' => $request->email,
+            'senha' => Hash::make($request->password), 
+        ]);
 
-    $token = $usuario->createToken('API Token')->plainTextToken;
+        $token = $usuario->createToken('API Token')->plainTextToken;
 
-    return response()->json([
-        'mensagem' => 'Usuário criado com sucesso!',
-        'usuario' => $usuario,
-        'token' => $token
-    ], 201);
-}
-public function login(Request $request)
-{
-    $request->validate([
-        'email' => 'required|email',
-        'password' => 'required|string'
-    ]);
-    $usuario = Usuario::where('email', $request->email)->first();
-    if (!$usuario || !Hash::check($request->password, $usuario->senha)) {
-        return response()->json(['erro' => 'Credenciais inválidas'], 401);
+        return response()->json([
+            'mensagem' => 'Usuário criado com sucesso!',
+            'usuario' => $usuario,
+            'token' => $token
+        ], 201);
     }
-    $token = $usuario->createToken('API Token')->plainTextToken;
-    $usuario->isAdmin = (bool) $usuario->is_admin;
-    return response()->json([
-        'mensagem' => 'Login realizado com sucesso!',
-        'usuario' => $usuario,
-        'token' => $token,
-        'isAdmin' => (bool) $usuario->is_admin,
-    ]);
-}
 
- public function forgotPassword(Request $request): JsonResponse
-{
-    $request->validate([
-        'email' => 'required|email',
-    ]);
-    $status = Password::sendResetLink(
-        $request->only('email'),
-        function ($user, $token) {
-            $frontendUrl = "http://localhost:5173/redefinir-senha?token=$token&email={$user->email}";
-            Mail::to($user->email)->send(new ResetPasswordMail($frontendUrl));
+    public function login(Request $request)
+    {
+        $request->validate([
+            'email' => 'required|email',
+            'password' => 'required|string'
+        ]);
+        
+        $usuario = Usuario::where('email', $request->email)->first();
+        
+        if (!$usuario || !Hash::check($request->password, $usuario->senha)) {
+            return response()->json(['erro' => 'Credenciais inválidas'], 401);
         }
-    );
-    if ($status === Password::RESET_LINK_SENT) {
-        return response()->json(['message' => 'Link enviado com sucesso!']);
+        
+        $token = $usuario->createToken('API Token')->plainTextToken;
+        
+        return response()->json([
+            'mensagem' => 'Login realizado com sucesso!',
+            'usuario' => $usuario,
+            'token' => $token,
+            'isAdmin' => (bool) $usuario->is_admin,
+        ]);
     }
-    return response()->json(['message' => 'Erro ao enviar link'], 500);
-}
 
-public function resetPassword(Request $request): JsonResponse
+    public function forgotPassword(Request $request): JsonResponse
+    {
+        $request->validate([
+            'email' => 'required|email',
+        ]);
+        
+        $status = Password::sendResetLink(
+            $request->only('email'),
+            function ($user, $token) {
+                $frontendUrl = "http://localhost:5173/redefinir-senha?token=$token&email={$user->email}";
+                Mail::to($user->email)->send(new ResetPasswordMail($frontendUrl));
+            }
+        );
+        
+        if ($status === Password::RESET_LINK_SENT) {
+            return response()->json(['message' => 'Link enviado com sucesso!']);
+        }
+        
+        return response()->json(['message' => 'Erro ao enviar link'], 500);
+    }
+
+ public function resetPassword(Request $request): JsonResponse
 {
     $request->validate([
         'token' => 'required|string',
         'email' => 'required|email',
         'password' => 'required|min:6|confirmed',
     ]);
-    $status = Password::reset(
-        $request->only('email', 'password', 'password_confirmation', 'token'),
-        function (Usuario $user, string $password) {
-            $user->forceFill([
-                'senha' => Hash::make($password), 
-            ])->setRememberToken(Str::random(60));
-            $user->save();
+
+    try {
+        Log::info('Reset de senha - Início:', ['email' => $request->email]);
+
+        $user = Usuario::where('email', $request->email)->first();
+        
+        if (!$user) {
+            return response()->json(['message' => 'Usuário não encontrado'], 400);
         }
-    );
-    return $status === Password::PASSWORD_RESET
-        ? response()->json(['message' => 'Senha redefinida com sucesso'])
-        : response()->json(['message' => 'Erro ao redefinir senha'], 400);
+
+      
+        $user->update([
+            'senha' => $request->password
+        ]);
+
+        Log::info('Reset de senha - Sucesso:', ['email' => $request->email]);
+
+        return response()->json(['message' => 'Senha redefinida com sucesso!']);
+
+    } catch (\Exception $e) {
+        Log::error('Reset de senha - Erro:', [
+            'email' => $request->email,
+            'error' => $e->getMessage()
+        ]);
+        
+        return response()->json(['message' => 'Erro ao redefinir senha'], 500);
+    }
 }
 
-    /**
-     * Log the user out (revoke the token).
-     */
     public function logout(Request $request): JsonResponse
     {
         $request->user()->currentAccessToken()->delete();

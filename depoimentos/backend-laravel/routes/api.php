@@ -11,7 +11,7 @@ use App\Http\Controllers\AdminController;
 Route::post('/register', [UsuarioController::class, 'register']);
 Route::post('/login', [UsuarioController::class, 'login']);
 Route::get('/depoimentos', [DepoimentoController::class, 'index']);
-
+Route::post('/debug-perfil', [UsuarioController::class, 'debugPerfil'])->middleware('auth:sanctum');
 Route::post('/auth/forgot-password', [UsuarioController::class, 'forgotPassword'])
     ->name('auth.forgot-password');
 
