@@ -11,9 +11,18 @@ function Navbar() {
   return (
     <nav className="bg-blue-800 shadow p-4 flex items-center justify-between sticky top-0 z-40">
       <h1 className="text-3xl font-slab text-white">
-        <Link to="/">Conectados pela Fé</Link>
+        <Link to="/">Testemunhos de Fé</Link>
       </h1>
+               
+      <Link
+        to="/perfil"
+        onClick={() => setMenuOpen(false)}
+        className="md:hidden flex items-center gap-2 hover:opacity-80 transition"
+      >
+        <i className="bi bi-person-circle text-3xl text-white"></i>
+      </Link>
 
+          
       {/* Botão menu mobile */}
       <button
         onClick={toggleMenu}
@@ -40,11 +49,15 @@ function Navbar() {
               )}
             </li>
 
-            <li>
-              <Link to="/perfil" className="text-white font-semibold">
-                Olá, {user?.nome || user?.email}
+           <li>
+              <Link 
+                to="/perfil" 
+                className="text-white font-semibold flex items-center gap-2 hover:opacity-80 transition"
+              >
+                Perfil
               </Link>
             </li>
+
             <li>
               <button
                 onClick={logout}
@@ -86,11 +99,7 @@ function Navbar() {
               )}
             </li>
             
-                <li>
-                  <Link to="/perfil" onClick={() => setMenuOpen(false)}>
-                    Olá, {user?.nome || user?.email}
-                  </Link>
-                </li>
+               
                 <li>
                   <button
                     onClick={() => { logout(); setMenuOpen(false); }}

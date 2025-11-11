@@ -1,19 +1,15 @@
-// HomePage.jsx
-// ===== Parte 0 - Observações =====
-// Este arquivo contém TODO o componente HomePage com as seções que você tinha,
-// mais a lógica de editar/deletar depoimentos sem remover nada do que já existia.
-// Verifique apenas a variável API_URL e o formato dos endpoints do seu backend.
-// ===== Parte 1 - Imports e States =====
+
 
 import React, { useState, useEffect } from 'react';
+import versiculos from "../data/verses.json";
+import { normalizarTexto } from "../utils/normalizarTexto";
+
 
 function HomePage() {
-  // Lista e status
   const [depoimentos, setDepoimentos] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
 
-  // Controle de edição / modal
   const [depoimentoEditando, setDepoimentoEditando] = useState(null);
   const [isFormModalOpen, setIsFormModalOpen] = useState(false);
   const [isAlertOpen, setIsAlertOpen] = useState(false);
@@ -21,19 +17,16 @@ function HomePage() {
   const [isWordSectionVisible, setIsWordSectionVisible] = useState(false);
   const [isImageViewerOpen, setIsImageViewerOpen] = useState(false);
 
-  // Image viewer
   const [currentImage, setCurrentImage] = useState('');
 
-  // Busca de versículos / palavra do dia
   const [termoBusca, setTermoBusca] = useState('');
   const [versiculoEncontrado, setVersiculoEncontrado] = useState(null);
   const [erroBusca, setErroBusca] = useState('');
 
-  // Paginação
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage] = useState(3);
+  const [selectedFile, setSelectedFile] = useState(null);
 
-  // Form
   const [formData, setFormData] = useState({
     nome_autor: '',
     movimento: '',
@@ -42,18 +35,14 @@ function HomePage() {
     imagem_url: ''
   });
 
-  // API base — ajuste se necessário
   const API_URL = 'http://127.0.0.1:8000/api';
 
-  // ===== Parte 2 - Funções auxiliares (fetch, busca, handlers) =====
 
-  // Busca todos os depoimentos
   const fetchDepoimentos = async () => {
     setIsLoading(true);
     try {
       const res = await fetch(`${API_URL}/depoimentos`);
       if (!res.ok) {
-        // tenta ler mensagem do backend para debugging
         const text = await res.text().catch(() => null);
         console.error('Resposta do backend (fetchDepoimentos):', res.status, text);
         throw new Error('Falha ao buscar depoimentos');
@@ -71,45 +60,48 @@ function HomePage() {
 
   useEffect(() => {
     fetchDepoimentos();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  // Buscar versículos/palavra do backend
-  const handleSearchVerse = async () => {
-    setVersiculoEncontrado(null);
-    setErroBusca('');
-    const chaveBusca = termoBusca.trim();
-    if (!chaveBusca) {
-      return setErroBusca('Digite uma palavra para buscar.');
-    }
+const handleSearchVerse = () => {
+  setVersiculoEncontrado(null);
+  setErroBusca("");
 
-    try {
-      const res = await fetch(`${API_URL}/versiculos/${encodeURIComponent(chaveBusca)}`);
-      if (!res.ok) {
-        const text = await res.text().catch(()=>null);
-        console.error('Erro ao buscar versículos:', res.status, text);
-        throw new Error('Erro ao buscar do backend');
-      }
-      const data = await res.json();
-      if (!data || data.length === 0) {
-        setErroBusca(`Não encontrei um versículo para "${chaveBusca}".`);
-      } else {
-        // escolhe um aleatório caso haja mais de um
-        setVersiculoEncontrado(data[Math.floor(Math.random() * data.length)]);
-      }
-    } catch (err) {
-      console.error(err);
-      setErroBusca('Não foi possível conectar ao backend.');
-    }
-  };
+  const chaveBusca = normalizarTexto(termoBusca);
 
-  // Abrir visualizador de imagem
+  if (!chaveBusca) {
+    setErroBusca("Digite uma palavra para buscar.");
+    return;
+  }
+
+  // Normaliza todas as chaves do JSON pra evitar problema com acentos
+  const versiculosNormalizados = Object.entries(versiculos).reduce((acc, [key, value]) => {
+    acc[normalizarTexto(key)] = value;
+    return acc;
+  }, {});
+
+  // Busca exata
+  if (versiculosNormalizados[chaveBusca]) {
+    setVersiculoEncontrado(versiculosNormalizados[chaveBusca]);
+    return;
+  }
+
+  // Busca parcial (por exemplo, usuário digita "trist" e encontra "triste")
+  const semelhante = Object.keys(versiculosNormalizados).find((key) =>
+    key.startsWith(chaveBusca)
+  );
+
+  if (semelhante) {
+    setVersiculoEncontrado(versiculosNormalizados[semelhante]);
+  } else {
+    setErroBusca(`Não encontrei versículos para "${termoBusca}".`);
+  }
+};
+
   const handleOpenImage = (url) => {
     setCurrentImage(url);
     setIsImageViewerOpen(true);
   };
 
-  // Abrir alert antes de criar
   const handleOpenAlert = (e) => {
     e.preventDefault();
     setIsAlertOpen(true);
@@ -117,7 +109,6 @@ function HomePage() {
 
   const handleCloseAlertAndOpenModal = () => {
     setIsAlertOpen(false);
-    // limpa edição anterior e abre modal para criação
     setDepoimentoEditando(null);
     setFormData({ nome_autor: '', movimento: '', idade_autor: '', experiencia: '', imagem_url: '' });
     setIsFormModalOpen(true);
@@ -127,6 +118,7 @@ function HomePage() {
     setIsFormModalOpen(false);
     setDepoimentoEditando(null);
     setFormData({ nome_autor: '', movimento: '', idade_autor: '', experiencia: '', imagem_url: '' });
+    setSelectedFile(null);
   };
 
  const handleDelete = async (id) => {
@@ -159,7 +151,6 @@ function HomePage() {
   }
 };
 
-  // Preparar edição: abre o modal com os dados preenchidos
   const handleEdit = (depoimento) => {
     setDepoimentoEditando(depoimento);
     setFormData({
@@ -169,10 +160,10 @@ function HomePage() {
       experiencia: depoimento.experiencia || '',
       imagem_url: depoimento.imagem_url || '',
     });
+    setSelectedFile(null);
     setIsFormModalOpen(true);
   };
 
-  // Form handlers
   const handleFormChange = (e) => {
     const { id, value } = e.target;
     setFormData(prev => ({ ...prev, [id]: value }));
@@ -187,7 +178,6 @@ function HomePage() {
         return;
       }
 
-      // cria payload baseado em formData
       const payload = {
         experiencia: formData.experiencia,
         movimento: formData.movimento,
@@ -219,11 +209,11 @@ function HomePage() {
         throw new Error('Falha ao salvar depoimento');
       }
 
-      // Recarrega lista
       await fetchDepoimentos();
 
-      // limpa e fecha
+    
       setFormData({ nome_autor: '', movimento: '', idade_autor: '', experiencia: '', imagem_url: '' });
+      setSelectedFile(null);
       setDepoimentoEditando(null);
       handleCloseFormModal();
 
@@ -251,7 +241,14 @@ function HomePage() {
     pageNumbers.push(i);
   }
 
-  // ===== Parte 3 - JSX completo (mantendo tudo que você tinha) =====
+  const handleFileChange = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      setSelectedFile(file);
+      const tempUrl = URL.createObjectURL(file);
+      setFormData(prev => ({ ...prev, imagem_url: tempUrl }));
+    }
+  };
   return (
     <>
       {/* Seção Home */}
@@ -308,7 +305,7 @@ function HomePage() {
           <div className="flex flex-col md:flex-row md:items-start gap-8">
             <div className="flex-shrink-0 flex justify-center md:justify-start">
               <img
-                src="/public/img/bde0b9ac-ee47-466d-b881-9743b3d8cd46.jpeg"
+                 src="/img/bde0b9ac-ee47-466d-b881-9743b3d8cd46.jpeg"
                 className="w-72 h-72 sm:w-56 sm:h-56 md:w-80 md:h-80 object-cover rounded-lg shadow-md cursor-pointer"
                 alt="Imagem de João Paulo compartilhando sua experiência no EJC"
                 onClick={() => handleOpenImage('/public/img/bde0b9ac-ee47-466d-b881-9743b3d8cd46.jpeg')}
@@ -376,7 +373,7 @@ function HomePage() {
             </h2>
             <form onSubmit={handleFormSubmit}>
               <div className="mb-4">
-                <label htmlFor="nome_autor" className="block text-gray-700 font-semibold mb-2">Seu Nome (Opcional)</label>
+                <label htmlFor="nome_autor" className="block text-gray-700 font-semibold mb-2">Seu Nome</label>
                 <input
                   type="text"
                   id="nome_autor"
@@ -408,16 +405,20 @@ function HomePage() {
                   onChange={handleFormChange}
                 />
               </div>
-              <div className="mb-4">
-                <label htmlFor="imagem_url" className="block text-gray-700 font-semibold mb-2">URL da imagem (opcional)</label>
+             <div className="mb-4">
+                <label htmlFor="imagem_url" className="block text-gray-700 font-semibold mb-2">
+                  {depoimentoEditando ? "Alterar imagem (opcional)" : "Enviar imagem (opcional)"}
+                </label>
                 <input
-                  type="text"
+                  type="file"
                   id="imagem_url"
+                  accept="image/*"
                   className="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
-                  placeholder="Ex: https://"
-                  value={formData.imagem_url}
-                  onChange={handleFormChange}
+                  onChange={handleFileChange}
                 />
+                <p className="text-sm text-gray-500 mt-1">
+                  Formatos: JPG, PNG, GIF. Tamanho máximo: 2MB
+                </p>
               </div>
               <div className="mb-6">
                 <label htmlFor="experiencia" className="block text-gray-700 font-semibold mb-2">Seu Depoimento</label>

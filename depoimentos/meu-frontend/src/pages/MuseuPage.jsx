@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import mariaData from '../data/maria.json';
-
+import { normalizarTexto } from '../utils/normalizarTexto';
 function MuseuPage() {
   
   const [isImageViewerOpen, setIsImageViewerOpen] = useState(false);
@@ -9,21 +9,28 @@ function MuseuPage() {
    const [maryInput, setMaryInput] = useState('');
   const [maryMessage, setMaryMessage] = useState('');
 
-  const buscarMensagemMary = () => {
-    const termo = maryInput.trim().toLowerCase();
-    if (!termo) {
-      setMaryMessage('Digite um título mariano para buscar.');
-      return;
-    }
-    if (mariaData[termo]) {
-      const msgs = mariaData[termo];
-      const idx = Math.floor(Math.random() * msgs.length);
-      const msg = msgs[idx];
-      setMaryMessage(`"${msg.text}" — ${msg.source}`);
-    } else {
-      setMaryMessage('Nenhuma mensagem encontrada para esse título.');
-    }
-  };
+ const buscarMensagemMary = () => {
+  const termo = normalizarTexto(maryInput);
+
+  if (!termo) {
+    setMaryMessage('Digite um título mariano para buscar.');
+    return;
+  }
+
+  const chavesNormalizadas = Object.keys(mariaData).reduce((acc, key) => {
+    acc[normalizarTexto(key)] = mariaData[key];
+    return acc;
+  }, {});
+
+  if (chavesNormalizadas[termo]) {
+    const msgs = chavesNormalizadas[termo];
+    const idx = Math.floor(Math.random() * msgs.length);
+    const msg = msgs[idx];
+    setMaryMessage(`"${msg.text}" — ${msg.source}`);
+  } else {
+    setMaryMessage('Nenhuma mensagem encontrada para esse título.');
+  }
+};
 
   const abrirImagem = (imgSrc) => {
     setCurrentImage(imgSrc);
