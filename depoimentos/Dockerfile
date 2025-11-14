@@ -43,3 +43,9 @@ RUN chown -R www-data:www-data storage bootstrap/cache
 # Expose port 9000 and start php-fpm server
 EXPOSE 9000
 CMD ["php-fpm"]
+
+# Debug: list the current directory (should be the root of the repo)
+RUN ls -la
+
+# Debug: check if backend-laravel exists
+RUN ls -la backend-laravel/ || echo "backend-laravel not found"
