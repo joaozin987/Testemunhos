@@ -19,33 +19,20 @@ RUN apk add --no-cache \
 RUN docker-php-ext-configure gd --with-freetype --with-jpeg
 RUN docker-php-ext-install pdo_mysql mbstring exif pcntl bcmath gd
 
-# Get latest Composer
+# Get Composer
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 
-# Set working directory
 WORKDIR /var/www/html
 
-# Copy composer files from backend-laravel
-COPY backend-laravel/composer.json backend-laravel/composer.lock ./
+# Copy the entire application from the build context (backend-laravel)
+COPY . .
 
-# Install dependencies
+# Then install dependencies
 RUN composer install --no-dev --optimize-autoloader
 
-# Copy entire backend-laravel application
-COPY backend-laravel/ .
-
-# Generate key
+# Then run artisan commands
 RUN php artisan key:generate
-
-# Set permissions
 RUN chown -R www-data:www-data storage bootstrap/cache
 
-# Expose port 9000 and start php-fpm server
 EXPOSE 9000
 CMD ["php-fpm"]
-
-# Debug: list the current directory (should be the root of the repo)
-RUN ls -la
-
-# Debug: check if backend-laravel exists
-RUN ls -la backend-laravel/ || echo "backend-laravel not found"
