@@ -20,3 +20,4 @@ Projeto fullstack com **backend em Laravel** e **frontend em React + Vite**.
 - ** Garantir que o sistema interprete corretamente as entradas dos usuários independentemente de:
 - ** Futuramente colocar um chatbot para facilitar a navegação pelo site , pode ter um guia de instruções
 - ** adc um placeholder na div de pedir palavra, adc no login uma div de avisos explicando quantos caracteres a senha deve possuir! o mesmo vale para a tela de cadastro
+- ** adc um olho na parte da senha para ocultar e mostrar ao usuario na aba de login e cadastro, e adc validacoes na senha de 8 caracteres e uma letra maiuscula e minuscula para deixar o ambiente mais seguro contra hackers e invasores!!
