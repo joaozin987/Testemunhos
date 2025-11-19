@@ -19,20 +19,20 @@ RUN apk add --no-cache \
 RUN docker-php-ext-configure gd --with-freetype --with-jpeg
 RUN docker-php-ext-install pdo_mysql mbstring exif pcntl bcmath gd
 
-# Get Composer
+# Install Composer
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 
 WORKDIR /var/www/html
 
-# Copy the entire application from the build context (backend-laravel)
+# Copy Laravel project
 COPY . .
 
-# Then install dependencies
+# Install dependencies (no artisan here!)
 RUN composer install --no-dev --optimize-autoloader
 
-# Then run artisan commands
-RUN php artisan key:generate
+# Permissions
 RUN chown -R www-data:www-data storage bootstrap/cache
 
 EXPOSE 9000
+
 CMD ["php-fpm"]
