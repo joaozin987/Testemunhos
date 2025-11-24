@@ -27,17 +27,13 @@ COPY . .
 # Install PHP dependencies
 RUN composer install --no-dev --optimize-autoloader
 
-# Create necessary Laravel folders (if missing)
+# Fix permissions
 RUN mkdir -p storage/framework/{sessions,views,cache} \
     && mkdir -p storage/app/public \
     && chown -R www-data:www-data storage bootstrap/cache
 
-# Generate app key (only works if .env exists)
-RUN php artisan key:generate || true
+# Expose HTTP port for Render
+EXPOSE 8080
 
-# Link storage folder
-RUN php artisan storage:link || true
-
-EXPOSE 9000
-
-CMD ["php-fpm"]
+# Start Laravel via HTTP
+CMD ["sh", "-c", "php artisan serve --host=0.0.0.0 --port=${PORT:-8080}"]
