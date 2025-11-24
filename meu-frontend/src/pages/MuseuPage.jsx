@@ -56,7 +56,7 @@ function MuseuPage() {
           
           {/* Card 1 */}
           <div className="bg-white rounded-lg shadow-lg overflow-hidden flex flex-col">
-            <img src="/public/img/testemunho27.jpeg" alt="Imagem de Eucaristia" className="w-full h-40 object-cover cursor-pointer" onClick={() => abrirImagem('/img/testemunho27.jpeg')} />
+            <img src="/img/testemunho27.jpeg" alt="Imagem de Eucaristia" className="w-full h-40 object-cover cursor-pointer" onClick={() => abrirImagem('/img/testemunho27.jpeg')} />
             <div className="p-4 flex flex-col flex-grow">
               <p className="text-base font-slab text-gray-700 flex-grow">"Todos nascem como originais, mas muitos morrem como cópias."</p>
               <p className="font-semibold mt-2 text-right text-gray-900 text-sm">— Beato Carlo Acutis</p>
@@ -65,7 +65,7 @@ function MuseuPage() {
           
           {/* Card 2 */}
           <div className="bg-white rounded-lg shadow-lg  overflow-hidden flex flex-col">
-            <img src="/public/img/testemunho30.jpeg" alt="Imagem de oração" className="w-full h-40 object-cover cursor-pointer" onClick={() => abrirImagem('/img/testemunho30.jpeg')} />
+            <img src="/img/testemunho30.jpeg" alt="Imagem de oração" className="w-full h-40 object-cover cursor-pointer" onClick={() => abrirImagem('/img/testemunho30.jpeg')} />
             <div className="p-4 flex flex-col flex-grow">
               <p className="text-base font-slab text-gray-700 flex-grow">"O sofrimento é o sinal de que estamos no caminho certo."</p>
               <p className="font-semibold mt-2 text-right text-gray-900 text-sm">— Padre Pio</p>
@@ -74,7 +74,7 @@ function MuseuPage() {
 
           {/* Card 3 */}
           <div className="bg-white rounded-lg shadow-lg overflow-hidden flex flex-col">
-            <img src="/public/img/testemunho33.jpeg" alt="Imagem de fé" className="w-full h-40 object-cover cursor-pointer" onClick={() => abrirImagem('/img/testemunho33.jpeg')} />
+            <img src="/img/testemunho33.jpeg" alt="Imagem de fé" className="w-full h-40 object-cover cursor-pointer" onClick={() => abrirImagem('/img/testemunho33.jpeg')} />
             <div className="p-4 flex flex-col flex-grow">
               <p className="text-base font-slab text-gray-700 flex-grow">"A fé move montanhas. Não há limite para o que podemos alcançar quando confiamos em Deus."</p>
               <p className="font-semibold mt-2 text-right text-gray-900 text-sm">— São João Paulo II</p>
@@ -83,7 +83,7 @@ function MuseuPage() {
 
           {/* Card 4 */}
           <div className="bg-white rounded-lg shadow-lg overflow-hidden flex flex-col">
-            <img src="/public/img/testemunho28.jpeg" alt="Imagem de luz e oração" className="w-full h-40 object-cover cursor-pointer" onClick={() => abrirImagem('/img/testemunho28.jpeg')} />
+            <img src="/img/testemunho28.jpeg" alt="Imagem de luz e oração" className="w-full h-40 object-cover cursor-pointer" onClick={() => abrirImagem('/img/testemunho28.jpeg')} />
             <div className="p-4 flex flex-col flex-grow">
               <p className="text-base font-slab text-gray-700 flex-grow">"Senhor, faze-me instrumento de tua paz. Onde houver ódio, que eu leve o amor..."</p>
               <p className="font-semibold mt-2 text-right text-gray-900 text-sm">— São Francisco de Assis</p>
@@ -92,7 +92,7 @@ function MuseuPage() {
 
           {/* Card 5 */}
           <div className="bg-white rounded-lg  shadow-lg overflow-hidden flex flex-col">
-            <img src="/public/img/testemunho31.jpeg" alt="Imagem de oração" className="w-full h-40 object-cover cursor-pointer" onClick={() => abrirImagem('/img/testemunho31.jpeg')} />
+            <img src="/img/testemunho31.jpeg" alt="Imagem de oração" className="w-full h-40 object-cover cursor-pointer" onClick={() => abrirImagem('/img/testemunho31.jpeg')} />
             <div className="p-4 flex flex-col flex-grow">
               <a className="text-base font-slab text-gray-700 flex-grow" href='https://www.vaticannews.va/pt/igreja/news/2023-07/santo-inacio-loyola-amar-servir-legado-vida-companhia-jesus.html' target='blank'>"Em Tudo Amar e Servir"</a>
               <p className="font-semibold mt-2 text-right text-gray-900 text-sm">— Santo Inácio de Loyola</p>
@@ -101,7 +101,7 @@ function MuseuPage() {
 
           {/* Card 6 */}
           <div className="bg-white rounded-lg shadow-lg overflow-hidden flex flex-col">
-            <img src="/public/img/testemunho32.jpeg" alt="Imagem de fé" className="w-full h-40 object-cover cursor-pointer" onClick={() => abrirImagem('/img/testemunho32.jpeg')} />
+            <img src="/img/testemunho32.jpeg" alt="Imagem de fé" className="w-full h-40 object-cover cursor-pointer" onClick={() => abrirImagem('/img/testemunho32.jpeg')} />
             <div className="p-4 flex flex-col flex-grow">
               <a className="text-base font-slab text-gray-700 flex-grow" href='https://www.livrarialoyola.com.br/produto/o-diario-de-sandra-nova-edicao-com-a-vida-o-milagre-de-cura-e-a-oracao-de-intercessao-369715' target='blank'>"Tenho certeza de que esta é a minha vocação: viver com os últimos."</a>
               <p className="font-semibold mt-2 text-right text-gray-900 text-sm">— Beata Sandra Sabattini</p>
@@ -141,7 +141,7 @@ function MuseuPage() {
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-8">
             
             <div className="bg-white rounded-xl shadow-md hover:shadow-xl transform hover:scale-105 transition duration-300">
-              <img className="w-full h-64 object-cover rounded-t-xl cursor-pointer" src="/public/img/testemunho36.jpeg" alt="Celebração da Eucaristia" onClick={() => abrirImagem('/img/testemunho36.jpeg')} />
+              <img className="w-full h-64 object-cover rounded-t-xl cursor-pointer" src="/img/testemunho36.jpeg" alt="Celebração da Eucaristia" onClick={() => abrirImagem('/img/testemunho36.jpeg')} />
               <div className="p-4 text-center">
                 <h3 className="text-lg font-bold text-gray-800">Celebração da Eucaristia</h3>
                 <p className="text-sm text-gray-600">O pão consagrado, corpo de Cristo.</p>
@@ -149,7 +149,7 @@ function MuseuPage() {
             </div>
 
             <div className="bg-white rounded-xl shadow-md hover:shadow-xl transform hover:scale-105 transition duration-300">
-              <img className="w-full h-64 object-cover rounded-t-xl cursor-pointer" src="/public/img/testemunho37.jpeg" alt="Sacerdote em Oração" onClick={() => abrirImagem('/img/testemunho37.jpeg')} />
+              <img className="w-full h-64 object-cover rounded-t-xl cursor-pointer" src="/img/testemunho37.jpeg" alt="Sacerdote em Oração" onClick={() => abrirImagem('/img/testemunho37.jpeg')} />
               <div className="p-4 text-center">
                 <h3 className="text-lg font-bold text-gray-800">Sacerdote em Oração</h3>
                 <p className="text-sm text-gray-600">Momento de adoração e entrega.</p>
@@ -157,7 +157,7 @@ function MuseuPage() {
             </div>
 
             <div className="bg-white rounded-xl shadow-md hover:shadow-xl transform hover:scale-105 transition duration-300">
-              <img className="w-full h-64 object-cover rounded-t-xl cursor-pointer" src="/public/img/DSC03260.jpg" alt="Adoração ao Santíssimo" onClick={() => abrirImagem('/img/DSC03260.jpg')} />
+              <img className="w-full h-64 object-cover rounded-t-xl cursor-pointer" src="/img/DSC03260.jpg" alt="Adoração ao Santíssimo" onClick={() => abrirImagem('/img/DSC03260.jpg')} />
               <div className="p-4 text-center">
                 <h3 className="text-lg font-bold text-gray-800">Adoração ao Santíssimo</h3>
                 <p className="text-sm text-gray-600">Presença real de Cristo entre nós.</p>
@@ -165,7 +165,7 @@ function MuseuPage() {
             </div>
             
              <div className="bg-white rounded-xl shadow-md hover:shadow-xl transform hover:scale-105 transition duration-300">
-              <img className="w-full h-64 object-cover rounded-t-xl cursor-pointer" src="/public/img/testemunho35.jpeg" alt="Imagem de fé" onClick={() => abrirImagem('/img/testemunho35.jpg')} />
+              <img className="w-full h-64 object-cover rounded-t-xl cursor-pointer" src="/img/testemunho35.jpeg" alt="Imagem de fé" onClick={() => abrirImagem('/img/testemunho35.jpg')} />
               <div className="p-4 text-center">
                 <h3 className="text-lg font-bold text-gray-800">Fé Viva</h3>
                 <p className="text-sm text-gray-600">Expressão sincera do amor cristão.</p>
@@ -173,7 +173,7 @@ function MuseuPage() {
             </div>
             
              <div class="bg-white rounded-xl shadow-md hover:shadow-xl transform hover:scale-105 transition duration-300">
-              <img class="w-full h-64 object-cover rounded-t-xl cursor-pointer" src="/public/img/testemunho38.jpeg" alt="Imagem de fé" Onclick={() => abrirImagem('/img/testemunho38.jpeg')} />
+              <img class="w-full h-64 object-cover rounded-t-xl cursor-pointer" src="/img/testemunho38.jpeg" alt="Imagem de fé" Onclick={() => abrirImagem('/img/testemunho38.jpeg')} />
               <div class="p-4 text-center">
                 <h3 class="text-lg font-bold text-gray-800">Esperança em Cristo</h3>
                 <p class="text-sm text-gray-600">Luz que guia nossos passos.</p>
@@ -181,7 +181,7 @@ function MuseuPage() {
            </div>
             
                <div class="bg-white rounded-xl shadow-md hover:shadow-xl transform hover:scale-105 transition duration-300">
-              <img class="w-full h-64 object-cover rounded-t-xl cursor-pointer" src="/public/img/testemunho42.jpeg" alt="Imagem de luz" Onclick={() => abrirImagem('/img/testemunho42.jpeg')} />
+              <img class="w-full h-64 object-cover rounded-t-xl cursor-pointer" src="/img/testemunho42.jpeg" alt="Imagem de luz" Onclick={() => abrirImagem('/img/testemunho42.jpeg')} />
               <div class="p-4 text-center">
                 <h3 class="text-lg font-bold text-gray-800">Luz da Salvação</h3>
                 <p class="text-sm text-gray-600">Reflexo da glória divina.</p>
@@ -189,7 +189,7 @@ function MuseuPage() {
             </div>
 
                 <div class="bg-white rounded-xl shadow-md hover:shadow-xl transform hover:scale-105 transition duration-300">
-                <img class="w-full h-64 object-cover rounded-t-xl cursor-pointer" src="/public/img/testemunho40.jpeg" alt="Imagem de fé"  Onclick={() => abrirImagem('/img/testemunho40.jpeg')} />
+                <img class="w-full h-64 object-cover rounded-t-xl cursor-pointer" src="/img/testemunho40.jpeg" alt="Imagem de fé"  Onclick={() => abrirImagem('/img/testemunho40.jpeg')} />
                 <div class="p-4 text-center">
                   <h3 class="text-lg font-bold text-gray-800">Caminho da Cruz</h3>
                   <p class="text-sm text-gray-600">Cristo venceu a morte por nós.</p>
@@ -198,7 +198,7 @@ function MuseuPage() {
 
 
                 <div class="bg-white rounded-xl shadow-md hover:shadow-xl transform hover:scale-105 transition duration-300">
-                <img class="w-full h-64 object-cover rounded-t-xl cursor-pointer" src="/public/img/DSC03322.jpg" alt="Imagem de fé"  Onclick={() => abrirImagem('/img/DSC03322.jpg')} />
+                <img class="w-full h-64 object-cover rounded-t-xl cursor-pointer" src="/img/DSC03322.jpg" alt="Imagem de fé"  Onclick={() => abrirImagem('/img/DSC03322.jpg')} />
                 <div class="p-4 text-center">
                   <h3 class="text-lg font-bold text-gray-800">Vitória Eterna</h3>
                   <p class="text-sm text-gray-600">O Cristo ressuscitado reina.</p>
