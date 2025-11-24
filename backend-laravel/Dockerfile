@@ -10,10 +10,7 @@ RUN apk add --no-cache \
     libxml2-dev \
     zip \
     jpegoptim optipng pngquant gifsicle \
-    vim \
-    unzip \
-    git \
-    curl
+    vim unzip git curl
 
 # Configure PHP extensions
 RUN docker-php-ext-configure gd --with-freetype --with-jpeg
