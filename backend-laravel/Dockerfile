@@ -1,39 +1,40 @@
-FROM php:8.2-fpm-alpine
+FROM php:8.2-cli-alpine
 
-# Install system dependencies
+# dependências essenciais
 RUN apk add --no-cache \
-    build-base \
+    bash \
+    curl \
+    zip \
+    unzip \
+    git \
     libpng-dev \
     libjpeg-turbo-dev \
     freetype-dev \
     oniguruma-dev \
-    libxml2-dev \
-    zip \
-    jpegoptim optipng pngquant gifsicle \
-    vim unzip git curl
+    libxml2-dev
 
-# Configure PHP extensions
-RUN docker-php-ext-configure gd --with-freetype --with-jpeg
-RUN docker-php-ext-install pdo_mysql mbstring exif pcntl bcmath gd
+# extensões PHP
+RUN docker-php-ext-configure gd --with-freetype --with-jpeg \
+ && docker-php-ext-install pdo_mysql mbstring bcmath gd
 
-# Install Composer
+# composer
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 
 WORKDIR /var/www/html
 
-# Copy Laravel app
+# copia o código
 COPY . .
 
-# Install PHP dependencies
-RUN composer install --no-dev --optimize-autoloader
+# instala dependências
+RUN composer install --no-dev --optimize-autoloader --no-interaction --no-progress || true
 
-# Fix permissions
+# permissões
 RUN mkdir -p storage/framework/{sessions,views,cache} \
-    && mkdir -p storage/app/public \
-    && chown -R www-data:www-data storage bootstrap/cache
+ && chown -R www-data:www-data storage bootstrap/cache \
+ && chmod -R 0777 storage bootstrap/cache || true
 
-# Expose HTTP port for Render
-EXPOSE 8080
+# expõe (opcional)
+EXPOSE 8000
 
-# Start Laravel via HTTP
-CMD ["php", "artisan", "serve", "--host=0.0.0.0", "--port", "8080"]
+# start: usa a porta que o Render fornece no runtime ($PORT). Se não existir usa 8000
+CMD ["sh", "-c", "php artisan migrate --force || true; php artisan serve --host=0.0.0.0 --port ${PORT:-8000}"]
