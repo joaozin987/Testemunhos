@@ -2,6 +2,8 @@ FROM php:8.2-fpm-alpine
 
 # Install system dependencies
 RUN apk add --no-cache \
+    nginx \
+    supervisor \
     build-base \
     libpng-dev \
     libjpeg-turbo-dev \
@@ -9,8 +11,9 @@ RUN apk add --no-cache \
     oniguruma-dev \
     libxml2-dev \
     zip \
-    jpegoptim optipng pngquant gifsicle \
-    vim unzip git curl
+    unzip \
+    curl \
+    git
 
 # Configure PHP extensions
 RUN docker-php-ext-configure gd --with-freetype --with-jpeg
@@ -21,19 +24,20 @@ COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 
 WORKDIR /var/www/html
 
-# Copy Laravel app
-COPY . .
+# Copy app
+COPY . /var/www/html
 
-# Install PHP dependencies
-RUN composer install --no-dev --optimize-autoloader
+# Copy nginx config
+COPY nginx/default.conf /etc/nginx/conf.d/default.conf
 
-# Fix permissions
-RUN mkdir -p storage/framework/{sessions,views,cache} \
-    && mkdir -p storage/app/public \
-    && chown -R www-data:www-data storage bootstrap/cache
+# Permissions
+RUN chown -R www-data:www-data /var/www/html/storage /var/www/html/bootstrap/cache
 
-# Expose HTTP port for Render
-EXPOSE 8080
+# Expose HTTP port
+EXPOSE 80
 
-# Start Laravel via HTTP
-CMD ["php", "artisan", "serve", "--host=0.0.0.0", "--port", "8080"]
+# Supervisor config
+COPY supervisord.conf /etc/supervisord.conf
+
+# Start Supervisor (PHP-FPM + Nginx)
+CMD ["/usr/bin/supervisord", "-c", "/etc/supervisord.conf"]
