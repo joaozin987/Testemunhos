@@ -1,43 +1,40 @@
-FROM php:8.2-fpm-alpine
+FROM php:8.2-cli-alpine
 
-# Install system dependencies
+# dependências essenciais
 RUN apk add --no-cache \
-    nginx \
-    supervisor \
-    build-base \
+    bash \
+    curl \
+    zip \
+    unzip \
+    git \
     libpng-dev \
     libjpeg-turbo-dev \
     freetype-dev \
     oniguruma-dev \
-    libxml2-dev \
-    zip \
-    unzip \
-    curl \
-    git
+    libxml2-dev
 
-# Configure PHP extensions
-RUN docker-php-ext-configure gd --with-freetype --with-jpeg
-RUN docker-php-ext-install pdo_mysql mbstring exif pcntl bcmath gd
+# extensões PHP
+RUN docker-php-ext-configure gd --with-freetype --with-jpeg \
+ && docker-php-ext-install pdo_mysql mbstring bcmath gd
 
-# Install Composer
+# composer
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 
 WORKDIR /var/www/html
 
-# Copy app
-COPY . /var/www/html
+# copia o código
+COPY . .
 
-# Copy nginx config
-COPY nginx/default.conf /etc/nginx/conf.d/default.conf
+# instala dependências
+RUN composer install --no-dev --optimize-autoloader --no-interaction --no-progress || true
 
-# Permissions
-RUN chown -R www-data:www-data /var/www/html/storage /var/www/html/bootstrap/cache
+# permissões
+RUN mkdir -p storage/framework/{sessions,views,cache} \
+ && chown -R www-data:www-data storage bootstrap/cache \
+ && chmod -R 0777 storage bootstrap/cache || true
 
-# Expose HTTP port
-EXPOSE 80
+# expõe (opcional)
+EXPOSE 8000
 
-# Supervisor config
-COPY supervisord.conf /etc/supervisord.conf
-
-# Start Supervisor (PHP-FPM + Nginx)
-CMD ["/usr/bin/supervisord", "-c", "/etc/supervisord.conf"]
+# start: usa a porta que o Render fornece no runtime ($PORT). Se não existir usa 8000
+CMD ["sh", "-c", "php artisan migrate --force || true; php artisan serve --host=0.0.0.0 --port ${PORT:-8000}"]
