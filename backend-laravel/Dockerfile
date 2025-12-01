@@ -7,11 +7,17 @@ RUN apk add --no-cache \
     zip \
     unzip \
     git \
+    openssl \
+    ca-certificates \
+    mysql-client \
     libpng-dev \
     libjpeg-turbo-dev \
     freetype-dev \
     oniguruma-dev \
     libxml2-dev
+
+# atualiza certificados do sistema (NECESSÁRIO para Aiven SSL)
+RUN update-ca-certificates
 
 # extensões PHP
 RUN docker-php-ext-configure gd --with-freetype --with-jpeg \
@@ -22,10 +28,10 @@ COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 
 WORKDIR /var/www/html
 
-# copia o código
+# copia o código da aplicação
 COPY . .
 
-# instala dependências
+# instala dependências do Laravel
 RUN composer install --no-dev --optimize-autoloader --no-interaction --no-progress || true
 
 # permissões
@@ -33,8 +39,8 @@ RUN mkdir -p storage/framework/{sessions,views,cache} \
  && chown -R www-data:www-data storage bootstrap/cache \
  && chmod -R 0777 storage bootstrap/cache || true
 
-# expõe (opcional)
+# porta exposta
 EXPOSE 8000
 
-# start: usa a porta que o Render fornece no runtime ($PORT). Se não existir usa 8000
+# inicia Laravel usando a porta do Render ($PORT) ou 8000
 CMD ["sh", "-c", "php artisan migrate --force || true; php artisan serve --host=0.0.0.0 --port ${PORT:-8000}"]
