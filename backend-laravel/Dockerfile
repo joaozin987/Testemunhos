@@ -7,11 +7,17 @@ RUN apk add --no-cache \
     zip \
     unzip \
     git \
+    openssl \
+    ca-certificates \
+    mysql-client \
     libpng-dev \
     libjpeg-turbo-dev \
     freetype-dev \
     oniguruma-dev \
     libxml2-dev
+
+# atualiza certificados do sistema (NECESSÁRIO para Aiven SSL)
+RUN update-ca-certificates
 
 # extensões PHP
 RUN docker-php-ext-configure gd --with-freetype --with-jpeg \
