@@ -43,7 +43,7 @@ return [
             'foreign_key_constraints' => env('DB_FOREIGN_KEYS', true),
         ],
 
-    'mysql' => [
+   'mysql' => [
     'driver' => 'mysql',
     'url' => env('DATABASE_URL'),
     'host' => env('DB_HOST', '127.0.0.1'),
@@ -57,12 +57,9 @@ return [
     'prefix' => '',
     'strict' => true,
     'engine' => null,
-
-    'options' => array_filter([
-        PDO::MYSQL_ATTR_SSL_CA => storage_path('app/ca.pem'),
-        PDO::MYSQL_ATTR_SSL_VERIFY_SERVER_CERT => false,
-    ]),
+    'options' => [], // ← FIX
 ],
+
 
 
         'pgsql' => [
