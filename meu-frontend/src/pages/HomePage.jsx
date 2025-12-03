@@ -52,7 +52,7 @@ function HomePage() {
       setError(null);
     } catch (err) {
       console.error(err);
-      setError("Não foi possível carregar os depoimentos. Verifique se o servidor está rodando.");
+      setError("Não foi possível carregar os depoimentos.");
     } finally {
       setIsLoading(false);
     }
@@ -147,7 +147,7 @@ const handleSearchVerse = () => {
     alert("Depoimento deletado com sucesso!");
   } catch (err) {
     console.error("Erro em handleDelete:", err);
-    alert("Erro ao deletar depoimento. Verifique o console.");
+    alert("Erro ao deletar depoimento.");
   }
 };
 
@@ -220,7 +220,7 @@ const handleSearchVerse = () => {
       alert(depoimentoEditando ? 'Depoimento atualizado!' : 'Depoimento enviado!');
     } catch (err) {
       console.error('Erro no envio/edição do depoimento:', err);
-      alert('Erro ao salvar depoimento. Verifique o console.');
+      alert('Erro ao salvar depoimento.');
     }
   };
 

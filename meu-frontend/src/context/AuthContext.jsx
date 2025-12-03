@@ -8,7 +8,6 @@ export function AuthProvider({ children }) {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [loading, setLoading] = useState(true);
 
-  // 🔄 Ao carregar a página, tenta buscar o perfil se houver token
   useEffect(() => {
     const fetchUser = async () => {
       const token = localStorage.getItem("token");
@@ -87,7 +86,6 @@ export function AuthProvider({ children }) {
     }
   };
 
-  // 🚪 Logout
   const logout = () => {
     localStorage.removeItem("token");
     localStorage.removeItem("usuario");
@@ -99,6 +97,7 @@ export function AuthProvider({ children }) {
     <AuthContext.Provider
       value={{
         user,
+        setUser,
         isAuthenticated,
         loading,
         login,
