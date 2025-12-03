@@ -25,31 +25,33 @@ class DepoimentoController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
- public function store(Request $request)
+public function store(Request $request)
 {
-  $validator = Validator::make($request->all(),[
-   'experiencia' => 'required|string',
-    'imagem_url' => 'nullable|string',
-    'movimento' => 'nullable|string|max:255',
-    'nome_autor' => 'nullable|string|max:255',
-    'idade_autor' => 'nullable|integer',
-    'usuario_id' => 'nullable|integer|exists:usuarios,id',
-  ]);
-     if($validator->fails()){
-    return response()->json([
-        'errors' => $validator->errors()
-    ], 422);
-  }
-   $depoimentos = Depoimento::create([
-    'experiencia' => $request->experiencia,
-    'imagem_url' => $request->imagem_url,
-    'movimento' => $request->movimento,
-    'nome_autor' => $request->nome_autor,
-    'idade_autor' => $request->idade_autor,
-    'usuario_id' => $request->user()->id,
-  ]);
-  return response()->json($depoimentos, 201);
+    $validator = Validator::make($request->all(),[
+        'experiencia' => 'required|string',
+        'imagem_url' => 'nullable|string',
+        'movimento' => 'nullable|string|max:255',
+        'nome_autor' => 'nullable|string|max:255',
+        'idade_autor' => 'nullable|integer',
+        'usuario_id' => 'nullable|integer|exists:usuarios,id',
+    ]);
+
+    if ($validator->fails()) {
+        return response()->json(['errors' => $validator->errors()], 422);
+    }
+
+    $depoimento = Depoimento::create([
+        'experiencia' => $request->experiencia,
+        'imagem_url' => $request->imagem_url,
+        'movimento' => $request->movimento,
+        'nome_autor' => $request->nome_autor,
+        'idade_autor' => $request->idade_autor,
+        'usuario_id' => $request->user()->id ?? $request->usuario_id ?? null,
+    ]);
+
+    return response()->json($depoimento, 201);
 }
+
 
     /**
      * Display the specified resource.
