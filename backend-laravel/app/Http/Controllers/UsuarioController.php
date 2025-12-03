@@ -55,27 +55,39 @@ class UsuarioController extends Controller
 }
 public function register(Request $request)
 {
-    $request->validate([
-        'nome' => 'required|string|max:255',
-        'email' => 'required|email|unique:usuarios,email',
-        'password' => 'required|min:6',
-    ]);
+    try {
+        $request->validate([
+            'nome' => 'required|string|max:255',
+            'email' => 'required|email|unique:usuarios,email',
+            'password' => 'required|min:6',
+        ]);
 
-    $usuario = Usuario::create([
-        'nome' => $request->nome,
-        'email' => $request->email,
-        'senha' => $request->password, // ✅ converte password → senha
-        'is_admin' => false,
-    ]);
+        $usuario = Usuario::create([
+            'nome' => $request->nome,
+            'email' => $request->email,
+            'senha' => $request->password, // o model já faz o hash automático
+            'is_admin' => 0, // ou role = 0 se estiver usando role
+        ]);
 
-    return response()->json([
-        'mensagem' => 'Usuário cadastrado com sucesso!',
-        'usuario' => [
-            'id' => $usuario->id,
-            'nome' => $usuario->nome,
-            'email' => $usuario->email,
-        ]
-    ], 201);
+        $token = $usuario->createToken('API Token')->plainTextToken;
+
+        return response()->json([
+            'mensagem' => 'Usuário cadastrado com sucesso!',
+            'usuario' => [
+                'id' => $usuario->id,
+                'nome' => $usuario->nome,
+                'email' => $usuario->email,
+                'is_admin' => (bool) $usuario->is_admin,
+            ],
+            'token' => $token
+        ], 201);
+
+    } catch (\Exception $e) {
+        return response()->json([
+            'erro' => 'Erro ao registrar usuário',
+            'detalhe' => $e->getMessage()
+        ], 500);
+    }
 }
 
    public function login(Request $request)
