@@ -131,7 +131,7 @@ public function register(Request $request)
         $status = Password::sendResetLink(
             $request->only('email'),
             function ($user, $token) {
-                $frontendUrl = "https://conectados-pela-fe.onrender.com/redefinir-senha?token=$token&email={$user->email}";
+              $frontendUrl = "https://conectados-pela-fe.onrender.com/#/redefinir-senha?token=$token&email={$user->email}";
                 Mail::to($user->email)->send(new ResetPasswordMail($frontendUrl));
             }
         );
