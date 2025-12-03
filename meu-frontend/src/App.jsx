@@ -1,5 +1,7 @@
 import { BrowserRouter as Router, Routes, Route, Outlet } from "react-router-dom";
 import { AuthProvider } from "./context/AuthContext.jsx";
+import NotFoundPage from "./pages/NotFoundPage.jsx";
+
 
 // Componentes gerais
 import Navbar from "./components/Navbar.jsx";
@@ -79,9 +81,9 @@ function App() {
           <Route path="/redefinir-senha" element={<RedefinirPage />} />
 
           {/* */}
-          <Route element={<LayoutPublico />}></Route>
-          <Route path="*" element={<HomePage />} />
-          <Route path="*" element={<LoginPage />} />
+             <Route element={<AppLayout />}>
+            <Route path="*" element={<NotFoundPage />} />
+          </Route>
 
         </Routes>
       </AuthProvider>
