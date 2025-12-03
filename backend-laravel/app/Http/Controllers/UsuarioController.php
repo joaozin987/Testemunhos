@@ -26,104 +26,33 @@ class UsuarioController extends Controller
         'usuario' => $request->user()
     ]);
 }
-    public function atualizarPerfil(Request $request)
+   public function atualizarPerfil(Request $request)
 {
-    try {
-        Log::info('Iniciando atualização de perfil', ['user_id' => $request->user()->id]);
+    $usuario = $request->user();
 
-        $validated = $request->validate([
-            'nome' => 'nullable|string|max:255',
-            'cidade' => 'nullable|string',
-            'upload_file' => 'nullable|image|mimes:jpg,jpeg,png,gif,webp|max:4096',
-            'bio' => 'nullable|string',
-            'versiculo_favorito' => 'nullable|string',
-        ]);
+    $usuario->nome = $request->nome;
+    $usuario->cidade = $request->cidade;
+    $usuario->bio = $request->bio;
+    $usuario->versiculo_favorito = $request->versiculo_favorito;
 
-        $usuario = $request->user();
+    if ($request->hasFile('upload_file')) {
+        $file = $request->file('upload_file');
 
-        Log::info('Dados validados', $validated);
+        $nomeArquivo = time() . '_' . $file->getClientOriginalName();
 
-        if ($request->hasFile('upload_file')) {
-            $file = $request->file('upload_file');
-            Log::info('Arquivo recebido', [
-                'original_name' => $file->getClientOriginalName(),
-                'size' => $file->getSize(),
-                'mime_type' => $file->getMimeType(),
-            ]);
+        $file->storeAs('public/perfil', $nomeArquivo);
 
-            if ($file->isValid()) {
-                Log::info('Arquivo é válido');
-
-                // Deletar imagem anterior se existir
-                if ($usuario->upload_file) {
-                    $oldImagePath = str_replace('/storage/', '', $usuario->upload_file);
-                    if (Storage::disk('public')->exists($oldImagePath)) {
-                        Storage::disk('public')->delete($oldImagePath);
-                        Log::info('Imagem anterior deletada', ['path' => $oldImagePath]);
-                    }
-                }
-
-                $fileName = 'user_' . $usuario->id . '_' . time() . '.' . $file->getClientOriginalExtension();
-                $path = $file->storeAs('perfis', $fileName, 'public');
-                Log::info('Arquivo armazenado', ['path' => $path]);
-
-                $usuario->upload_file = '/storage/' . $path;
-                Log::info('Novo caminho da imagem', ['upload_file' => $usuario->upload_file]);
-            } else {
-                Log::error('Arquivo inválido');
-            }
-        } else {
-            Log::info('Nenhum arquivo de imagem foi enviado');
-        }
-
-        $usuario->nome = $request->input('nome', $usuario->nome);
-        $usuario->cidade = $request->input('cidade', $usuario->cidade);
-        $usuario->bio = $request->input('bio', $usuario->bio);
-        $usuario->versiculo_favorito = $request->input('versiculo_favorito', $usuario->versiculo_favorito);
-        $usuario->save();
-
-        Log::info('Perfil atualizado com sucesso');
-
-        return response()->json([
-            'mensagem' => 'Perfil atualizado com sucesso!',
-            'usuario' => $usuario
-        ]);
-
-    } catch (\Exception $e) {
-        Log::error('Erro ao atualizar perfil', [
-            'user_id' => $request->user()->id ?? 'unknown',
-            'error' => $e->getMessage(),
-            'trace' => $e->getTraceAsString()
-        ]);
-
-        return response()->json([
-            'mensagem' => 'Erro interno: ' . $e->getMessage()
-        ], 500);
+        $usuario->upload_file = "/storage/perfil/" . $nomeArquivo;
     }
-}
 
-   public function register(Request $request)
-{
-    $request->validate([
-        'nome' => 'required|string|max:255',
-        'email' => 'required|email|unique:usuarios,email',
-        'password' => 'required|string|min:6',
-    ]);
-
-    $usuario = Usuario::create([
-        'nome' => $request->nome,
-        'email' => $request->email,
-        'senha' => $request->password, // Mutator já aplica Hash::make
-    ]);
-
-    $token = $usuario->createToken('API Token')->plainTextToken;
+    $usuario->save();
 
     return response()->json([
-        'mensagem' => 'Usuário criado com sucesso!',
-        'usuario' => $usuario,
-        'token' => $token
-    ], 201);
+        'mensagem' => 'Perfil atualizado com sucesso!',
+        'usuario' => $usuario
+    ]);
 }
+
 
 
    public function login(Request $request)
