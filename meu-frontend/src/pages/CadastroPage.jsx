@@ -6,7 +6,7 @@ import Navbar from "../components/Navbar";
 function CadastroPage() {
   const [nome, setNome] = useState("");
   const [email, setEmail] = useState("");
-  const [senha, setSenha] = useState("");
+  const [password, setPassword] = useState("");
   const [mensagem, setMensagem] = useState("");
   const [mensagemSucesso, setMensagemSucesso] = useState("");
   const [isLoading, setIsLoading] = useState(false);
@@ -24,7 +24,7 @@ function CadastroPage() {
     setMensagemSucesso("");
 
     try {
-     await register(nome, email, senha);
+      await register(nome, email, password);
       setMensagemSucesso("Cadastro realizado com sucesso! Você será redirecionado para o login.");
       setTimeout(() => navigate("/login"), 3000);
     } catch (error) {
@@ -64,17 +64,16 @@ function CadastroPage() {
           onChange={(e) => setEmail(e.target.value)}
         />
 
-        <label className="text-left text-xl mb-2 font-slab" htmlFor="registerPassword">Senha</label>
+        <label className="text-left text-xl mb-2 font-slab" htmlFor="registerPassword">Password</label>
        <div className="relative mb-4">
           <input
             id="registerPassword"
             className="w-full rounded-lg p-3 border border-gray-300 pr-14"
             type={mostrarPassword ? "text" : "password"}
-            placeholder="Digite sua senha"
+            placeholder="Digite sua password"
             required
-           value={senha}
-           onChange={(e) => setSenha(e.target.value)}
-
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
           />
 
           <button
