@@ -9,34 +9,38 @@ export function AuthProvider({ children }) {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const fetchUser = async () => {
-      const token = localStorage.getItem("token");
+  const fetchUser = async () => {
+    const token = localStorage.getItem("token");
 
-      if (token) {
-        try {
-          const response = await api.get("/perfil");
-
-          const usuario = response.data.usuario;
-
-          setUser({
-            ...usuario,
-            isAdmin: response.data.isAdmin,
-          });
-
-          setIsAuthenticated(true);
-        } catch (err) {
-          console.error("Erro ao buscar usuário:", err);
-          localStorage.removeItem("token");
-          setUser(null);
-          setIsAuthenticated(false);
-        }
-      }
-
+    if (!token) {
       setLoading(false);
-    };
+      return;
+    }
 
-    fetchUser();
-  }, []);
+    try {
+      const response = await api.get("/perfil");
+
+      const usuario = response.data.usuario;
+
+      setUser({
+        ...usuario,
+        isAdmin: response.data.isAdmin,
+      });
+
+      setIsAuthenticated(true);
+    } catch (err) {
+      console.error("Erro ao buscar usuário:", err);
+      localStorage.removeItem("token");
+      setUser(null);
+      setIsAuthenticated(false);
+    } finally {
+      setLoading(false); // ✅ AGORA GARANTIDO
+    }
+  };
+
+  fetchUser();
+}, []);
+
 
   // 🧩 Registrar novo usuário
   const register = async (nome, email, password) => {
