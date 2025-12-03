@@ -26,7 +26,7 @@ class UsuarioController extends Controller
 
     return response()->json([
         'usuario' => $usuario,
-        'isAdmin' => $usuario->role === 1 
+        'isAdmin' => $usuario->role === 1
     ]);
 }
 
@@ -115,13 +115,14 @@ public function register(Request $request)
             'id' => $usuario->id,
             'nome' => $usuario->nome,
             'email' => $usuario->email,
-            'is_admin' => (bool) $usuario->is_admin,
+            'isAdmin' => $usuario->role === 1,
             'upload_file' => $usuario->upload_file,
             'cidade' => $usuario->cidade,
             'bio' => $usuario->bio,
         ],
         'token' => $token
     ]);
+
 }
 
 
