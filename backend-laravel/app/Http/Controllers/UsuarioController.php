@@ -20,17 +20,20 @@ class UsuarioController extends Controller
     /**
      * Handle an authentication attempt.
      */
-    public function perfil(Request $request)
+  public function perfil(Request $request)
 {
+    $usuario = $request->user();
+
     return response()->json([
-        'usuario' => $request->user()
+        'usuario' => $usuario,
+        'isAdmin' => $usuario->role === 1 
     ]);
 }
+
    public function atualizarPerfil(Request $request)
 {
     $usuario = $request->user();
 
-    // Atualiza campos comuns
     $usuario->nome = $request->nome;
     $usuario->cidade = $request->cidade;
     $usuario->bio = $request->bio;
