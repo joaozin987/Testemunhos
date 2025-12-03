@@ -1,5 +1,5 @@
 import { BrowserRouter as Router, Routes, Route, Outlet } from "react-router-dom";
-import { AuthProvider } from './context/AuthContext.jsx';
+import { AuthProvider } from "./context/AuthContext.jsx";
 
 // Componentes gerais
 import Navbar from "./components/Navbar.jsx";
@@ -19,14 +19,15 @@ import RecuperarSenhaPage from "./pages/RecuperarSenhaPage.jsx";
 import RedefinirPage from "./pages/RedefinirPage.jsx";
 
 // Páginas do Admin
-import AdminPage from "./pages/admin/AdminPage.jsx"; // Dashboard Admin
-import AdminUsersPage from "./pages/admin/AdminUsersPage.jsx"; // Gestão de usuários
-import AdminPostsPage from "./pages/admin/AdminPostsPage.jsx"; // Gestão de posts
+import AdminPage from "./pages/admin/AdminPage.jsx";
+import AdminUsersPage from "./pages/admin/AdminUsersPage.jsx";
+import AdminPostsPage from "./pages/admin/AdminPostsPage.jsx";
 
 // Rotas protegidas
 import RotaProtegida from "./components/RotaProtegida.jsx";
 import RotaAdmin from "./components/admin/RotaAdmin.jsx";
 
+// Layout com Navbar e Footer
 function AppLayout() {
   return (
     <>
@@ -44,26 +45,27 @@ function App() {
     <Router>
       <AuthProvider>
         <Routes>
-          {/* Grupo 1: Rotas Públicas */}
+
+          {/* ✅ Grupo 1: Rotas Públicas (Login e Cadastro) */}
           <Route element={<LayoutPublico />}>
             <Route path="/login" element={<LoginPage />} />
             <Route path="/cadastro" element={<CadastroPage />} />
           </Route>
 
-          {/* Grupo 2: Rotas com Navbar/Footer */}
+          {/* ✅ Grupo 2: Rotas com Navbar/Footer */}
           <Route element={<AppLayout />}>
             <Route path="/" element={<HomePage />} />
             <Route path="/museu" element={<MuseuPage />} />
             <Route path="/exemplos" element={<ExemplosPage />} />
             <Route path="/sobre" element={<SobrePage />} />
 
-            {/* Rotas Protegidas (usuários logados) */}
+            {/* ✅ Rotas Protegidas (usuário logado) */}
             <Route element={<RotaProtegida />}>
               <Route path="/perfil" element={<PerfilPage />} />
             </Route>
           </Route>
 
-          {/* Grupo 3: Rotas de Administração */}
+          {/* ✅ Grupo 3: Rotas de Administração */}
           <Route element={<RotaAdmin />}>
             <Route element={<AdminLayout />}>
               <Route path="/admin" element={<AdminPage />} />
@@ -72,9 +74,13 @@ function App() {
             </Route>
           </Route>
 
-          {/* Grupo 4: Telas sem Layout */}
+          {/* ✅ Grupo 4: Telas sem Layout */}
           <Route path="/recuperar-senha" element={<RecuperarSenhaPage />} />
           <Route path="/redefinir-senha" element={<RedefinirPage />} />
+
+          {/* ✅ ROTA CORINGA (ESSENCIAL PRA PRODUÇÃO NO RENDER) */}
+          <Route path="*" element={<HomePage />} />
+
         </Routes>
       </AuthProvider>
     </Router>
