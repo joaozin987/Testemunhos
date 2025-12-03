@@ -9,6 +9,7 @@ function LoginPage() {
   const [isLoading, setIsLoading] = useState(false); 
   const { login } = useAuth();
   const navigate = useNavigate();
+  const [mostrarSenha, setMostrarSenha] = useState(false);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -57,15 +58,26 @@ function LoginPage() {
         <label className="text-left text-xl mb-1 mt-3 font-slab" htmlFor="loginPassword">
           Senha
         </label>
-        <input
-          id="loginPassword"
-          className="w-full rounded-lg mb-4 p-3 border border-gray-300"
-          type="password"
-          placeholder="Digite sua senha"
-          required
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-        />
+      <div className="relative mb-4">
+  <input
+    id="loginPassword"
+    className="w-full rounded-lg p-3 border border-gray-300 pr-14"
+    type={mostrarSenha ? "text" : "password"}
+    placeholder="Digite sua senha"
+    required
+    value={password}
+    onChange={(e) => setPassword(e.target.value)}
+  />
+
+  <button
+    type="button"
+    onClick={() => setMostrarSenha(!mostrarSenha)}
+    className="absolute right-3 top-1/2 -translate-y-1/2 text-sm text-blue-600 font-bold"
+  >
+    {mostrarSenha ? "Ocultar" : "Mostrar"}
+  </button>
+</div>
+
 
         <Link className="text-right text-blue-800 mb-4 block" to="/recuperar-senha">
           Esqueceu a senha?

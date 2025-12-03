@@ -6,6 +6,7 @@ import { normalizarTexto } from "../utils/normalizarTexto";
 
 
 function HomePage() {
+  
   const [depoimentos, setDepoimentos] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -26,7 +27,7 @@ function HomePage() {
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage] = useState(3);
   const [selectedFile, setSelectedFile] = useState(null);
-
+  
   const [formData, setFormData] = useState({
     nome_autor: '',
     movimento: '',
