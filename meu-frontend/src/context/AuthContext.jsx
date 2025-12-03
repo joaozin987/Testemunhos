@@ -34,7 +34,7 @@ export function AuthProvider({ children }) {
       setUser(null);
       setIsAuthenticated(false);
     } finally {
-      setLoading(false); // ✅ AGORA GARANTIDO
+      setLoading(false);
     }
   };
 
@@ -42,16 +42,16 @@ export function AuthProvider({ children }) {
 }, []);
 
 
-  // 🧩 Registrar novo usuário
   const register = async (nome, email, password) => {
     try {
       const res = await api.post("/register", { nome, email, password });
       const data = res.data;
 
-      const usuario = {
+        const usuario = {
         ...data.usuario,
-        isAdmin: data.usuario.is_admin === 1,
+        isAdmin: data.usuario.role === 1,
       };
+
 
       localStorage.setItem("token", data.token);
       localStorage.setItem("usuario", JSON.stringify(usuario));
@@ -66,7 +66,6 @@ export function AuthProvider({ children }) {
     }
   };
 
-  // 🔐 Login
   const login = async (email, password) => {
     try {
       const res = await api.post("/login", { email, password });
