@@ -81,9 +81,9 @@ function App() {
           <Route path="/redefinir-senha" element={<RedefinirPage />} />
 
           {/* */}
-             <Route element={<AppLayout />}>
-            <Route path="*" element={<NotFoundPage />} />
-          </Route>
+          
+          <Route path="*" element={<HomePage />} />
+          
 
         </Routes>
       </AuthProvider>
