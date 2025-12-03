@@ -54,6 +54,31 @@ class UsuarioController extends Controller
     ]);
 }
 
+public function register(Request $request)
+{
+    $request->validate([
+        'nome' => 'required|string|max:255',
+        'email' => 'required|email|unique:usuarios,email',
+        'password' => 'required|min:6'
+    ]);
+
+    $usuario = Usuario::create([
+        'nome' => $request->nome,
+        'email' => $request->email,
+        'senha' => $request->password, // ✅ converte password → senha
+        'is_admin' => false,
+    ]);
+
+    return response()->json([
+        'mensagem' => 'Usuário cadastrado com sucesso!',
+        'usuario' => [
+            'id' => $usuario->id,
+            'nome' => $usuario->nome,
+            'email' => $usuario->email,
+        ]
+    ], 201);
+}
+
 
 
    public function login(Request $request)
