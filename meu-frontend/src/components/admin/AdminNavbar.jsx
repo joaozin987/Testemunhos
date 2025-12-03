@@ -1,18 +1,19 @@
 import React from 'react';
 import { useAuth } from '../../context/AuthContext.jsx';
 import { useNavigate } from 'react-router-dom';
-const { user, logout } = useAuth();
 
-<span>Olá, {user?.nome}</span>
 
 function AdminNavbar() {
   const { usuario, logout } = useAuth();
+  <span>Olá, {user?.nome}</span>
   const navigate = useNavigate();
 
   const handleLogout = () => {
     logout();
     navigate('/');
   };
+
+
 
   return (
     <header className="bg-white shadow-sm border-b">
