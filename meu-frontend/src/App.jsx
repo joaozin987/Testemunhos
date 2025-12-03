@@ -1,5 +1,5 @@
-import { BrowserRouter as Router, Routes, Route, Outlet } from "react-router-dom";
-import { AuthProvider } from "./context/AuthContext.jsx";
+import { Routes, Route, Outlet } from "react-router-dom";
+import { AuthProvider } from './context/AuthContext.jsx';
 
 // Componentes gerais
 import Navbar from "./components/Navbar.jsx";
@@ -18,16 +18,15 @@ import PerfilPage from "./pages/PerfilPage.jsx";
 import RecuperarSenhaPage from "./pages/RecuperarSenhaPage.jsx";
 import RedefinirPage from "./pages/RedefinirPage.jsx";
 
-// Páginas do Admin
+// Admin
 import AdminPage from "./pages/admin/AdminPage.jsx";
 import AdminUsersPage from "./pages/admin/AdminUsersPage.jsx";
 import AdminPostsPage from "./pages/admin/AdminPostsPage.jsx";
 
-// Rotas protegidas
+// Proteções
 import RotaProtegida from "./components/RotaProtegida.jsx";
 import RotaAdmin from "./components/admin/RotaAdmin.jsx";
 
-// Layout com Navbar e Footer
 function AppLayout() {
   return (
     <>
@@ -42,47 +41,43 @@ function AppLayout() {
 
 function App() {
   return (
-    <Router>
-      <AuthProvider>
-        <Routes>
+    <AuthProvider>
+      <Routes>
 
-          {/* ✅ Grupo 1: Públicas (sem Navbar) */}
-          <Route element={<LayoutPublico />}>
-            <Route path="/login" element={<LoginPage />} />
-            <Route path="/cadastro" element={<CadastroPage />} />
+        {/* Grupo 1: Públicas sem menu */}
+        <Route element={<LayoutPublico />}>
+          <Route path="/login" element={<LoginPage />} />
+          <Route path="/cadastro" element={<CadastroPage />} />
+        </Route>
+
+        {/* Grupo 2: Com menu */}
+        <Route element={<AppLayout />}>
+          <Route path="/" element={<HomePage />} />
+          <Route path="/museu" element={<MuseuPage />} />
+          <Route path="/exemplos" element={<ExemplosPage />} />
+          <Route path="/sobre" element={<SobrePage />} />
+
+          {/* Protegida */}
+          <Route element={<RotaProtegida />}>
+            <Route path="/perfil" element={<PerfilPage />} />
           </Route>
+        </Route>
 
-          {/* ✅ Grupo 2: Com Navbar + Footer */}
-          <Route element={<AppLayout />}>
-            <Route path="/" element={<HomePage />} />
-            <Route path="/museu" element={<MuseuPage />} />
-            <Route path="/exemplos" element={<ExemplosPage />} />
-            <Route path="/sobre" element={<SobrePage />} />
-
-            {/* ✅ Protegida */}
-            <Route element={<RotaProtegida />}>
-              <Route path="/perfil" element={<PerfilPage />} />
-            </Route>
+        {/* Grupo 3: Admin */}
+        <Route element={<RotaAdmin />}>
+          <Route element={<AdminLayout />}>
+            <Route path="/admin" element={<AdminPage />} />
+            <Route path="/admin/usuarios" element={<AdminUsersPage />} />
+            <Route path="/admin/posts" element={<AdminPostsPage />} />
           </Route>
+        </Route>
 
-          {/* ✅ Grupo 3: Admin */}
-          <Route element={<RotaAdmin />}>
-            <Route element={<AdminLayout />}>
-              <Route path="/admin" element={<AdminPage />} />
-              <Route path="/admin/usuarios" element={<AdminUsersPage />} />
-              <Route path="/admin/posts" element={<AdminPostsPage />} />
-            </Route>
-          </Route>
+        {/* Grupo 4: Sem layout */}
+        <Route path="/recuperar-senha" element={<RecuperarSenhaPage />} />
+        <Route path="/redefinir-senha" element={<RedefinirPage />} />
 
-          {/* ✅ Grupo 4: Sem layout */}
-          <Route path="/recuperar-senha" element={<RecuperarSenhaPage />} />
-          <Route path="/redefinir-senha" element={<RedefinirPage />} />
-
-          {/* ⚠️ SEM redirect pra Home */}
-          {/* ⚠️ SEM rota * empurrando pra "/" */}
-        </Routes>
-      </AuthProvider>
-    </Router>
+      </Routes>
+    </AuthProvider>
   );
 }
 
