@@ -16,7 +16,8 @@ import ExemplosPage from "./pages/ExemplosPage.jsx";
 import SobrePage from "./pages/SobrePage.jsx";
 import PerfilPage from "./pages/PerfilPage.jsx";
 import RecuperarSenhaPage from "./pages/RecuperarSenhaPage.jsx";
-import RedefinirPage from "./pages/RedefinirPage.jsx";
+import RedefinirSenhaPage from "./pages/RedefinirSenhaPage.jsx";
+
 
 // Admin
 import AdminPage from "./pages/admin/AdminPage.jsx";
@@ -74,7 +75,7 @@ function App() {
 
         {/* Grupo 4: Sem layout */}
         <Route path="/recuperar-senha" element={<RecuperarSenhaPage />} />
-        <Route path="/redefinir-senha" element={<RedefinirPage />} />
+        <Route path="/redefinir-senha" element={<RedefinirSenhaPage />} />
 
       </Routes>
     </AuthProvider>
