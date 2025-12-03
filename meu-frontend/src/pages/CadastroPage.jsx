@@ -10,6 +10,9 @@ function CadastroPage() {
   const [mensagem, setMensagem] = useState("");
   const [mensagemSucesso, setMensagemSucesso] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+  const [confirmarPassword, setConfirmarPassword] = useState("");
+  const [mostrarPassword, setMostrarPassword] = useState(false);
+  const [mostrarConfirmar, setMostrarConfirmar] = useState(false);
 
   const { register } = useAuth();
   const navigate = useNavigate();
@@ -61,16 +64,27 @@ function CadastroPage() {
           onChange={(e) => setEmail(e.target.value)}
         />
 
-        <label className="text-left text-xl mb-2 font-slab" htmlFor="registerPassword">Password</label>
-        <input
-          id="registerPassword"
-          className="w-full rounded-lg mb-4 p-3 border border-gray-300"
-          type="password"
-          placeholder="Digite sua password"
-          required
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-        />
+        <label className="text-left text-xl mb-2 font-slab" htmlFor="registerPassword">Senha</label>
+       <div className="relative mb-4">
+          <input
+            id="registerPassword"
+            className="w-full rounded-lg p-3 border border-gray-300 pr-14"
+            type={mostrarPassword ? "text" : "password"}
+            placeholder="Digite sua password"
+            required
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+          />
+
+          <button
+            type="button"
+            onClick={() => setMostrarPassword(!mostrarPassword)}
+            className="absolute right-3 top-1/2 -translate-y-1/2 text-sm mt-2 text-black-600 font-bold"
+          >
+            {mostrarPassword ? "Ocultar" : "Mostrar"}
+          </button>
+        </div>
+
 
         <button
           type="submit"
