@@ -76,14 +76,15 @@ function App() {
             </Route>
           </Route>
 
-          {/* ✅ Grupo 4: Telas sem Layout */}
+                  {/* ✅ Grupo 4: Telas sem Layout */}
           <Route path="/recuperar-senha" element={<RecuperarSenhaPage />} />
           <Route path="/redefinir-senha" element={<RedefinirPage />} />
 
-          {/* */}
-          
-          <Route path="*" element={<HomePage />} />
-          
+          {/* ✅ ROTA CORINGA CORRETA (MANTÉM O MENU E NÃO REDIRECIONA) */}
+          <Route element={<AppLayout />}>
+            <Route path="*" element={<NotFoundPage />} />
+          </Route>
+
 
         </Routes>
       </AuthProvider>
