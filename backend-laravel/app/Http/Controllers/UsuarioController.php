@@ -65,8 +65,8 @@ public function register(Request $request)
         $usuario = Usuario::create([
             'nome' => $request->nome,
             'email' => $request->email,
-            'senha' => $request->password, // o model já faz o hash automático
-            'is_admin' => 0, // ou role = 0 se estiver usando role
+            'senha' => $request->password,
+            'role' => 0, 
         ]);
 
         $token = $usuario->createToken('API Token')->plainTextToken;
@@ -77,7 +77,7 @@ public function register(Request $request)
                 'id' => $usuario->id,
                 'nome' => $usuario->nome,
                 'email' => $usuario->email,
-                'is_admin' => (bool) $usuario->is_admin,
+                'is_admin' => $usuario->role === 1,
             ],
             'token' => $token
         ], 201);
@@ -89,6 +89,7 @@ public function register(Request $request)
         ], 500);
     }
 }
+
 
    public function login(Request $request)
 {
