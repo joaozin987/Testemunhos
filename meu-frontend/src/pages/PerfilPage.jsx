@@ -67,9 +67,10 @@ export default function PerfilPage() {
         data.append("upload_file", formData.upload_file);
       }
 
-      const response = await api.put("/perfil", data, {
-        headers: { "Content-Type": "multipart/form-data" },
-      });
+    const response = await api.post("/perfil?_method=PUT", data, {
+  headers: { "Content-Type": "multipart/form-data" },
+});
+
 
       const updatedUser = response.data.usuario;
       setUser(updatedUser);
