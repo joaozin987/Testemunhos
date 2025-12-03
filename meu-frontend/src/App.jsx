@@ -1,7 +1,5 @@
 import { BrowserRouter as Router, Routes, Route, Outlet } from "react-router-dom";
 import { AuthProvider } from "./context/AuthContext.jsx";
-import NotFoundPage from "./pages/NotFoundPage.jsx";
-
 
 // Componentes gerais
 import Navbar from "./components/Navbar.jsx";
@@ -48,26 +46,26 @@ function App() {
       <AuthProvider>
         <Routes>
 
-          {/* ✅ Grupo 1: Rotas Públicas (Login e Cadastro) */}
+          {/* ✅ Grupo 1: Públicas (sem Navbar) */}
           <Route element={<LayoutPublico />}>
             <Route path="/login" element={<LoginPage />} />
             <Route path="/cadastro" element={<CadastroPage />} />
           </Route>
 
-          {/* ✅ Grupo 2: Rotas com Navbar/Footer */}
+          {/* ✅ Grupo 2: Com Navbar + Footer */}
           <Route element={<AppLayout />}>
             <Route path="/" element={<HomePage />} />
             <Route path="/museu" element={<MuseuPage />} />
             <Route path="/exemplos" element={<ExemplosPage />} />
             <Route path="/sobre" element={<SobrePage />} />
 
-            {/* ✅ Rotas Protegidas (usuário logado) */}
+            {/* ✅ Protegida */}
             <Route element={<RotaProtegida />}>
               <Route path="/perfil" element={<PerfilPage />} />
             </Route>
           </Route>
 
-          {/* ✅ Grupo 3: Rotas de Administração */}
+          {/* ✅ Grupo 3: Admin */}
           <Route element={<RotaAdmin />}>
             <Route element={<AdminLayout />}>
               <Route path="/admin" element={<AdminPage />} />
@@ -76,16 +74,12 @@ function App() {
             </Route>
           </Route>
 
-                  {/* ✅ Grupo 4: Telas sem Layout */}
+          {/* ✅ Grupo 4: Sem layout */}
           <Route path="/recuperar-senha" element={<RecuperarSenhaPage />} />
           <Route path="/redefinir-senha" element={<RedefinirPage />} />
 
-          {/* ✅ ROTA CORINGA CORRETA (MANTÉM O MENU E NÃO REDIRECIONA) */}
-          <Route element={<AppLayout />}>
-            <Route path="*" element={<NotFoundPage />} />
-          </Route>
-
-
+          {/* ⚠️ SEM redirect pra Home */}
+          {/* ⚠️ SEM rota * empurrando pra "/" */}
         </Routes>
       </AuthProvider>
     </Router>
