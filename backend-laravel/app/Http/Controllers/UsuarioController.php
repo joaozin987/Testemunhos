@@ -53,13 +53,12 @@ class UsuarioController extends Controller
         'usuario' => $usuario
     ]);
 }
-
 public function register(Request $request)
 {
     $request->validate([
         'nome' => 'required|string|max:255',
         'email' => 'required|email|unique:usuarios,email',
-        'password' => 'required|min:6'
+        'password' => 'required|min:6',
     ]);
 
     $usuario = Usuario::create([
@@ -78,8 +77,6 @@ public function register(Request $request)
         ]
     ], 201);
 }
-
-
 
    public function login(Request $request)
 {
