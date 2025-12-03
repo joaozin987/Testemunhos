@@ -59,24 +59,24 @@ function LoginPage() {
           Senha
         </label>
       <div className="relative mb-4">
-  <input
-    id="loginPassword"
-    className="w-full rounded-lg p-3 border border-gray-300 pr-14"
-    type={mostrarSenha ? "text" : "password"}
-    placeholder="Digite sua senha"
-    required
-    value={password}
-    onChange={(e) => setPassword(e.target.value)}
-  />
+          <input
+            id="loginPassword"
+            className="w-full rounded-lg p-3 border border-gray-300 pr-14"
+            type={mostrarSenha ? "text" : "password"}
+            placeholder="Digite sua senha"
+            required
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+          />
 
-  <button
-    type="button"
-    onClick={() => setMostrarSenha(!mostrarSenha)}
-    className="absolute right-3 top-1/2 -translate-y-1/2 text-sm text-blue-600 font-bold"
-  >
-    {mostrarSenha ? "Ocultar" : "Mostrar"}
-  </button>
-</div>
+          <button
+            type="button"
+            onClick={() => setMostrarSenha(!mostrarSenha)}
+            className="absolute right-3 top-1/2 mt-2 -translate-y-1/2 text-sm text-black-600 font-bold"
+          >
+            {mostrarSenha ? "Ocultar" : "Mostrar"}
+          </button>
+        </div>
 
 
         <Link className="text-right text-blue-800 mb-4 block" to="/recuperar-senha">
