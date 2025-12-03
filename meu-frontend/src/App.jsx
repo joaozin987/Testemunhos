@@ -78,8 +78,10 @@ function App() {
           <Route path="/recuperar-senha" element={<RecuperarSenhaPage />} />
           <Route path="/redefinir-senha" element={<RedefinirPage />} />
 
-          {/* ✅ ROTA CORINGA (ESSENCIAL PRA PRODUÇÃO NO RENDER) */}
+          {/* */}
+          <Route element={<LayoutPublico />}></Route>
           <Route path="*" element={<HomePage />} />
+          <Route path="*" element={<LoginPage />} />
 
         </Routes>
       </AuthProvider>
