@@ -30,6 +30,7 @@ class UsuarioController extends Controller
 {
     $usuario = $request->user();
 
+    // Atualiza campos comuns
     $usuario->nome = $request->nome;
     $usuario->cidade = $request->cidade;
     $usuario->bio = $request->bio;
