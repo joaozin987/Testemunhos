@@ -10,7 +10,7 @@ function AdminLayout() {
       <div className="flex-1 flex flex-col">
         <AdminNavbar />
         <main className="flex-1 p-6">
-          <Outlet /> {/* ✅ Renderiza páginas internas do admin */}
+          <Outlet />
         </main>
       </div>
     </div>

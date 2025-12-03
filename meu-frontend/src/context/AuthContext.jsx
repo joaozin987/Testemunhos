@@ -9,49 +9,45 @@ export function AuthProvider({ children }) {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-  const fetchUser = async () => {
-    const token = localStorage.getItem("token");
+    const fetchUser = async () => {
+      const token = localStorage.getItem("token");
 
-    if (!token) {
-      setLoading(false);
-      return;
-    }
+      if (!token) {
+        setLoading(false);
+        return;
+      }
 
-    try {
-      const response = await api.get("/perfil");
+      try {
+        const response = await api.get("/perfil");
+        const usuario = response.data.usuario;
 
-      const usuario = response.data.usuario;
+        setUser({
+          ...usuario,
+          isAdmin: response.data.isAdmin, // ✅ garante isAdmin correto
+        });
+        setIsAuthenticated(true);
+      } catch (err) {
+        console.error("Erro ao buscar usuário:", err);
+        localStorage.removeItem("token");
+        setUser(null);
+        setIsAuthenticated(false);
+      } finally {
+        setLoading(false);
+      }
+    };
 
-      setUser({
-        ...usuario,
-        isAdmin: response.data.isAdmin,
-      });
-
-      setIsAuthenticated(true);
-    } catch (err) {
-      console.error("Erro ao buscar usuário:", err);
-      localStorage.removeItem("token");
-      setUser(null);
-      setIsAuthenticated(false);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  fetchUser();
-}, []);
-
+    fetchUser();
+  }, []);
 
   const register = async (nome, email, password) => {
     try {
       const res = await api.post("/register", { nome, email, password });
       const data = res.data;
 
-        const usuario = {
+      const usuario = {
         ...data.usuario,
         isAdmin: data.usuario.role === 1,
       };
-
 
       localStorage.setItem("token", data.token);
       localStorage.setItem("usuario", JSON.stringify(usuario));

@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
-import { useAuth } from '../context/AuthContext';
+import { useAuth } from '../context/AuthContext.jsx';
 
 function Navbar() {
   const { isAuthenticated, user, logout } = useAuth();
@@ -8,21 +8,30 @@ function Navbar() {
 
   const toggleMenu = () => setMenuOpen(!menuOpen);
 
+  // Componente para link admin
+  const AdminLink = () =>
+    user?.isAdmin ? (
+      <Link
+        to="/admin"
+        className="mr-4 text-yellow-400 font-bold hover:opacity-80 transition"
+      >
+        Painel Admin
+      </Link>
+    ) : null;
+
+  // Logout e fechar menu
+  const handleLogout = () => {
+    logout();
+    setMenuOpen(false);
+  };
+
   return (
     <nav className="bg-blue-800 shadow p-4 flex items-center justify-between sticky top-0 z-40">
+      {/* Logo */}
       <h1 className="text-3xl font-slab text-white">
         <Link to="/">Testemunhos de Fé</Link>
       </h1>
-               
-      <Link
-        to="/perfil"
-        onClick={() => setMenuOpen(false)}
-        className="md:hidden flex items-center gap-2 hover:opacity-80 transition"
-      >
-        <i className="bi bi-person-circle text-3xl text-white"></i>
-      </Link>
 
-          
       {/* Botão menu mobile */}
       <button
         onClick={toggleMenu}
@@ -41,26 +50,15 @@ function Navbar() {
 
         {isAuthenticated ? (
           <>
-           <li>
-              {user?.isAdmin &&(
-                <Link to="/admin" className="mr-4 text-yellow-400 font-bold">
-                  Painel Admin
-                </Link>
-              )}
-            </li>
-
-           <li>
-              <Link 
-                to="/perfil" 
-                className="text-white font-semibold flex items-center gap-2 hover:opacity-80 transition"
-              >
+            <li><AdminLink /></li>
+            <li>
+              <Link to="/perfil" className="text-white font-semibold hover:opacity-80 transition">
                 Perfil
               </Link>
             </li>
-
             <li>
               <button
-                onClick={logout}
+                onClick={handleLogout}
                 className="text-white font-semibold bg-red-600 px-3 py-1 rounded hover:bg-red-700 transition"
               >
                 Sair
@@ -71,11 +69,13 @@ function Navbar() {
           <>
             <li><Link to="/login" className="text-white font-semibold">Entrar</Link></li>
             <li>
-              <Link to="/cadastro" className="bg-white text-blue-600 font-bold py-2 px-4 rounded-lg">
+              <Link
+                to="/cadastro"
+                className="bg-white text-blue-600 font-bold py-2 px-4 rounded-lg"
+              >
                 Cadastre-se
               </Link>
             </li>
-          
           </>
         )}
       </ul>
@@ -91,18 +91,19 @@ function Navbar() {
 
             {isAuthenticated ? (
               <>
-               <li>
-              {user?.isAdmin &&(
-                <Link to="/admin" className="mr-4 text-yellow-400 font-bold">
-                  Painel Admin
-                </Link>
-              )}
-            </li>
-            
-               
+                <li><AdminLink /></li>
+                <li>
+                  <Link
+                    to="/perfil"
+                    onClick={() => setMenuOpen(false)}
+                    className="hover:opacity-80 transition"
+                  >
+                    Perfil
+                  </Link>
+                </li>
                 <li>
                   <button
-                    onClick={() => { logout(); setMenuOpen(false); }}
+                    onClick={handleLogout}
                     className="text-white font-semibold bg-red-600 px-3 py-1 rounded hover:bg-red-700 transition w-full text-left"
                   >
                     Sair

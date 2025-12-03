@@ -11,5 +11,5 @@ export default function RotaAdmin() {
     return <Navigate to="/" replace />;
   }
 
-  return <Outlet />; // ✅ Usuário é admin
+  return <Outlet />;
 }

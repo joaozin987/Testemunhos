@@ -1,10 +1,12 @@
 import React, { useEffect, useState } from 'react';
+import { useAuth } from '../../context/AuthContext.jsx';
+
 const API_URL = import.meta.env.VITE_API_URL;
 
 function AdminPosts() {
   const [depoimentos, setDepoimentos] = useState([]);
   const [loading, setLoading] = useState(true);
-
+  const { user } = useAuth();
   const token = localStorage.getItem('token');
 
   useEffect(() => {
@@ -12,10 +14,12 @@ function AdminPosts() {
       try {
         const res = await fetch(`${API_URL}/admin/depoimentos`, {
           headers: {
-            'Authorization': `Bearer ${token}`
-          }
+            'Authorization': `Bearer ${token}`,
+          },
         });
+
         if (!res.ok) throw new Error('Erro ao carregar depoimentos');
+
         const data = await res.json();
         setDepoimentos(data);
       } catch (err) {
@@ -26,7 +30,7 @@ function AdminPosts() {
     };
 
     fetchDepoimentos();
-  }, []);
+  }, [token]);
 
   const handleDelete = async (id) => {
     if (!confirm('Deseja realmente deletar este depoimento?')) return;
@@ -36,10 +40,11 @@ function AdminPosts() {
         method: 'DELETE',
         headers: {
           'Authorization': `Bearer ${token}`,
-        }
+        },
       });
 
       if (!res.ok) throw new Error('Erro ao deletar depoimento');
+
       setDepoimentos(prev => prev.filter(d => d.id !== id));
       alert('Depoimento deletado com sucesso!');
     } catch (err) {
