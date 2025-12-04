@@ -302,32 +302,45 @@ const handleSearchVerse = () => {
         )}
 
         {/* Meu Depoimento (seu texto original mantido) */}
-        <div className="p-8 sm:p-10 mt-7 rounded-lg bg-gray-300 max-w-6xl mx-auto">
-          <div className="flex flex-col md:flex-row md:items-start gap-8">
-            <div className="flex-shrink-0 flex justify-center md:justify-start">
-              <img
-                 src="/img/bde0b9ac-ee47-466d-b881-9743b3d8cd46.jpeg"
-                className="w-72 h-72 sm:w-56 sm:h-56 md:w-80 md:h-80 object-cover rounded-lg shadow-md cursor-pointer"
+   <div className="p-10 sm:p-12 mt-3 rounded-lg bg-white shadow-xl max-w-7xl mx-auto">
+      <h2 className="text-4xl sm:text-5xl text-gray-800 font-slab mb-2 border-b-2 border-blue-500 pb-2">
+                Meu Depoimento
+            </h2>
+
+            <h3 className="text-xl sm:text-2xl text-gray-600 mt-6 font-slab">
+                Olá Pessoal, me chamo <span className="text-blue-600 font-bold">João Paulo</span>
+            </h3>
+            
+    <div className="flex flex-col md:flex-row md:items-start md:gap-12">
+        
+        <div className="flex justify-center mt-15 md:justify-start w-full md:w-5/12 mb-8 md:mb-0"> 
+            <img
+                src="/img/bde0b9ac-ee47-466d-b881-9743b3d8cd46.jpeg"
+                
+                className="w-full h-auto object-cover rounded-lg shadow-2xl cursor-pointer max-w-sm md:max-w-none transform transition duration-300 hover:scale-[1.01]"
                 alt="Imagem de João Paulo compartilhando sua experiência no EJC"
                 onClick={() => handleOpenImage('/public/img/bde0b9ac-ee47-466d-b881-9743b3d8cd46.jpeg')}
-              />
-            </div>
-            <div className="text-left mt-10 md:mt-0 ml-0 md:ml-5 max-w-4xl">
-              <h2 className="text-3xl sm:text-4xl text-black font-slab">Meu Depoimento</h2>
-              <h3 className="text-lg sm:text-xl text-gray-800 mt-4 font-slab">
-                Olá Pessoal, me chamo <span className="text-blue-500 text-xl sm:text-2xl font-slab">João Paulo</span>
-              </h3>
-              <p className="text-gray-700 font-slab text-base sm:text-lg leading-relaxed mt-4 text-justify">
-                Entrei no EJC em 2023 e, de lá para cá, tive muitos ensinamentos. O que achei mais fascinante foi o de amar ao próximo.
-                Diversas vezes passei por ocasiões difíceis, tanto espiritualmente quanto fisicamente, e, a cada situação, eu me surpreendia
-                mais com o acolhimento e a ajuda que recebi. Acho que nunca tinha sido tão bem tratado desde que meu irmão faleceu em 2022.
-                Cheguei a pensar que nunca conseguiria me recuperar. Mas logo em seguida veio o EJC e curou todas as minhas feridas,
-                mostrando-me que vale a pena ser feliz, independentemente de qualquer situação, e que sempre devemos confiar nos planos de Deus.
-              </p>
-            </div>
-          </div>
+            />
         </div>
 
+        <div className="text-left w-full md:w-7/12 mt-0">
+            
+        
+            <p className="text-gray-700 font-slab text-base sm:text-lg leading-relaxed mt-6 text-justify">
+                Entrei no EJC em 2023 e reencontrei Deus no momento em que eu me encontrava mais quebrado. Acabei passando por uma profunda depressão após a morte do meu irmão. Eu chorava todos os dias da minha vida e achei que nunca iria conseguir sair daquele calabouço onde eu me encontrava. Eu dizia e repetia: “A minha vida é uma escuridão”. Até me emociono ao lembrar de onde Jesus me tirou, pois a depressão é algo que não tem cura. Mas hoje posso falar para vocês que eu vejo a vida de outra forma: consigo sorrir, consigo animar as pessoas, consigo ser alegre, e tenho certeza que foi Jesus que me curou.
+
+                <br/><br/>
+                E é por isso que, por mais que eu falhe, eu nunca irei abandoná-lo, pois Ele esteve comigo no pior momento da minha vida, e eu sou muito grato a Ele. E é por isso que, quando caio no pecado, eu lembro daquele momento em que, mesmo sujo e impuro de pecado, Jesus me tirou e nem me pediu algo em troca. O que tenho certeza é que Ele pediu foi esse site que fiz para ser instrumento para outros jovens. Ele me resgatou sem querer nada em troca, pois a única coisa que tenho a oferecer é a minha vida. Eu te amo, Jesus!
+                
+                <br/><br/>
+                De lá para cá, tive muitos ensinamentos. O que achei mais fascinante foi o de amar ao próximo. Diversas vezes passei por ocasiões difíceis, tanto espiritualmente quanto fisicamente, e, a cada situação, eu me surpreendia mais com o acolhimento e a ajuda que recebi. Acho que nunca tinha sido tão bem tratado desde que meu irmão faleceu, em 2022.
+
+                <br/><br/>
+                Cheguei a pensar que nunca conseguiria me recuperar, mas logo em seguida veio o EJC e curou todas as minhas feridas, mostrando-me que vale a pena ser feliz, independentemente de qualquer situação, e que sempre devemos confiar nos planos de Deus.
+            </p>
+        </div>
+    </div>
+</div>
         {/* CTA Compartilhar */}
         <div className="text-center mt-10 max-w-4xl mx-auto">
           <p className="text-2xl font-bold text-white">Tem Alguma Experiência para Compartilhar?</p>
