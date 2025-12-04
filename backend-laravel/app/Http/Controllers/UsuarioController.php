@@ -115,14 +115,13 @@ public function register(Request $request)
             'id' => $usuario->id,
             'nome' => $usuario->nome,
             'email' => $usuario->email,
-            'isAdmin' => $usuario->role === 1,
+            'is_admin' => (bool) $usuario->is_admin,
             'upload_file' => $usuario->upload_file,
             'cidade' => $usuario->cidade,
             'bio' => $usuario->bio,
         ],
         'token' => $token
     ]);
-
 }
 
 
